@@ -37,13 +37,13 @@ class OwnPageFragment : Fragment() {
                             .replace(R.id.container, EventListFragment.newInstance())
                             .addToBackStack(null)
                             .commit()
-//                "フレンド" ->
-//                    (activity as AppCompatActivity)
-//                            .supportFragmentManager
-//                            .beginTransaction()
-//                            .replace(R.id.container, FriendListFragment.newInstance())
-//                            .addToBackStack(null)
-//                            .commit()
+                "フレンド" ->
+                    (activity as AppCompatActivity)
+                            .supportFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.container, FriendListFragment.newInstance())
+                            .addToBackStack(null)
+                            .commit()
 //                "設定" ->
 //                    (activity as AppCompatActivity)
 //                            .supportFragmentManager
