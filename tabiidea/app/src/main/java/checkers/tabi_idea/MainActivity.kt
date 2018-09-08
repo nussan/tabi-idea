@@ -12,12 +12,11 @@ class MainActivity : AppCompatActivity(){
         toOwnPageFragment()
     }
 
-    fun toOwnPageFragment() {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        val ownPageFragment = OwnPageFragment.newInstance()
-
-        fragmentTransaction.replace(R.id.container, ownPageFragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
+    private fun toOwnPageFragment() {
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.container, OwnPageFragment.newInstance())
+//             初期状態のため戻るボタンで戻らない   .addToBackStack(null)
+                .commit()
     }
 }
