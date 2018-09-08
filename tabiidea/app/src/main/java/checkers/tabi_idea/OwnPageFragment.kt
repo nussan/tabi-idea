@@ -18,6 +18,7 @@ class OwnPageFragment : Fragment() {
         //TODO ユーザ情報を取得してユーザ名、画像を表示する
         (activity as AppCompatActivity).supportActionBar?.title = "ユーザ名"
         (activity as AppCompatActivity).supportActionBar?.setLogo(android.R.drawable.sym_def_app_icon)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(false)
         return view
