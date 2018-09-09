@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_friend_list.*
 
 class FriendListFragment : Fragment() {
 
-    val friendManager = checkers.tabi_idea.FriendManager()
+    private val friendManager = checkers.tabi_idea.FriendManager()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

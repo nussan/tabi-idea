@@ -11,12 +11,24 @@ import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.fragment_own_page.*
 
 
+private val USER = User(0, "", mutableListOf())
+
 class OwnPageFragment : Fragment() {
+
+    private var user: User? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            user = it.getParcelable("userKey")
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_own_page, container, false)
         //TODO ユーザ情報を取得してユーザ名、画像を表示する
-        (activity as AppCompatActivity).supportActionBar?.title = "ユーザ名"
+        (activity as AppCompatActivity).supportActionBar?.title = user?.name
         (activity as AppCompatActivity).supportActionBar?.setLogo(android.R.drawable.sym_def_app_icon)
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
@@ -34,7 +46,7 @@ class OwnPageFragment : Fragment() {
                     (activity as AppCompatActivity)
                             .supportFragmentManager
                             .beginTransaction()
-                            .replace(R.id.container, EventListFragment.newInstance())
+                            .replace(R.id.container, EventListFragment.newInstance(user!!.eventList))
                             .addToBackStack(null)
                             .commit()
                 "フレンド" ->
@@ -57,7 +69,11 @@ class OwnPageFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() =
-                OwnPageFragment().apply {}
+        fun newInstance(user: User) =
+                OwnPageFragment().apply {
+                    arguments = Bundle().apply {
+                        putParcelable("userKey", user)
+                    }
+                }
     }
 }

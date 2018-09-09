@@ -9,12 +9,20 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_event_list.*
+import java.util.*
 
 class EventListFragment : Fragment() {
 
-    val eventManager = checkers.tabi_idea.EventManager()
+    private val eventManager = checkers.tabi_idea.EventManager()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            eventManager.eventList = it.getParcelableArrayList<Event>("eventListKey") as MutableList<Event>
+//            eventManager.eventList = it.getParcelable("eventListKey")
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -50,7 +58,10 @@ class EventListFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = EventListFragment().apply {
+        fun newInstance(eventList: MutableList<Event>) = EventListFragment().apply {
+            arguments = Bundle().apply{
+                putParcelableArrayList("eventListKey", ArrayList(eventList))
+            }
         }
     }
 }
