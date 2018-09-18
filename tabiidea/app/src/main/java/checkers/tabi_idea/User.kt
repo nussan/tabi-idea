@@ -1,6 +1,7 @@
 package checkers.tabi_idea
 
 import android.os.Parcelable
+import checkers.tabi_idea.Event
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
