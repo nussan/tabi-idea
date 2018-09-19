@@ -1,4 +1,4 @@
-package checkers.tabi_idea
+package checkers.tabi_idea.custom.view
 
 import android.content.Context
 import android.graphics.drawable.ShapeDrawable

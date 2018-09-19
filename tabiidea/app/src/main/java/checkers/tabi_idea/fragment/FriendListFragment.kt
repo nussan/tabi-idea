@@ -1,4 +1,4 @@
-package checkers.tabi_idea
+package checkers.tabi_idea.fragment
 
 
 import android.os.Bundle
@@ -9,6 +9,9 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import checkers.tabi_idea.data.Friend
+import checkers.tabi_idea.manager.FriendManager
+import checkers.tabi_idea.R
 import kotlinx.android.synthetic.main.fragment_friend_list.*
 
 class FriendListFragment : Fragment() {

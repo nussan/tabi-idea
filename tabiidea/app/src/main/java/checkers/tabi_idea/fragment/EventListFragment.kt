@@ -1,4 +1,4 @@
-package checkers.tabi_idea
+package checkers.tabi_idea.fragment
 
 
 import android.os.Bundle
@@ -10,6 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import checkers.tabi_idea.*
+import checkers.tabi_idea.data.Event
+import checkers.tabi_idea.data.MindMapObject
+import checkers.tabi_idea.manager.EventManager
 import kotlinx.android.synthetic.main.fragment_event_list.*
 import java.util.*
 
@@ -22,7 +26,6 @@ class EventListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             eventManager.eventList = it.getParcelableArrayList<Event>("eventListKey") as MutableList<Event>
-//            eventManager.eventList = it.getParcelable("eventListKey")
         }
     }
 
@@ -34,11 +37,11 @@ class EventListFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
         setHasOptionsMenu(true)
 
-        mindMapObjectList.add(MindMapObject(0, "旅行", 1f/2,1f/2, mutableListOf(1, 2, 3, 4)))
-        mindMapObjectList.add(MindMapObject(1, "行先", 1f/2,1f/4, mutableListOf(0)))
-        mindMapObjectList.add(MindMapObject(2, "予算", 1f/4,1f/2, mutableListOf(0)))
-        mindMapObjectList.add(MindMapObject(3, "食事", 1f/2,3f/4, mutableListOf(0)))
-        mindMapObjectList.add(MindMapObject(4, "宿泊", 3f/4,1f/2, mutableListOf(0)))
+        mindMapObjectList.add(MindMapObject(0, "旅行", 1f / 2, 1f / 2, mutableListOf(1, 2, 3, 4)))
+        mindMapObjectList.add(MindMapObject(1, "行先", 1f / 2, 1f / 4, mutableListOf(0)))
+        mindMapObjectList.add(MindMapObject(2, "予算", 1f / 4, 1f / 2, mutableListOf(0)))
+        mindMapObjectList.add(MindMapObject(3, "食事", 1f / 2, 3f / 4, mutableListOf(0)))
+        mindMapObjectList.add(MindMapObject(4, "宿泊", 3f / 4, 1f / 2, mutableListOf(0)))
 
         return inflater.inflate(R.layout.fragment_event_list, container, false)
     }

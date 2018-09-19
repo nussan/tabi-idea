@@ -1,4 +1,4 @@
-package checkers.tabi_idea
+package checkers.tabi_idea.fragment
 
 
 import android.graphics.drawable.Drawable
@@ -6,6 +6,11 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.*
+import checkers.tabi_idea.custom.view.DrawingLinesCanvasView
+import checkers.tabi_idea.custom.view.EqualWidthHeightTextView
+import checkers.tabi_idea.data.MindMapObject
+import checkers.tabi_idea.R
+import checkers.tabi_idea.activity.MainActivity
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 import java.util.*
 
@@ -18,8 +23,8 @@ class TravelMindMapFragment : Fragment() {
     private var eventTitle = ""
 
     //TODO viewのサイズをとってくる
-    val viewWidth = 1080f
-    val viewHeight = 1536f
+    var layoutWidth = 1080f
+    var layoutHeight = 1536f
 
     fun add(text: String, textSize: Float, backGround: Drawable, gravity: Int, textColor: Int, centerPositionX: Float, centerPositionY: Float) {
         val textView = EqualWidthHeightTextView(context!!)
@@ -38,8 +43,8 @@ class TravelMindMapFragment : Fragment() {
         textView.text = mindMapObject.text
         textView.textSize = 30f
 
-        textView.setPositionXByCenterPositionX(mindMapObject.positionX * viewWidth)
-        textView.setPositionYByCenterPositionY(mindMapObject.positionY * viewHeight)
+        textView.setPositionXByCenterPositionX(mindMapObject.positionX * layoutWidth)
+        textView.setPositionYByCenterPositionY(mindMapObject.positionY * layoutHeight)
         textView.background = Drawable.createFromXml(resources, resources.getXml(R.xml.oval_light_blue_bg))
         textView.gravity = Gravity.CENTER
 //        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(textView, 10, 100, 2, TypedValue.COMPLEX_UNIT_SP)
@@ -63,15 +68,22 @@ class TravelMindMapFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
         setHasOptionsMenu(true)
 
-
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //あまりよくなさそう
+        layoutWidth = (activity as MainActivity).layoutWidth
+        layoutHeight = (activity as MainActivity).layoutHeight
+
+
         drawingLinesCanvasView = DrawingLinesCanvasView(context!!)
+        drawingLinesCanvasView?.layoutWidth = layoutWidth
+        drawingLinesCanvasView?.layoutHeight = layoutHeight
         drawingLinesCanvasView?.mindMapObjectList = mindMapObjectList
+
         mindMapConstraintLayout.addView(drawingLinesCanvasView)
 
         // textViewListに追加
