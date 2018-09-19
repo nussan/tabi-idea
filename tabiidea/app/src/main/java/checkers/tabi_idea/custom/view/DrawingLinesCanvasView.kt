@@ -15,7 +15,6 @@ class DrawingLinesCanvasView : View {
     var mindMapObjectList = mutableListOf<MindMapObject>()
     val paint: Paint = Paint()
 
-    //TODO viewのサイズをとってくる
     var layoutWidth = 0f
     var layoutHeight = 0f
 
