@@ -3,7 +3,6 @@ package checkers.tabi_idea
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.support.v4.graphics.PaintCompat
 import android.util.AttributeSet
 import android.view.View
 
@@ -16,8 +15,8 @@ class DrawingLinesCanvasView : View {
     val paint: Paint = Paint()
 
     //TODO viewのサイズをとってくる
-    val viewWidth = 1080f
-    val viewHeight = 1536f
+    var layoutWidth = 0f
+    var layoutHeight = 0f
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
@@ -33,10 +32,10 @@ class DrawingLinesCanvasView : View {
         mindMapObjectList.forEach {
             it.children.forEach { viewId ->
                 canvas?.drawLine(
-                        it.positionX * viewWidth,
-                        it.positionY * viewHeight,
-                        mindMapObjectList[viewId].positionX * viewWidth,
-                        mindMapObjectList[viewId].positionY * viewHeight,
+                        it.positionX * layoutWidth,
+                        it.positionY * layoutHeight,
+                        mindMapObjectList[viewId].positionX * layoutWidth,
+                        mindMapObjectList[viewId].positionY * layoutHeight,
                         paint
                 )
             }

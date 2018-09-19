@@ -22,7 +22,6 @@ class EventListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             eventManager.eventList = it.getParcelableArrayList<Event>("eventListKey") as MutableList<Event>
-//            eventManager.eventList = it.getParcelable("eventListKey")
         }
     }
 

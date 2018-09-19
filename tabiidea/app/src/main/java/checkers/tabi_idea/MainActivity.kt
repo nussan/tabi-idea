@@ -2,7 +2,6 @@ package checkers.tabi_idea
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -15,8 +14,8 @@ class MainActivity : AppCompatActivity() {
                     Event("USA")
             ))
 
-    var layoutWidth = 0
-    var layoutHeight = 0
+    var layoutWidth = 0f
+    var layoutHeight = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,9 +27,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        layoutWidth = container.width
-        layoutHeight = container.height
-        Toast.makeText(this, "${container?.width}, ${container?.height}", Toast.LENGTH_SHORT).show()
+        layoutWidth = container.width.toFloat()
+        layoutHeight = container.height.toFloat()
+//        Toast.makeText(this, "${container?.width}, ${container?.height}", Toast.LENGTH_SHORT).show()
     }
     private fun toOwnPageFragment() {
         supportFragmentManager
