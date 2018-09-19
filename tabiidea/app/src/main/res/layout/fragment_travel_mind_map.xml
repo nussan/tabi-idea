@@ -5,5 +5,5 @@
     android:id="@+id/mindMapConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TravelMindMapFragment">
+    tools:context=".fragment.TravelMindMapFragment">
 </android.support.constraint.ConstraintLayout>

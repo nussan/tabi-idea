@@ -1,4 +1,6 @@
-package checkers.tabi_idea
+package checkers.tabi_idea.manager
+
+import checkers.tabi_idea.data.Friend
 
 class FriendManager {
     var friendList = mutableListOf<Friend>()

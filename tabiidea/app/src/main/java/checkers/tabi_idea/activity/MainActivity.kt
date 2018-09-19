@@ -1,7 +1,11 @@
-package checkers.tabi_idea
+package checkers.tabi_idea.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import checkers.tabi_idea.data.Event
+import checkers.tabi_idea.fragment.OwnPageFragment
+import checkers.tabi_idea.R
+import checkers.tabi_idea.data.User
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

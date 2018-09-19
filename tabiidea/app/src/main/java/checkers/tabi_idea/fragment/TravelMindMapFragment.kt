@@ -1,13 +1,16 @@
-package checkers.tabi_idea
+package checkers.tabi_idea.fragment
 
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.support.constraint.Constraints
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.*
-import android.widget.Toast
+import checkers.tabi_idea.custom.view.DrawingLinesCanvasView
+import checkers.tabi_idea.custom.view.EqualWidthHeightTextView
+import checkers.tabi_idea.data.MindMapObject
+import checkers.tabi_idea.R
+import checkers.tabi_idea.activity.MainActivity
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 import java.util.*
 

@@ -1,10 +1,11 @@
-package checkers.tabi_idea
+package checkers.tabi_idea.custom.view
 
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import checkers.tabi_idea.data.MindMapObject
 
 class DrawingLinesCanvasView : View {
     constructor(context: Context) : super(context, null)
