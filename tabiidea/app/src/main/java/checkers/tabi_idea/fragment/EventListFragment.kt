@@ -70,10 +70,8 @@ class EventListFragment : Fragment() {
 
         }
 
-
-
         fab.setOnClickListener {
-            eventManager.add(Event("新しいイベント"))
+            eventManager.add(Event(0,"新しいイベント"))
             (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
         }
 

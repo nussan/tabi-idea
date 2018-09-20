@@ -2,31 +2,37 @@ package checkers.tabi_idea.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.fragment.OwnPageFragment
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.User
+import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-    val user: User = User(
+    val repository = Repository()
+
+    var user: User = User(
             0,
             "たきかわ",
             mutableListOf(
-                    Event("研究室旅行"),
-                    Event("学会"),
-                    Event("USA")
+                    Event(0, "研究室旅行"),
+                    Event(1, "学会"),
+                    Event(2, "USA")
             ))
 
     var layoutWidth = 0f
     var layoutHeight = 0f
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         setSupportActionBar(toolbar)
         if (savedInstanceState == null)
-            toOwnPageFragment()
+            setUserInf()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -42,6 +48,11 @@ class MainActivity : AppCompatActivity() {
 //             初期状態のため戻るボタンで戻らない   .addToBackStack(null)
                 .commit()
     }
-
-
+    fun setUserInf(){
+        repository.getUser { it ->
+            user = it
+            toOwnPageFragment()
+            Log.d("tubasa", "${user}")
+        }
+    }
 }
