@@ -45,7 +45,7 @@ class Repository{
                         0,
                         "新しいユーザー",
                         mutableListOf(
-                                Event(0, "新しいイベント")
+                                Event(0, "新しいイベント", mutableListOf(1), mutableListOf())
                         ))
                 callback(it)
             }

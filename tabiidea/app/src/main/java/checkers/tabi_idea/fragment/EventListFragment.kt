@@ -71,7 +71,7 @@ class EventListFragment : Fragment() {
         }
 
         fab.setOnClickListener {
-            eventManager.add(Event(0,"新しいイベント"))
+            eventManager.add(Event(0,"新しいイベント", mutableListOf(0), mindMapObjectList))
             (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
         }
 

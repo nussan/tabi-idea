@@ -9,5 +9,13 @@ data class Event(
         @Json(name = "id")
         var id :Int,
         @Json(name = "title")
-        var title: String
-): Parcelable
+        var title: String,
+        @Json(name = "member")
+        var member: MutableList<Int>,
+        @Json(name = "mmo")
+        var mmo: MutableList<MindMapObject>
+): Parcelable {
+        override fun toString(): String {
+                return title
+        }
+}
