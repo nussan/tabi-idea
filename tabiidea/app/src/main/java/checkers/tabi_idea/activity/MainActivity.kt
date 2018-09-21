@@ -6,6 +6,7 @@ import android.util.Log
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.fragment.OwnPageFragment
 import checkers.tabi_idea.R
+import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.activity_main.*
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
 //        Toast.makeText(this, "${container?.width}, ${container?.height}", Toast.LENGTH_SHORT).show()
     }
     private fun toOwnPageFragment(user:User) {
+
         supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.container, OwnPageFragment.newInstance(user))

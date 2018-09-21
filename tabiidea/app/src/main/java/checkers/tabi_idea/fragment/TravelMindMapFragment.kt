@@ -6,25 +6,23 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.*
-import checkers.tabi_idea.custom.view.DrawingLinesCanvasView
-import checkers.tabi_idea.custom.view.EqualWidthHeightTextView
-import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.R
 import checkers.tabi_idea.activity.MainActivity
+import checkers.tabi_idea.custom.view.DrawingLinesCanvasView
+import checkers.tabi_idea.custom.view.EqualWidthHeightTextView
+import checkers.tabi_idea.data.Event
+import checkers.tabi_idea.data.MindMapObject
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
-import java.util.*
 
 
 class TravelMindMapFragment : Fragment() {
 
     private var textViewList = mutableListOf<EqualWidthHeightTextView>()
-    private var mindMapObjectList = mutableListOf<MindMapObject>()
     private var drawingLinesCanvasView: DrawingLinesCanvasView? = null
-    private var eventTitle = ""
+    private var event: Event? = null
 
-    //TODO viewのサイズをとってくる
-    var layoutWidth = 1080f
-    var layoutHeight = 1536f
+    var layoutWidth = 0f
+    var layoutHeight = 0f
 
     fun add(text: String, textSize: Float, backGround: Drawable, gravity: Int, textColor: Int, centerPositionX: Float, centerPositionY: Float) {
         val textView = EqualWidthHeightTextView(context!!)
@@ -54,15 +52,14 @@ class TravelMindMapFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            eventTitle = it.getString("eventTitleKey")
-            mindMapObjectList = it.getParcelableArrayList<MindMapObject>("mindMapObjectKey") as MutableList<MindMapObject>
+            event = it.getParcelable("eventKey")
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_travel_mind_map, container, false)
-        (activity as AppCompatActivity).supportActionBar?.title = eventTitle
+        (activity as AppCompatActivity).supportActionBar?.title = event?.title
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
@@ -78,19 +75,20 @@ class TravelMindMapFragment : Fragment() {
         layoutWidth = (activity as MainActivity).layoutWidth
         layoutHeight = (activity as MainActivity).layoutHeight
 
-
         drawingLinesCanvasView = DrawingLinesCanvasView(context!!)
         drawingLinesCanvasView?.layoutWidth = layoutWidth
         drawingLinesCanvasView?.layoutHeight = layoutHeight
-        drawingLinesCanvasView?.mindMapObjectList = mindMapObjectList
-
-        mindMapConstraintLayout.addView(drawingLinesCanvasView)
-
-        // textViewListに追加
-        mindMapObjectList.forEach {
-            add(it)
+        if (event != null) {
+            drawingLinesCanvasView?.mindMapObjectList = event!!.mindMapObjectList
+            // textViewListに追加
+            event!!.mindMapObjectList.forEach {
+                add(it)
+            }
         }
 
+        mindMapConstraintLayout.centerX = layoutWidth / 2
+        mindMapConstraintLayout.centerY = layoutHeight / 2
+        mindMapConstraintLayout.addView(drawingLinesCanvasView)
         textViewList.forEach {
             mindMapConstraintLayout.addView(it)
         }
@@ -111,10 +109,9 @@ class TravelMindMapFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(eventTitle: String, mindMapObject: MutableList<MindMapObject>) = TravelMindMapFragment().apply {
+        fun newInstance(event: Event) = TravelMindMapFragment().apply {
             arguments = Bundle().apply {
-                putString("eventTitleKey", eventTitle)
-                putParcelableArrayList("mindMapObjectKey", ArrayList(mindMapObject))
+                putParcelable("eventKey", event)
             }
         }
     }

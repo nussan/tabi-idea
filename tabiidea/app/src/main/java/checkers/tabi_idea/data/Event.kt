@@ -13,7 +13,7 @@ data class Event(
         @Json(name = "member")
         var member: MutableList<Int>,
         @Json(name = "mmo")
-        var mmo: MutableList<MindMapObject>
+        var mindMapObjectList: MutableList<MindMapObject>
 ): Parcelable {
         override fun toString(): String {
                 return title

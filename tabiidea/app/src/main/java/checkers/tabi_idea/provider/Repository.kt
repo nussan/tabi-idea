@@ -2,6 +2,7 @@ package checkers.tabi_idea.provider
 
 import android.util.Log
 import checkers.tabi_idea.data.Event
+import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
@@ -41,13 +42,25 @@ class Repository{
             }
             override fun onFailure(call: Call<User>?, t: Throwable?) {
                 Log.d("tubasa","cannot connect")
-                var it: User = User(
+                val user: User = User(
                         0,
-                        "新しいユーザー",
+                        "たきかわ",
                         mutableListOf(
-                                Event(0, "新しいイベント", mutableListOf(1), mutableListOf())
+                                Event(0,"研究室旅行", mutableListOf(), mutableListOf(
+                                        MindMapObject(0, "旅行", 1f / 2, 1f / 2, mutableListOf(1, 2, 3, 4)),
+                                        MindMapObject(1, "行先", 1f / 2, 1f / 4, mutableListOf(5, 6, 7, 8)),
+                                        MindMapObject(2, "予算", 1f / 4, 1f / 2, mutableListOf()),
+                                        MindMapObject(3, "食事", 1f / 2, 3f / 4, mutableListOf()),
+                                        MindMapObject(4, "宿泊", 3f / 4, 1f / 2, mutableListOf()),
+                                        MindMapObject(5, "熊本", 1f / 3, 1f / 15, mutableListOf()),
+                                        MindMapObject(6, "山口", 3f / 4, 1f / 5, mutableListOf()),
+                                        MindMapObject(7, "井澤", 1f / 4, 1f / 5, mutableListOf()),
+                                        MindMapObject(8, "瀧川", 5f / 8, 1f / 13f, mutableListOf())
+                                )),
+                                Event(1,"学会", mutableListOf(), mutableListOf()),
+                                Event(2,"USA", mutableListOf(), mutableListOf())
                         ))
-                callback(it)
+                callback(user)
             }
         })
     }
