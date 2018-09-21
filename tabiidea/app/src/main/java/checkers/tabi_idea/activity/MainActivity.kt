@@ -2,42 +2,29 @@ package checkers.tabi_idea.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.fragment.OwnPageFragment
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
+import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-    val user: User = User(
-            0,
-            "たきかわ",
-            mutableListOf(
-                    Event("研究室旅行", mutableListOf(
-                            MindMapObject(0, "旅行", 1f / 2, 1f / 2, mutableListOf(1, 2, 3, 4)),
-                            MindMapObject(1, "行先", 1f / 2, 1f / 4, mutableListOf(5, 6, 7, 8)),
-                            MindMapObject(2, "予算", 1f / 4, 1f / 2, mutableListOf()),
-                            MindMapObject(3, "食事", 1f / 2, 3f / 4, mutableListOf()),
-                            MindMapObject(4, "宿泊", 3f / 4, 1f / 2, mutableListOf()),
-                            MindMapObject(5, "熊本", 1f / 3, 1f / 15, mutableListOf()),
-                            MindMapObject(6, "山口", 3f / 4, 1f / 5, mutableListOf()),
-                            MindMapObject(7, "井澤", 1f / 4, 1f / 5, mutableListOf()),
-                            MindMapObject(8, "瀧川", 5f / 8, 1f / 13f, mutableListOf())
-                    )),
-                    Event("学会", mutableListOf()),
-                    Event("USA", mutableListOf())
-            ))
+    val repository = Repository()
 
     var layoutWidth = 0f
     var layoutHeight = 0f
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         setSupportActionBar(toolbar)
         if (savedInstanceState == null)
-            toOwnPageFragment()
+            setUserInf()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -46,14 +33,17 @@ class MainActivity : AppCompatActivity() {
         layoutHeight = container.height.toFloat()
 //        Toast.makeText(this, "${container?.width}, ${container?.height}", Toast.LENGTH_SHORT).show()
     }
+    private fun toOwnPageFragment(user:User) {
 
-    private fun toOwnPageFragment() {
         supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.container, OwnPageFragment.newInstance(user))
 //             初期状態のため戻るボタンで戻らない   .addToBackStack(null)
                 .commit()
     }
-
-
+    fun setUserInf(){
+        repository.getUser { it ->
+            toOwnPageFragment(it)
+        }
+    }
 }
