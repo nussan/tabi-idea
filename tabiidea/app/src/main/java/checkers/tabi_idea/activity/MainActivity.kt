@@ -13,15 +13,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     val repository = Repository()
 
-    var user: User = User(
-            0,
-            "たきかわ",
-            mutableListOf(
-                    Event(0, "研究室旅行"),
-                    Event(1, "学会"),
-                    Event(2, "USA")
-            ))
-
     var layoutWidth = 0f
     var layoutHeight = 0f
 
@@ -41,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         layoutHeight = container.height.toFloat()
 //        Toast.makeText(this, "${container?.width}, ${container?.height}", Toast.LENGTH_SHORT).show()
     }
-    private fun toOwnPageFragment() {
+    private fun toOwnPageFragment(user:User) {
         supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.container, OwnPageFragment.newInstance(user))
@@ -50,9 +41,7 @@ class MainActivity : AppCompatActivity() {
     }
     fun setUserInf(){
         repository.getUser { it ->
-            user = it
-            toOwnPageFragment()
-            Log.d("tubasa", "${user}")
+            toOwnPageFragment(it)
         }
     }
 }

@@ -1,6 +1,7 @@
 package checkers.tabi_idea.provider
 
 import android.util.Log
+import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.User
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
@@ -22,7 +23,6 @@ class Repository{
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .client(okHttpClient)
                 .build()
-        Log.d("tubasa", "${retrofit.baseUrl()}")
         service = retrofit.create(Service::class.java)
     }
 
@@ -41,6 +41,13 @@ class Repository{
             }
             override fun onFailure(call: Call<User>?, t: Throwable?) {
                 Log.d("tubasa","cannot connect")
+                var it: User = User(
+                        0,
+                        "新しいユーザー",
+                        mutableListOf(
+                                Event(0, "新しいイベント")
+                        ))
+                callback(it)
             }
         })
     }
