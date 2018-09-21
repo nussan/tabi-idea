@@ -75,7 +75,6 @@ class TravelMindMapFragment : Fragment() {
         layoutWidth = (activity as MainActivity).layoutWidth
         layoutHeight = (activity as MainActivity).layoutHeight
 
-
         drawingLinesCanvasView = DrawingLinesCanvasView(context!!)
         drawingLinesCanvasView?.layoutWidth = layoutWidth
         drawingLinesCanvasView?.layoutHeight = layoutHeight
@@ -86,10 +85,10 @@ class TravelMindMapFragment : Fragment() {
                 add(it)
             }
         }
+
+        mindMapConstraintLayout.centerX = layoutWidth / 2
+        mindMapConstraintLayout.centerY = layoutHeight / 2
         mindMapConstraintLayout.addView(drawingLinesCanvasView)
-
-
-
         textViewList.forEach {
             mindMapConstraintLayout.addView(it)
         }
