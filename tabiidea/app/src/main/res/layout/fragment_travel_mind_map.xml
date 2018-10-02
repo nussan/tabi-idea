@@ -7,5 +7,6 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
+    android:clipToPadding="false"
     tools:context=".fragment.TravelMindMapFragment">
 </checkers.tabi_idea.custom.view.ZoomableLayout>

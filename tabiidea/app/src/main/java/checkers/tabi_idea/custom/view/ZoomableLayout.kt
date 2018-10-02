@@ -26,15 +26,12 @@ class ZoomableLayout : ConstraintLayout, ScaleGestureDetector.OnScaleGestureList
         ZOOM
     }
 
-    constructor(context: Context) : super(context) {
-        init(context)
-    }
+    constructor(context: Context): this(context, null)
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context)
-    }
 
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+
+    constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle) {
         init(context)
     }
 

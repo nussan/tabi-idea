@@ -1,15 +1,18 @@
 package checkers.tabi_idea.fragment
 
 
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.widget.TextViewCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.TypedValue
 import android.view.*
 import checkers.tabi_idea.R
 import checkers.tabi_idea.activity.MainActivity
+import checkers.tabi_idea.custom.view.CircularTextView
 import checkers.tabi_idea.custom.view.DrawingLinesCanvasView
-import checkers.tabi_idea.custom.view.EqualWidthHeightTextView
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
@@ -17,35 +20,25 @@ import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 
 class TravelMindMapFragment : Fragment() {
 
-    private var textViewList = mutableListOf<EqualWidthHeightTextView>()
+    private var textViewList = mutableListOf<CircularTextView>()
     private var drawingLinesCanvasView: DrawingLinesCanvasView? = null
     private var event: Event? = null
+    private var mindMapObjectList = mutableListOf<MindMapObject>()
 
     var layoutWidth = 0f
     var layoutHeight = 0f
 
-    fun add(text: String, textSize: Float, backGround: Drawable, gravity: Int, textColor: Int, centerPositionX: Float, centerPositionY: Float) {
-        val textView = EqualWidthHeightTextView(context!!)
-        textView.text = text
-        textView.textSize = textSize
-        textView.background = backGround
-        textView.gravity = gravity
-        textView.setTextColor(textColor)
-        textView.setPositionXByCenterPositionX(centerPositionX)
-        textView.setPositionYByCenterPositionY(centerPositionY)
-        textViewList.add(textView)
-    }
-
     fun add(mindMapObject: MindMapObject) {
-        val textView = EqualWidthHeightTextView(context!!)
+        val textView = CircularTextView(context!!)
         textView.text = mindMapObject.text
-        textView.textSize = 30f
-
+        textView.setTextColor(Color.WHITE)
+        textView.strokeWidth = 3f
+        textView.strokeColor = Color.parseColor("#ffffff")
+        textView.solidColor = Color.parseColor("#00CED1")
         textView.setPositionXByCenterPositionX(mindMapObject.positionX * layoutWidth)
         textView.setPositionYByCenterPositionY(mindMapObject.positionY * layoutHeight)
-        textView.background = Drawable.createFromXml(resources, resources.getXml(R.xml.oval_light_blue_bg))
         textView.gravity = Gravity.CENTER
-//        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(textView, 10, 100, 2, TypedValue.COMPLEX_UNIT_SP)
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(textView, 10, 30, 2, TypedValue.COMPLEX_UNIT_SP)
         textViewList.add(mindMapObject.viewIndex, textView)
     }
 

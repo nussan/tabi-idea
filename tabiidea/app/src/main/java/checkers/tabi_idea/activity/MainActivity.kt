@@ -1,13 +1,11 @@
 package checkers.tabi_idea.activity
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
-import checkers.tabi_idea.data.Event
-import checkers.tabi_idea.fragment.OwnPageFragment
 import checkers.tabi_idea.R
-import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
+import checkers.tabi_idea.fragment.OwnPageFragment
 import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -40,6 +38,11 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.container, OwnPageFragment.newInstance(user))
 //             初期状態のため戻るボタンで戻らない   .addToBackStack(null)
                 .commit()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
+
     }
     fun setUserInf(){
         repository.getUser { it ->
