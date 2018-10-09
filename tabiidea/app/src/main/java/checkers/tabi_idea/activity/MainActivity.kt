@@ -16,6 +16,8 @@ class MainActivity : AppCompatActivity() {
     var layoutWidth = 0f
     var layoutHeight = 0f
 
+//    val user:User = repository.getUserExecute()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,9 +48,8 @@ class MainActivity : AppCompatActivity() {
 //             初期状態のため戻るボタンで戻らない   .addToBackStack(null)
                 .commit()
     }
-
     fun setUserInf() {
-        repository.getUser { it ->
+        repository.getUserCallback { it ->
             toOwnPageFragment(it)
         }
     }

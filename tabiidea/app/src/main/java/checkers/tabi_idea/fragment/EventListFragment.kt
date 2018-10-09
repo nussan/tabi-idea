@@ -14,6 +14,7 @@ import checkers.tabi_idea.*
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.manager.EventManager
+import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.fragment_event_list.*
 import java.util.*
 
@@ -53,16 +54,19 @@ class EventListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val repository = Repository()
         eventListView.adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_1, eventManager.eventList)
-        eventListView.setOnItemClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
-            (activity as AppCompatActivity)
-                    .supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()]))
-                    .addToBackStack(null)
-                    .commit()
 
+        eventListView.setOnItemClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
+            repository.getMmoCallback { it ->
+                eventManager.eventList[id.toInt()].mindMapObjectList = it as MutableList<MindMapObject>
+                (activity as AppCompatActivity)
+                        .supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()]))
+                        .addToBackStack(null)
+                        .commit()
+            }
         }
 
         fab.setOnClickListener {
