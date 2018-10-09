@@ -56,7 +56,7 @@ class Repository{
                         "たきかわ",
                         mutableListOf(
                                 Event(0,"研究室旅行", mutableListOf(), mutableListOf(
-                                        MindMapObject(0, "旅行", 1f / 2, 1f / 2, mutableListOf(1, 2, 3, 4)),
+                                        MindMapObject(0, "旅行旅行旅行旅行旅行旅行", 1f / 2, 1f / 2, mutableListOf(1, 2, 3, 4)),
                                         MindMapObject(1, "行先", 1f / 2, 1f / 4, mutableListOf(5, 6, 7, 8)),
                                         MindMapObject(2, "予算", 1f / 4, 1f / 2, mutableListOf()),
                                         MindMapObject(3, "食事", 1f / 2, 3f / 4, mutableListOf()),
