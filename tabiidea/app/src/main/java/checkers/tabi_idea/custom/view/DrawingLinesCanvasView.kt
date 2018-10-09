@@ -2,9 +2,11 @@ package checkers.tabi_idea.custom.view
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import checkers.tabi_idea.data.MindMapObject
 
 class DrawingLinesCanvasView : View {
@@ -26,9 +28,6 @@ class DrawingLinesCanvasView : View {
     }
 
     private fun drawLines(canvas: Canvas?) {
-        paint.setARGB(255, 0, 0, 0)
-        paint.strokeWidth = 5f
-
         mindMapObjectList.forEach {
             it.children.forEach { viewId ->
                 canvas?.drawLine(

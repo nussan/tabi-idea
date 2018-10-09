@@ -1,6 +1,7 @@
 package checkers.tabi_idea.custom.view
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Matrix
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
@@ -27,7 +28,6 @@ class ZoomableLayout : ConstraintLayout, ScaleGestureDetector.OnScaleGestureList
     }
 
     constructor(context: Context): this(context, null)
-
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 

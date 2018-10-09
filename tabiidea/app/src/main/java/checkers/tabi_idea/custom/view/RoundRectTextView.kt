@@ -1,28 +1,28 @@
 package checkers.tabi_idea.custom.view
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
+import android.graphics.*
 import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
+import android.view.View
+import android.view.ViewOutlineProvider
 import android.view.ViewTreeObserver
 
 
-class CircularTextView : AppCompatTextView {
-    var strokeWidth: Float = 0f
-        set(dp) {
-            val scale = context.resources.displayMetrics.density
-            dp * scale
-        }
-    var strokeColor: Int = 0
-    internal var solidColor: Int = 0
-
+class RoundRectTextView : AppCompatTextView {
     constructor(context: Context) : this(context, null)
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        elevation = 5f
+        setBackgroundColor(Color.parseColor("#00CED1"))
+        elevation = 30f
+        outlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(view: View, outline: Outline) {
+                outline.setRoundRect(0, 0, width, height, 30f )
+            }
+        }
+        clipToOutline = true
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -31,30 +31,18 @@ class CircularTextView : AppCompatTextView {
         val h = Math.max(this.measuredHeight, 150)
         val w = Math.max(this.measuredWidth, 150)
         val r = Math.min(Math.max(w, h), 300)
-        setPadding(20,20,20,20)
         setMeasuredDimension(r, r)
     }
 
-    override fun draw(canvas: Canvas) {
-
-        val circlePaint = Paint()
-        circlePaint.color = solidColor
-        circlePaint.flags = Paint.ANTI_ALIAS_FLAG
-
-        val strokePaint = Paint()
-        strokePaint.color = strokeColor
-        strokePaint.flags = Paint.ANTI_ALIAS_FLAG
-
-        val h = this.height
-        val w = this.width
-
-        val diameter = if (h > w) h else w
-        val radius = diameter / 2
-
-        canvas.drawCircle((diameter / 2).toFloat(), (diameter / 2).toFloat(), radius.toFloat(), strokePaint)
-
-        canvas.drawCircle((diameter / 2).toFloat(), (diameter / 2).toFloat(), radius.toFloat() - strokeWidth, circlePaint)
-
+    override fun draw(canvas: Canvas?) {
+        val paint = Paint()
+        paint.color = Color.parseColor("#FF00CED1")
+        paint.flags = Paint.ANTI_ALIAS_FLAG
+        canvas?.drawRoundRect(
+                RectF(x, y, width.toFloat(), height.toFloat()),
+                30f,
+                30f,
+                paint)
         super.draw(canvas)
     }
 

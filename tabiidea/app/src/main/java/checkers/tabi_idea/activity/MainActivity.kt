@@ -1,13 +1,14 @@
 package checkers.tabi_idea.activity
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.fragment.OwnPageFragment
 import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity() {
     val repository = Repository()
@@ -21,18 +22,24 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(toolbar)
-        if (savedInstanceState == null)
+        if( savedInstanceState == null)
             setUserInf()
     }
 
+
     override fun onWindowFocusChanged(hasFocus: Boolean) {
+        Log.d(this.javaClass.simpleName, "onWindowFocusChanged")
         super.onWindowFocusChanged(hasFocus)
         layoutWidth = container.width.toFloat()
         layoutHeight = container.height.toFloat()
-//        Toast.makeText(this, "${container?.width}, ${container?.height}", Toast.LENGTH_SHORT).show()
-    }
-    private fun toOwnPageFragment(user:User) {
 
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.container)
+        if ( currentFragment is IOnFocusListenable) {
+            currentFragment.onWindowFocusChanged(hasFocus)
+        }
+    }
+
+    private fun toOwnPageFragment(user: User) {
         supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.container, OwnPageFragment.newInstance(user))
@@ -40,13 +47,13 @@ class MainActivity : AppCompatActivity() {
                 .commit()
     }
 
-    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
-        super.onSaveInstanceState(outState, outPersistentState)
-
-    }
-    fun setUserInf(){
+    fun setUserInf() {
         repository.getUser { it ->
             toOwnPageFragment(it)
         }
+    }
+
+    interface IOnFocusListenable {
+        fun onWindowFocusChanged(hasFocus: Boolean)
     }
 }
