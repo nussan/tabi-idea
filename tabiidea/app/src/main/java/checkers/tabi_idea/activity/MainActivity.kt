@@ -17,6 +17,8 @@ class MainActivity : AppCompatActivity() {
     var layoutWidth = 0f
     var layoutHeight = 0f
 
+//    val user:User = repository.getUserExecute()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +26,8 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
         if (savedInstanceState == null)
-            setUserInf()
+            setUser()
+//            toOwnPageFragment(user)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -41,8 +44,8 @@ class MainActivity : AppCompatActivity() {
 //             初期状態のため戻るボタンで戻らない   .addToBackStack(null)
                 .commit()
     }
-    fun setUserInf(){
-        repository.getUser { it ->
+    private fun setUser(){
+        repository.getUserCallback { it ->
             toOwnPageFragment(it)
         }
     }
