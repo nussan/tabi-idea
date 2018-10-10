@@ -12,6 +12,7 @@ import android.util.TypedValue
 import android.view.*
 import checkers.tabi_idea.R
 import checkers.tabi_idea.activity.MainActivity
+import checkers.tabi_idea.custom.view.CustomBottomSheetDialogFragment
 import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.DrawingLinesCanvasView
 import checkers.tabi_idea.data.Event
@@ -98,9 +99,13 @@ class TravelMindMapFragment : Fragment(), MainActivity.IOnFocusListenable {
         }
 
         mindMapConstraintLayout.addView(drawingLinesCanvasView)
-        textViewList.forEach {
-            if (it.parent == null)
-                mindMapConstraintLayout.addView(it)
+        textViewList.forEach { view ->
+            if (view.parent == null)
+                mindMapConstraintLayout.addView(view)
+            view.setOnClickListener {
+                val bottomSheetDialog = CustomBottomSheetDialogFragment.newInstance()
+                bottomSheetDialog.show(activity?.supportFragmentManager, bottomSheetDialog.tag)
+            }
         }
     }
 
@@ -130,7 +135,7 @@ class TravelMindMapFragment : Fragment(), MainActivity.IOnFocusListenable {
         return textView
     }
 
-    fun setTextViewPosition(textView: RoundRectTextView, mindMapObject: MindMapObject) {
+    private fun setTextViewPosition(textView: RoundRectTextView, mindMapObject: MindMapObject) {
         textView.setPositionXByCenterPositionX(mindMapObject.positionX * layoutWidth)
         textView.setPositionYByCenterPositionY(mindMapObject.positionY * layoutHeight)
     }
