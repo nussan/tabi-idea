@@ -11,7 +11,11 @@ import android.view.View
 import android.view.ViewTreeObserver
 
 
-class ZoomableLayout : ConstraintLayout, ScaleGestureDetector.OnScaleGestureListener {
+class ZoomableLayout :
+        ConstraintLayout,
+        ScaleGestureDetector.OnScaleGestureListener {
+
+
     private var mode = Mode.NONE
     private var scale = 1.0f
     private var lastScaleFactor = 0f
@@ -28,7 +32,7 @@ class ZoomableLayout : ConstraintLayout, ScaleGestureDetector.OnScaleGestureList
         ZOOM
     }
 
-    constructor(context: Context): this(context, null)
+    constructor(context: Context) : this(context, null)
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
@@ -99,8 +103,9 @@ class ZoomableLayout : ConstraintLayout, ScaleGestureDetector.OnScaleGestureList
             true
         }
     }
+
     private fun init(context: Context) {
-       updateListener(context)
+        updateListener(context)
     }
 
     override fun performClick(): Boolean {
