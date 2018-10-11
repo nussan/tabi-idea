@@ -1,15 +1,16 @@
 package checkers.tabi_idea.fragment
 
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.Toast
 import checkers.tabi_idea.*
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
@@ -36,8 +37,6 @@ class EventListFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
         setHasOptionsMenu(true)
-
-
 
         return inflater.inflate(R.layout.fragment_event_list, container, false)
     }
@@ -70,9 +69,30 @@ class EventListFragment : Fragment() {
         }
 
         fab.setOnClickListener {
-            eventManager.add(Event(0,"新しいイベント", mutableListOf(), mutableListOf()))
+            // レイアウトを取得
+            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
 
-            (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
+            // ダイアログ内のテキストエリア
+            val inputText : EditText = inflater.findViewById(R.id.inputText)
+            inputText.requestFocus()
+
+            // ダイアログの設定
+            val inputForm = AlertDialog.Builder(context!!).apply {
+                setTitle("新しいイベント")
+                setView(inflater)
+                setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
+                    // OKボタンを押したときの処理
+                    eventManager.add(Event(0,"${inputText.text}", mutableListOf(), mutableListOf()))
+
+                    (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
+                })
+                setNegativeButton("Cancel", null)
+            }.create()
+
+            // ダイアログ表示と同時にキーボードを表示
+            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+            inputForm.show()
         }
 
     }

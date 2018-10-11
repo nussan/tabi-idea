@@ -13,7 +13,7 @@ interface RequestService {
     fun getUser() :Call<User>
 
     //最新のmmoを取得
-    @GET("mindmap")
+    @GET("mockapi")
     fun updateMmo() : Call<List<MindMapObject>>
 
     //Eventへの追加
