@@ -58,7 +58,7 @@ class EventListFragment : Fragment() {
         eventListView.adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_1, eventManager.eventList)
 
         eventListView.setOnItemClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
-            repository.getMmoCallback { it ->
+            repository.updateMmoCallback { it ->
                 eventManager.eventList[id.toInt()].mindMapObjectList = it as MutableList<MindMapObject>
                 (activity as AppCompatActivity)
                         .supportFragmentManager

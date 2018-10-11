@@ -7,6 +7,7 @@ import checkers.tabi_idea.R
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.fragment.OwnPageFragment
 import checkers.tabi_idea.provider.Repository
+import checkers.tabi_idea.provider.UserService
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
                 .commit()
     }
     fun setUserInf() {
-        repository.getUserCallback { it ->
+        repository.getUserCallback{ it ->
             toOwnPageFragment(it)
         }
     }
