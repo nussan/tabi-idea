@@ -1,5 +1,6 @@
 package checkers.tabi_idea.provider
 
+import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
 import com.squareup.moshi.Json
@@ -17,9 +18,7 @@ interface RequestService {
 
     //Eventへの追加
     @POST("event")
-    fun addEvent(){
-        addUserEvent()
-    }
+    fun addEvent() : Call<Event>
 
     //Event新規作成(中間データベースへの追加 )
     @POST("user_event")
