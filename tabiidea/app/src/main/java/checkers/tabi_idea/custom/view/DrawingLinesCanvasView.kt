@@ -10,9 +10,9 @@ import android.view.ViewGroup
 import checkers.tabi_idea.data.MindMapObject
 
 class DrawingLinesCanvasView : View {
-    constructor(context: Context) : super(context, null)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context?) : super(context, null)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     var mindMapObjectList = mutableListOf<MindMapObject>()
     val paint: Paint = Paint()

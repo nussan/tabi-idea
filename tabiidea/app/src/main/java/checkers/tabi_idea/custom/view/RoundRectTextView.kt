@@ -10,11 +10,11 @@ import android.view.ViewTreeObserver
 
 
 class RoundRectTextView : AppCompatTextView {
-    constructor(context: Context) : this(context, null)
+    constructor(context: Context?) : this(context, null)
 
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         setBackgroundColor(Color.parseColor("#00CED1"))
         elevation = 30f
         outlineProvider = object : ViewOutlineProvider() {

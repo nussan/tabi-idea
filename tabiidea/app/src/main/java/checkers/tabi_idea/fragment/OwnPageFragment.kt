@@ -12,9 +12,6 @@ import checkers.tabi_idea.R
 import checkers.tabi_idea.data.User
 import kotlinx.android.synthetic.main.fragment_own_page.*
 
-
-private val USER = User(0, "", mutableListOf())
-
 class OwnPageFragment : Fragment() {
 
     private var user: User? = null

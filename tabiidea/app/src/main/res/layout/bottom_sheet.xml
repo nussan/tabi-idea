@@ -14,6 +14,7 @@
         android:orientation="vertical">
 
         <ImageButton
+            android:id="@+id/addButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@drawable/ic_add_black_24dp" />
@@ -33,6 +34,7 @@
         android:orientation="vertical">
 
         <ImageButton
+            android:id="@+id/deleteButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@drawable/ic_delete_black_24dp" />
@@ -52,6 +54,7 @@
         android:orientation="vertical">
 
         <ImageButton
+            android:id="@+id/editButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@drawable/ic_edit_black_24dp" />
