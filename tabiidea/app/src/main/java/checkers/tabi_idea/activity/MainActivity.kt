@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                 .commit()
     }
     fun setUserInf() {
-        repository.getUserCallback { it ->
+        repository.getUserCallback{ it ->
             toOwnPageFragment(it)
         }
     }

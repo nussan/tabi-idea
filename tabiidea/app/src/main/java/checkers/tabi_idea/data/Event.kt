@@ -12,8 +12,9 @@ data class Event(
         var title: String,
         @Json(name = "member")
         var member: MutableList<Int>,
-        @Json(name = "mmo")
-        var mindMapObjectList: MutableList<MindMapObject>
+//        @Json(name = "mmo")
+        @Transient
+        var mindMapObjectList: MutableList<MindMapObject> = mutableListOf()
 ): Parcelable {
         override fun toString(): String {
                 return title
