@@ -45,7 +45,7 @@ class OwnPageFragment : Fragment() {
                     (activity as AppCompatActivity)
                             .supportFragmentManager
                             .beginTransaction()
-                            .replace(R.id.container, EventListFragment.newInstance(user!!.eventList))
+                            .replace(R.id.container, EventListFragment.newInstance(user!!.id,user!!.eventList))
                             .addToBackStack(null)
                             .commit()
                 "フレンド" ->

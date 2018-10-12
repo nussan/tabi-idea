@@ -30,7 +30,7 @@ class TravelMindMapFragment :
 
 
     private var textViewList = mutableListOf<RoundRectTextView>()
-        private var drawingLinesCanvasView: DrawingLinesCanvasView? = null
+    private var drawingLinesCanvasView: DrawingLinesCanvasView? = null
     private var event: Event? = null
 
     var layoutWidth = 0f

@@ -17,16 +17,16 @@ interface RequestService {
     fun updateMmo() : Call<List<MindMapObject>>
 
     //Eventへの追加
-    @POST("event")
-    fun addEvent() : Call<Event>
+    @POST("home/{id}")
+    fun addEvent(@Path("id") id :Int,@Body title:String) : Call<MutableList<Event>>
 
-    //Event新規作成(中間データベースへの追加 )
-    @POST("user_event")
-    fun addUserEvent() {}
+//    //Event新規作成(中間データベースへの追加 )
+//    @POST("user_event")
+//    fun addUserEvent() {}
 
     //MindMapObjectを追加
-    @POST("mindmap")
-    fun addMmo(){}
+    @POST("mindmap/{id}")
+    fun addMmo(@Path("id") id:Int, mmoJson:String):Call<MindMapObject>
 
     //viewIndexのMindMapObject削除
     @DELETE("event/{id}")

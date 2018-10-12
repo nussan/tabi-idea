@@ -14,18 +14,25 @@ import android.widget.Toast
 import checkers.tabi_idea.*
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
+import checkers.tabi_idea.data.User
+import checkers.tabi_idea.extention.ViewExtention
 import checkers.tabi_idea.manager.EventManager
 import checkers.tabi_idea.provider.Repository
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.fragment_event_list.*
 import java.util.*
 
 class EventListFragment : Fragment() {
-
+    private val repository = Repository()
     private val eventManager = EventManager()
+
+    private var userId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
+            userId = it.getInt("userId")
             eventManager.eventList = it.getParcelableArrayList<Event>("eventListKey") as MutableList<Event>
         }
     }
@@ -58,17 +65,18 @@ class EventListFragment : Fragment() {
 
         eventListView.setOnItemClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
             repository.updateMmoCallback { it ->
-                eventManager.eventList[id.toInt()].mindMapObjectList = it as MutableList<MindMapObject>
                 activity
                         ?.supportFragmentManager
                         ?.beginTransaction()
                         ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()]))
                         ?.addToBackStack(null)
                         ?.commit()
+                eventManager.eventList[id.toInt()].mindMapObjectList = it as MutableList<MindMapObject>
             }
         }
 
         fab.setOnClickListener {
+            it.isEnabled = false
             // レイアウトを取得
             val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
 
@@ -82,8 +90,11 @@ class EventListFragment : Fragment() {
                 setView(inflater)
                 setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
                     // OKボタンを押したときの処理
-                    eventManager.add(Event(0,"${inputText.text}", mutableListOf(), mutableListOf()))
-
+                    val inputText:String = inputText.text.toString()
+                    eventManager.add(Event(0,inputText, mutableListOf(), mutableListOf()))
+                    repository.addEventCallback(userId,inputText){
+                    eventManager.eventList = it
+                    }
                     (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
                 })
                 setNegativeButton("Cancel", null)
@@ -91,16 +102,18 @@ class EventListFragment : Fragment() {
 
             // ダイアログ表示と同時にキーボードを表示
             inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
             inputForm.show()
+
+            it.isEnabled = true
         }
 
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(eventList: MutableList<Event>) = EventListFragment().apply {
+        fun newInstance(user_id:Int,eventList: MutableList<Event>) = EventListFragment().apply {
             arguments = Bundle().apply {
+                putInt("userId",user_id)
                 putParcelableArrayList("eventListKey", ArrayList(eventList))
             }
         }

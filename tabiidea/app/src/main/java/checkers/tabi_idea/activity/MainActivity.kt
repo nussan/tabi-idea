@@ -3,6 +3,7 @@ package checkers.tabi_idea.activity
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.View
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.fragment.OwnPageFragment
@@ -12,7 +13,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     val repository = Repository()
-
     var layoutWidth = 0f
     var layoutHeight = 0f
 
@@ -57,4 +57,5 @@ class MainActivity : AppCompatActivity() {
     interface IOnFocusListenable {
         fun onWindowFocusChanged(hasFocus: Boolean)
     }
+
 }
