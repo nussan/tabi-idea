@@ -1,22 +1,27 @@
 package checkers.tabi_idea.custom.view
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Matrix
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
+import android.view.View
+import android.view.ViewTreeObserver
 
 
-class ZoomableLayout : ConstraintLayout, ScaleGestureDetector.OnScaleGestureListener {
+class ZoomableLayout :
+        ConstraintLayout,
+        ScaleGestureDetector.OnScaleGestureListener {
+
+
     private var mode = Mode.NONE
     private var scale = 1.0f
     private var lastScaleFactor = 0f
 
     // 各テキストビューの座標情報
-    private var coordinates: Array<Coordinates?> = arrayOf()
+    private var coordinates: MutableList<Coordinates> = mutableListOf()
 
     var centerX = 0f
     var centerY = 0f
@@ -27,7 +32,7 @@ class ZoomableLayout : ConstraintLayout, ScaleGestureDetector.OnScaleGestureList
         ZOOM
     }
 
-    constructor(context: Context): this(context, null)
+    constructor(context: Context) : this(context, null)
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
@@ -35,25 +40,29 @@ class ZoomableLayout : ConstraintLayout, ScaleGestureDetector.OnScaleGestureList
         init(context)
     }
 
-    private fun init(context: Context) {
+    override fun addView(child: View?) {
+        super.addView(child)
+
+        child?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                coordinates.add(Coordinates(child.x, child.y))
+                viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
+        updateListener(context)
+    }
+
+    private fun updateListener(context: Context) {
         val scaleDetector = ScaleGestureDetector(context, this)
 
         this.setOnTouchListener { _, motionEvent ->
-            if (coordinates.isEmpty()) {
-                coordinates = arrayOfNulls(childCount)
-                for (i in 0 until childCount) {
-                    coordinates[i] = Coordinates(getChildAt(i).x, getChildAt(i).y)
-                }
-            }
-
-
             when (motionEvent.action and MotionEvent.ACTION_MASK) {
                 MotionEvent.ACTION_DOWN -> {
                     mode = Mode.DRAG
 
                     for (i in 0 until childCount) {
-                        coordinates[i]?.startX = motionEvent.x / scale - coordinates[i]!!.prevDx
-                        coordinates[i]?.startY = motionEvent.y / scale - coordinates[i]!!.prevDy
+                        coordinates[i].startX = motionEvent.x / scale - coordinates[i].prevDx
+                        coordinates[i].startY = motionEvent.y / scale - coordinates[i].prevDy
                     }
                 }
 
@@ -61,8 +70,8 @@ class ZoomableLayout : ConstraintLayout, ScaleGestureDetector.OnScaleGestureList
                     if (mode == Mode.DRAG) {
                         Log.e("MOVE", "Drag")
                         for (i in 0 until childCount) {
-                            coordinates[i]!!.dx = motionEvent.x / scale - coordinates[i]?.startX!!
-                            coordinates[i]!!.dy = motionEvent.y / scale - coordinates[i]?.startY!!
+                            coordinates[i].dx = motionEvent.x / scale - coordinates[i].startX
+                            coordinates[i].dy = motionEvent.y / scale - coordinates[i].startY
                         }
                     }
                 MotionEvent.ACTION_POINTER_DOWN -> mode = Mode.ZOOM
@@ -78,8 +87,8 @@ class ZoomableLayout : ConstraintLayout, ScaleGestureDetector.OnScaleGestureList
                     mode = Mode.NONE
 
                     for (i in 0 until childCount) {
-                        coordinates[i]!!.prevDx = coordinates[i]!!.dx
-                        coordinates[i]!!.prevDy = coordinates[i]!!.dy
+                        coordinates[i].prevDx = coordinates[i].dx
+                        coordinates[i].prevDy = coordinates[i].dy
                     }
                 }
             }
@@ -93,6 +102,10 @@ class ZoomableLayout : ConstraintLayout, ScaleGestureDetector.OnScaleGestureList
 
             true
         }
+    }
+
+    private fun init(context: Context) {
+        updateListener(context)
     }
 
     override fun performClick(): Boolean {
@@ -127,8 +140,8 @@ class ZoomableLayout : ConstraintLayout, ScaleGestureDetector.OnScaleGestureList
             getChildAt(i).pivotY = centerY - getChildAt(i).y
             getChildAt(i).scaleX = scale
             getChildAt(i).scaleY = scale
-            getChildAt(i).translationX = coordinates[i]?.dx!!
-            getChildAt(i).translationY = coordinates[i]?.dy!!
+            getChildAt(i).translationX = coordinates[i].dx
+            getChildAt(i).translationY = coordinates[i].dy
         }
     }
 

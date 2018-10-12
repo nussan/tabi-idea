@@ -59,12 +59,12 @@ class EventListFragment : Fragment() {
         eventListView.setOnItemClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
             repository.updateMmoCallback { it ->
                 eventManager.eventList[id.toInt()].mindMapObjectList = it as MutableList<MindMapObject>
-                (activity as AppCompatActivity)
-                        .supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()]))
-                        .addToBackStack(null)
-                        .commit()
+                activity
+                        ?.supportFragmentManager
+                        ?.beginTransaction()
+                        ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()]))
+                        ?.addToBackStack(null)
+                        ?.commit()
             }
         }
 

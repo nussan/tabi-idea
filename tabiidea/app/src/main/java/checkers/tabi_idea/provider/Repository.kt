@@ -79,7 +79,7 @@ class Repository{
                 }
             }
             override fun onFailure(call: Call<List<MindMapObject>>?, t: Throwable?) {
-                Log.d("tubasa2","cannot connect")
+                Log.d("tubasa2",t.toString())
                 val mindmapobject: List<MindMapObject> = mutableListOf(
                         MindMapObject(0, "旅行", 1f / 2, 1f / 2, mutableListOf(1, 2, 3, 4)),
                         MindMapObject(1, "行先", 1f / 2, 1f / 4, mutableListOf(5, 6, 7, 8)),
