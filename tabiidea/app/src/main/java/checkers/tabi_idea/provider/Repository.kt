@@ -20,7 +20,7 @@ class Repository{
         val okHttpClient = OkHttpClient.Builder().build()
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val retrofit = Retrofit.Builder()
-                .baseUrl("https://damp-peak-50918.herokuapp.com/")
+                .baseUrl("http://quiet-sands-57575.herokuapp.com/")
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .client(okHttpClient)
                 .build()
@@ -29,7 +29,7 @@ class Repository{
 
     //user情報をget
     fun getUserCallback(callback: (User) -> Unit){
-        requestService.getUser().enqueue(object : Callback<User> {
+        requestService.getUser("tubasan").enqueue(object : Callback<User> {
             override fun onResponse(call: Call<User>?, response: Response<User>?) {
                 Log.d("tubasa" , "success")
                 response?.let {
