@@ -2,7 +2,9 @@ package checkers.tabi_idea.fragment
 
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.TextViewCompat
@@ -12,17 +14,23 @@ import android.util.TypedValue
 import android.view.*
 import checkers.tabi_idea.R
 import checkers.tabi_idea.activity.MainActivity
-import checkers.tabi_idea.custom.view.RoundRectTextView
+import checkers.tabi_idea.custom.view.CustomBottomSheetDialogFragment
 import checkers.tabi_idea.custom.view.DrawingLinesCanvasView
+import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 
 
-class TravelMindMapFragment : Fragment(), MainActivity.IOnFocusListenable {
+class TravelMindMapFragment :
+        Fragment(),
+        MainActivity.IOnFocusListenable,
+        CustomBottomSheetDialogFragment.Listener,
+        DrawingLinesCanvasView.LineDrawer {
+
 
     private var textViewList = mutableListOf<RoundRectTextView>()
-    private var drawingLinesCanvasView: DrawingLinesCanvasView? = null
+        private var drawingLinesCanvasView: DrawingLinesCanvasView? = null
     private var event: Event? = null
 
     var layoutWidth = 0f
@@ -33,7 +41,6 @@ class TravelMindMapFragment : Fragment(), MainActivity.IOnFocusListenable {
         arguments?.let {
             event = it.getParcelable("eventKey")
         }
-        retainInstance = true
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -75,13 +82,66 @@ class TravelMindMapFragment : Fragment(), MainActivity.IOnFocusListenable {
             layoutHeight = (activity as MainActivity).layoutHeight
             mindMapConstraintLayout.centerX = layoutWidth / 2
             mindMapConstraintLayout.centerY = layoutHeight / 2
-            event!!.mindMapObjectList.forEachIndexed { index, mind ->
-                setTextViewPosition(textViewList[index], mind)
-                textViewList[index].invalidate()
+            event!!.mindMapObjectList.forEach {
+                setTextViewPosition(textViewList[it.viewIndex], it)
             }
-            drawingLinesCanvasView?.layoutWidth = layoutWidth
-            drawingLinesCanvasView?.layoutHeight = layoutHeight
             drawingLinesCanvasView?.invalidate()
+            mindMapConstraintLayout.invalidate()
+        }
+    }
+
+    override fun onAddClicked(position: Int) {
+        Log.d(javaClass.simpleName, "onAddClicked")
+        val newId = event!!.mindMapObjectList.lastIndex + 1
+        val mmo = MindMapObject(
+                newId,
+                "追加",
+                0.8f,
+                0.4f,
+//                mutableListOf()
+                event!!.mindMapObjectList[position].viewIndex
+        )
+        event!!.mindMapObjectList.add(mmo)
+//        event!!.mindMapObjectList[position].children.add(newId)
+
+        val view = mindMapObjectToTextView(context, mmo)
+        textViewList.add(view)
+        mindMapConstraintLayout.addView(view)
+        drawingLinesCanvasView?.invalidate()
+        mindMapConstraintLayout.invalidate()
+
+    }
+
+    override fun onDeleteClicked(position: Int) {
+    }
+
+    override fun onEditClicked(position: Int) {
+    }
+
+    override fun drawLines(canvas: Canvas?) {
+        val paint = Paint()
+        paint.setARGB(255, 0, 0, 0)
+        paint.strokeWidth = 5f
+
+        event!!.mindMapObjectList.forEach {
+//            it.children.forEach { viewId ->
+//                canvas?.drawLine(
+//                        textViewList[it.viewIndex].getCenterPositionX(),
+//                        textViewList[it.viewIndex].getCenterPositionY(),
+//                        textViewList[viewId].getCenterPositionX(),
+//                        textViewList[viewId].getCenterPositionY(),
+//                        paint
+//                )
+//            }
+//        }
+
+                canvas?.drawLine(
+                        textViewList[it.viewIndex].getCenterPositionX(),
+                        textViewList[it.viewIndex].getCenterPositionY(),
+                        textViewList[it.parent].getCenterPositionX(),
+                        textViewList[it.parent].getCenterPositionY(),
+                        paint
+                )
         }
     }
 
@@ -90,33 +150,33 @@ class TravelMindMapFragment : Fragment(), MainActivity.IOnFocusListenable {
             return
         }
 
-        prepareCanvas(context!!, layoutWidth, layoutHeight)
-        setMMOListToCanvasView(event!!.mindMapObjectList)
+        prepareCanvas(context!!)
         // textViewListに追加
-        event!!.mindMapObjectList.forEachIndexed {index, it ->
-            textViewList.add(index, mindMapObjectToTextView(context!!, it))
+        event!!.mindMapObjectList.forEach { it ->
+            textViewList.add(it.viewIndex, mindMapObjectToTextView(context!!, it))
         }
 
         mindMapConstraintLayout.addView(drawingLinesCanvasView)
-        textViewList.forEach {
-            if (it.parent == null)
-                mindMapConstraintLayout.addView(it)
+        textViewList.forEach { view ->
+            if (view.parent == null)
+                mindMapConstraintLayout.addView(view)
+
+            view.setOnClickListener {
+                val bottomSheetDialog = CustomBottomSheetDialogFragment.newInstance(it.id)
+                bottomSheetDialog.show(childFragmentManager, bottomSheetDialog.tag)
+            }
         }
     }
 
 
-    private fun prepareCanvas(context: Context, width: Float, height: Float) {
+    private fun prepareCanvas(context: Context?) {
         drawingLinesCanvasView = DrawingLinesCanvasView(context)
-        drawingLinesCanvasView?.layoutWidth = width
-        drawingLinesCanvasView?.layoutHeight = height
+        drawingLinesCanvasView?.lineDrawer = this
     }
 
-    private fun setMMOListToCanvasView(list: MutableList<MindMapObject>) {
-        drawingLinesCanvasView?.mindMapObjectList = list
-    }
-
-    private fun mindMapObjectToTextView(context: Context, mindMapObject: MindMapObject): RoundRectTextView {
+    private fun mindMapObjectToTextView(context: Context?, mindMapObject: MindMapObject): RoundRectTextView {
         val textView = RoundRectTextView(context)
+        textView.id = mindMapObject.viewIndex
         textView.gravity = Gravity.CENTER
         textView.text = mindMapObject.text
         textView.setTextColor(Color.WHITE)
@@ -130,7 +190,7 @@ class TravelMindMapFragment : Fragment(), MainActivity.IOnFocusListenable {
         return textView
     }
 
-    fun setTextViewPosition(textView: RoundRectTextView, mindMapObject: MindMapObject) {
+    private fun setTextViewPosition(textView: RoundRectTextView, mindMapObject: MindMapObject) {
         textView.setPositionXByCenterPositionX(mindMapObject.positionX * layoutWidth)
         textView.setPositionYByCenterPositionY(mindMapObject.positionY * layoutHeight)
     }

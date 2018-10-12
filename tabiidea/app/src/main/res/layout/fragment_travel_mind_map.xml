@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<checkers.tabi_idea.custom.view.ZoomableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mindMapConstraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:clickable="true"
-    android:focusable="true"
-    android:clipToPadding="false"
-    tools:context=".fragment.TravelMindMapFragment">
-</checkers.tabi_idea.custom.view.ZoomableLayout>
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/container_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/mindMapConstraintLayout">
+    </FrameLayout>
+
+    <checkers.tabi_idea.custom.view.ZoomableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/mindMapConstraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:clipToPadding="false"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:context=".fragment.TravelMindMapFragment">
+    </checkers.tabi_idea.custom.view.ZoomableLayout>
+
+</android.support.constraint.ConstraintLayout>

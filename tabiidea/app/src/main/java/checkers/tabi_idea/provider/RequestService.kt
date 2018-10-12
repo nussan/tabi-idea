@@ -9,11 +9,11 @@ import retrofit2.http.*
 
 interface RequestService {
     //user情報の取得
-    @GET("mockapi")
-    fun getUser() :Call<User>
+    @GET("home/index/{id}")
+    fun getUser(@Path("id") id:String) :Call<User>
 
     //最新のmmoを取得
-    @GET("mockapi")
+    @GET("home")
     fun updateMmo() : Call<List<MindMapObject>>
 
     //Eventへの追加
