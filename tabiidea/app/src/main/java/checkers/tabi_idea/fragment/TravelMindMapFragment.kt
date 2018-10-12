@@ -98,10 +98,12 @@ class TravelMindMapFragment :
                 "追加",
                 0.8f,
                 0.4f,
-                mutableListOf()
+//                mutableListOf()
+                event!!.mindMapObjectList[position].viewIndex
         )
         event!!.mindMapObjectList.add(mmo)
-        event!!.mindMapObjectList[position].children.add(newId)
+//        event!!.mindMapObjectList[position].children.add(newId)
+
         val view = mindMapObjectToTextView(context, mmo)
         textViewList.add(view)
         mindMapConstraintLayout.addView(view)
@@ -122,15 +124,24 @@ class TravelMindMapFragment :
         paint.strokeWidth = 5f
 
         event!!.mindMapObjectList.forEach {
-            it.children.forEach { viewId ->
+//            it.children.forEach { viewId ->
+//                canvas?.drawLine(
+//                        textViewList[it.viewIndex].getCenterPositionX(),
+//                        textViewList[it.viewIndex].getCenterPositionY(),
+//                        textViewList[viewId].getCenterPositionX(),
+//                        textViewList[viewId].getCenterPositionY(),
+//                        paint
+//                )
+//            }
+//        }
+
                 canvas?.drawLine(
                         textViewList[it.viewIndex].getCenterPositionX(),
                         textViewList[it.viewIndex].getCenterPositionY(),
-                        textViewList[viewId].getCenterPositionX(),
-                        textViewList[viewId].getCenterPositionY(),
+                        textViewList[it.parent].getCenterPositionX(),
+                        textViewList[it.parent].getCenterPositionY(),
                         paint
                 )
-            }
         }
     }
 

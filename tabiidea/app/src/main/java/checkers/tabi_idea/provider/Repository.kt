@@ -41,21 +41,21 @@ class Repository{
                 }
             }
             override fun onFailure(call: Call<User>?, t: Throwable?) {
-                Log.d("tubasa","cannot connect")
+                Log.d("tubasa",t.toString())
                 val user: User = User(
                         0,
                         "たきかわ",
                         mutableListOf(
                                 Event(0,"研究室旅行", mutableListOf(), mutableListOf(
-                                        MindMapObject(0, "旅行旅行旅行旅行旅行旅行", 1f / 2, 1f / 2, mutableListOf(1, 2, 3, 4)),
-                                        MindMapObject(1, "行先", 1f / 2, 1f / 4, mutableListOf(5, 6, 7, 8)),
-                                        MindMapObject(2, "予算", 1f / 4, 1f / 2, mutableListOf()),
-                                        MindMapObject(3, "食事", 1f / 2, 3f / 4, mutableListOf()),
-                                        MindMapObject(4, "宿泊", 3f / 4, 1f / 2, mutableListOf()),
-                                        MindMapObject(5, "熊本", 1f / 3, 1f / 15, mutableListOf()),
-                                        MindMapObject(6, "山口", 3f / 4, 1f / 5, mutableListOf()),
-                                        MindMapObject(7, "井澤", 1f / 4, 1f / 5, mutableListOf()),
-                                        MindMapObject(8, "瀧川", 5f / 8, 1f / 13f, mutableListOf())
+                                        MindMapObject(0, "旅行", 1f / 2, 1f / 2, 0),
+                                        MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
+                                        MindMapObject(2, "予算", 1f / 4, 1f / 2, 0),
+                                        MindMapObject(3, "食事", 1f / 2, 3f / 4, 0),
+                                        MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0),
+                                        MindMapObject(5, "熊本", 1f / 3, 1f / 15, 1),
+                                        MindMapObject(6, "山口", 3f / 4, 1f / 5, 1),
+                                        MindMapObject(7, "井澤", 1f / 4, 1f / 5, 1),
+                                        MindMapObject(8, "瀧川", 5f / 8, 1f / 13f, 1)
                                 )),
                                 Event(1,"学会", mutableListOf(), mutableListOf()),
                                 Event(2,"USA", mutableListOf(), mutableListOf())
@@ -70,26 +70,38 @@ class Repository{
         requestService.updateMmo().enqueue(object : Callback<List<MindMapObject>> {
             override fun onResponse(call: Call<List<MindMapObject>>?, response: Response<List<MindMapObject>>?) {
                 Log.d("tubasa2" , "success")
-                response?.let {
-                    if (response.isSuccessful) {
-                        response.body()?.let {
-                            callback(it)
-                        }
-                    }
-                }
+                val mindmapobject: List<MindMapObject> = mutableListOf(
+                        MindMapObject(0, "旅行", 1f / 2, 1f / 2, 0),
+                        MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
+                        MindMapObject(2, "予算", 1f / 4, 1f / 2, 0),
+                        MindMapObject(3, "食事", 1f / 2, 3f / 4, 0),
+                        MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0),
+                        MindMapObject(5, "熊本", 1f / 3, 1f / 15, 1),
+                        MindMapObject(6, "山口", 3f / 4, 1f / 5, 1),
+                        MindMapObject(7, "井澤", 1f / 4, 1f / 5, 1),
+                        MindMapObject(8, "瀧川", 5f / 8, 1f / 13f, 1)
+                )
+                callback(mindmapobject)
+//                response?.let {
+//                    if (response.isSuccessful) {
+//                        response.body()?.let {
+//                            callback(it)
+//                        }
+//                    }
+//                }
             }
             override fun onFailure(call: Call<List<MindMapObject>>?, t: Throwable?) {
                 Log.d("tubasa2",t.toString())
                 val mindmapobject: List<MindMapObject> = mutableListOf(
-                        MindMapObject(0, "旅行", 1f / 2, 1f / 2, mutableListOf(1, 2, 3, 4)),
-                        MindMapObject(1, "行先", 1f / 2, 1f / 4, mutableListOf(5, 6, 7, 8)),
-                        MindMapObject(2, "予算", 1f / 4, 1f / 2, mutableListOf()),
-                        MindMapObject(3, "食事", 1f / 2, 3f / 4, mutableListOf()),
-                        MindMapObject(4, "宿泊", 3f / 4, 1f / 2, mutableListOf()),
-                        MindMapObject(5, "熊本", 1f / 3, 1f / 15, mutableListOf()),
-                        MindMapObject(6, "山口", 3f / 4, 1f / 5, mutableListOf()),
-                        MindMapObject(7, "井澤", 1f / 4, 1f / 5, mutableListOf()),
-                        MindMapObject(8, "瀧川", 5f / 8, 1f / 13f, mutableListOf())
+                        MindMapObject(0, "旅行", 1f / 2, 1f / 2, 0),
+                        MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
+                        MindMapObject(2, "予算", 1f / 4, 1f / 2, 0),
+                        MindMapObject(3, "食事", 1f / 2, 3f / 4, 0),
+                        MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0),
+                        MindMapObject(5, "熊本", 1f / 3, 1f / 15, 1),
+                        MindMapObject(6, "山口", 3f / 4, 1f / 5, 1),
+                        MindMapObject(7, "井澤", 1f / 4, 1f / 5, 1),
+                        MindMapObject(8, "瀧川", 5f / 8, 1f / 13f, 1)
                 )
                 callback(mindmapobject)
             }
@@ -110,7 +122,7 @@ class Repository{
                 }
             }
             override fun onFailure(call: Call<Event>?, t: Throwable?) {
-                Log.d("tubasa2","cannot connect")
+                Log.d("tubasa2",t.toString())
             }
         })
     }
