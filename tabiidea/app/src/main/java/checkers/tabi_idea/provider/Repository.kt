@@ -75,20 +75,20 @@ class Repository{
                         MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
                         MindMapObject(2, "予算", 1f / 4, 1f / 2, 0),
                         MindMapObject(3, "食事", 1f / 2, 3f / 4, 0),
-                        MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0),
-                        MindMapObject(5, "熊本", 1f / 3, 1f / 15, 1),
-                        MindMapObject(6, "山口", 3f / 4, 1f / 5, 1),
-                        MindMapObject(7, "井澤", 1f / 4, 1f / 5, 1),
-                        MindMapObject(8, "瀧川", 5f / 8, 1f / 13f, 1)
+                        MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0)
+//                        MindMapObject(5, "熊本", 1f / 3, 1f / 15, 1),
+//                        MindMapObject(6, "山口", 3f / 4, 1f / 5, 1),
+//                        MindMapObject(7, "井澤", 1f / 4, 1f / 5, 1),
+//                        MindMapObject(8, "瀧川", 5f / 8, 1f / 13f, 1)
                 )
                 callback(mindmapobject)
-//                response?.let {
-//                    if (response.isSuccessful) {
-//                        response.body()?.let {
-//                            callback(it)
-//                        }
-//                    }
-//                }
+                response?.let {
+                    if (response.isSuccessful) {
+                        response.body()?.let {
+                            callback(it)
+                        }
+                    }
+                }
             }
             override fun onFailure(call: Call<List<MindMapObject>>?, t: Throwable?) {
                 Log.d("tubasa2",t.toString())
@@ -97,11 +97,11 @@ class Repository{
                         MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
                         MindMapObject(2, "予算", 1f / 4, 1f / 2, 0),
                         MindMapObject(3, "食事", 1f / 2, 3f / 4, 0),
-                        MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0),
-                        MindMapObject(5, "熊本", 1f / 3, 1f / 15, 1),
-                        MindMapObject(6, "山口", 3f / 4, 1f / 5, 1),
-                        MindMapObject(7, "井澤", 1f / 4, 1f / 5, 1),
-                        MindMapObject(8, "瀧川", 5f / 8, 1f / 13f, 1)
+                        MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0)
+//                        MindMapObject(5, "熊本", 1f / 3, 1f / 15, 1),
+//                        MindMapObject(6, "山口", 3f / 4, 1f / 5, 1),
+//                        MindMapObject(7, "井澤", 1f / 4, 1f / 5, 1),
+//                        MindMapObject(8, "瀧川", 5f / 8, 1f / 13f, 1)
                 )
                 callback(mindmapobject)
             }

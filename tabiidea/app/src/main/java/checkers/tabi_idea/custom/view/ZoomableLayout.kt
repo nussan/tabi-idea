@@ -1,7 +1,9 @@
 package checkers.tabi_idea.custom.view
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Matrix
+import android.graphics.Paint
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 import android.util.Log
@@ -9,6 +11,7 @@ import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.ViewTreeObserver
+import checkers.tabi_idea.fragment.TravelMindMapFragment
 
 
 class ZoomableLayout :
@@ -17,7 +20,7 @@ class ZoomableLayout :
 
 
     private var mode = Mode.NONE
-    private var scale = 1.0f
+    var scale = 1.0f
     private var lastScaleFactor = 0f
 
     // 各テキストビューの座標情報
@@ -40,16 +43,41 @@ class ZoomableLayout :
         init(context)
     }
 
+    var lineDrawer: LineDrawer? = null
+
+    override fun onDraw(canvas: Canvas?) {
+        super.onDraw(canvas)
+        (lineDrawer as? TravelMindMapFragment)?.drawLines(canvas, scale)
+    }
+
+    interface LineDrawer {
+        fun drawLines(canvas: Canvas?, scale: Float)
+    }
+
     override fun addView(child: View?) {
         super.addView(child)
 
         child?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 coordinates.add(Coordinates(child.x, child.y))
+                Log.d(javaClass.simpleName, "${coordinates.size}")
+                updateListener(context)
                 viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
-        updateListener(context)
+    }
+
+    override fun addView(child: View?, index: Int) {
+        super.addView(child, index)
+
+        (child as? RoundRectTextView)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                coordinates.add(index, Coordinates(child.x, child.y))
+                Log.d(javaClass.simpleName, "${coordinates.size}")
+                updateListener(context)
+                viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     private fun updateListener(context: Context) {
@@ -97,7 +125,10 @@ class ZoomableLayout :
 
             if (mode == Mode.DRAG && scale >= MIN_ZOOM || mode == Mode.ZOOM) {
                 parent.requestDisallowInterceptTouchEvent(true)
-                applyScaleAndTranslation()
+
+                for (i in 0 until childCount) {
+                    applyScaleAndTranslation(i)
+                }
             }
 
             true
@@ -134,15 +165,14 @@ class ZoomableLayout :
         Log.i(TAG, "onScaleEnd")
     }
 
-    private fun applyScaleAndTranslation() {
-        for (i in 0 until childCount) {
-            getChildAt(i).pivotX = centerX - getChildAt(i).x
-            getChildAt(i).pivotY = centerY - getChildAt(i).y
-            getChildAt(i).scaleX = scale
-            getChildAt(i).scaleY = scale
-            getChildAt(i).translationX = coordinates[i].dx
-            getChildAt(i).translationY = coordinates[i].dy
-        }
+    private fun applyScaleAndTranslation(index: Int) {
+        getChildAt(index).pivotX = centerX - getChildAt(index).x
+        getChildAt(index).pivotY = centerY - getChildAt(index).y
+        getChildAt(index).scaleX = scale
+        getChildAt(index).scaleY = scale
+        getChildAt(index).translationX = coordinates[index].dx
+        getChildAt(index).translationY = coordinates[index].dy
+        invalidate()
     }
 
     companion object {
