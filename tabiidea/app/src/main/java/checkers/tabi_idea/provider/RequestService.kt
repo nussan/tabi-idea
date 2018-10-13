@@ -5,17 +5,24 @@ import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Json
+import io.reactivex.Single
 import retrofit2.Call
 import retrofit2.http.*
 
 interface RequestService {
     //user情報の取得
     @GET("home/index/{id}")
-    fun getUser(@Path("id") id:String) :Call<User>
+    fun getUser(@Path("id") id:String) : Call<User>
+
+    @GET("user")
+    fun getUser2() : Single<User>
 
     //最新のmmoを取得
     @GET("home")
     fun updateMmo() : Call<List<MindMapObject>>
+
+    @GET("home")
+    fun updateMmo2() : Single<List<MindMapObject>>
 
 
     //Eventへの追加

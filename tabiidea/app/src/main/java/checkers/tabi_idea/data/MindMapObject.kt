@@ -17,8 +17,6 @@ data class MindMapObject(
         var positionX: Float,
         @Json(name = "positionY")
         var positionY: Float,
-//        @Json(name = "children")
-//        var children: MutableList<Int>
         @Json(name = "parent")
         var parent : Int
 ) : Parcelable

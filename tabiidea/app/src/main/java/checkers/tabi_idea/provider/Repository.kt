@@ -6,17 +6,20 @@ import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import java.nio.channels.FileChannel
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 
 class Repository{
     private var requestService: RequestService
     private var requestService2: RequestService
+    private var requestService3: RequestService
 
     init {
         val okHttpClient = OkHttpClient.Builder().build()
@@ -27,12 +30,20 @@ class Repository{
                 .client(okHttpClient)
                 .build()
         requestService = retrofit.create(RequestService::class.java)
+
         val retrofit2 = Retrofit.Builder()
                 .baseUrl("https://fast-peak-71769.herokuapp.com/")
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .client(okHttpClient)
                 .build()
         requestService2 = retrofit2.create(RequestService::class.java)
+
+        val retrofit3 = Retrofit.Builder()
+                .baseUrl("http://192.168.0.3:3000/")
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .build()
+        requestService3 = retrofit3.create(RequestService::class.java)
     }
 
     //user情報をget
@@ -152,4 +163,57 @@ class Repository{
             }
         })
     }
+
+    //user情報をget,rxjava2
+    fun getUser(callback:(User)->Unit){
+        val user: User = User(
+                0,
+                "たきかわ",
+                mutableListOf(
+                        Event(0,"研究室旅行", mutableListOf(), mutableListOf(
+                                MindMapObject(0, "旅行", 1f / 2, 1f / 2, 0),
+                                MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
+                                MindMapObject(2, "予算", 1f / 4, 1f / 2, 0),
+                                MindMapObject(3, "食事", 1f / 2, 3f / 4, 0),
+                                MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0),
+                                MindMapObject(5, "熊本", 1f / 3, 1f / 15, 1),
+                                MindMapObject(6, "山口", 3f / 4, 1f / 5, 1),
+                                MindMapObject(7, "井澤", 1f / 4, 1f / 5, 1),
+                                MindMapObject(8, "瀧川", 5f / 8, 1f / 13f, 1)
+                        )),
+                        Event(1,"学会", mutableListOf(), mutableListOf()),
+                        Event(2,"USA", mutableListOf(), mutableListOf())
+                ))
+        requestService3.getUser2()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {res -> callback(res) },
+                        {err ->
+                            Log.d("err",err.toString())
+                            callback(user)
+                        }
+                )
+    }
+
+    //mmoを更新
+//    fun updateMmo(callback: (List<MindMapObject>) -> Unit){
+//        val mmo: List<MindMapObject> = mutableListOf(
+//                MindMapObject(0, "旅行", 1f / 2, 1f / 2, 0),
+//                MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
+//                MindMapObject(2, "予算", 1f / 4, 1f / 2, 0),
+//                MindMapObject(3, "食事", 1f / 2, 3f / 4, 0),
+//                MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0)
+//        )
+//        requestService3.updateMmo2()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(
+//                        {res -> callback(res)},
+//                        {err ->
+//                            Log.d("err",err.toString())
+//                            callback(mmo)
+//                        }
+//                )
+//    }
 }
