@@ -90,10 +90,12 @@ class EventListFragment : Fragment() {
                 setView(inflater)
                 setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
                     // OKボタンを押したときの処理
-                    val inputText:String = inputText.text.toString()
-                    eventManager.add(Event(0,inputText, mutableListOf(), mutableListOf()))
-                    repository.addEventCallback(userId,inputText){
-                    eventManager.eventList = it
+                    eventManager.add(Event(0,"${inputText.text}", mutableListOf(), mutableListOf()))
+                    val title = mapOf(
+                            "title" to "${inputText.text}"
+                    )
+                    repository.addEventCallback(userId,title){
+                        eventListView.adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_1, it)
                     }
                     (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
                 })

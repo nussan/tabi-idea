@@ -16,6 +16,7 @@ import java.nio.channels.FileChannel
 
 class Repository{
     private var requestService: RequestService
+    private var requestService2: RequestService
 
     init {
         val okHttpClient = OkHttpClient.Builder().build()
@@ -26,6 +27,12 @@ class Repository{
                 .client(okHttpClient)
                 .build()
         requestService = retrofit.create(RequestService::class.java)
+        val retrofit2 = Retrofit.Builder()
+                .baseUrl("https://fast-peak-71769.herokuapp.com/")
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .client(okHttpClient)
+                .build()
+        requestService2 = retrofit2.create(RequestService::class.java)
     }
 
     //user情報をget
@@ -110,10 +117,10 @@ class Repository{
     }
 
     //eventを追加
-    fun addEventCallback(user_id:Int,title:String,callback: (MutableList<Event>) -> Unit){
-        requestService.addEvent(user_id,title).enqueue(object : Callback<MutableList<Event>> {
+    fun addEventCallback(userid:Int,title:Map<String,String>,callback: (MutableList<Event>) -> Unit){
+        requestService2.addEvent(userid,title).enqueue(object : Callback<MutableList<Event>> {
             override fun onResponse(call: Call<MutableList<Event>>?, response: Response<MutableList<Event>>?) {
-                Log.d("tubasa3" , "${title}")
+                Log.d("tubasa3" , "success")
                 response?.let {
                     if (response.isSuccessful) {
                         response.body()?.let {

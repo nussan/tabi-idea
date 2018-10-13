@@ -3,6 +3,7 @@ package checkers.tabi_idea.provider
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
+import com.squareup.moshi.FromJson
 import com.squareup.moshi.Json
 import retrofit2.Call
 import retrofit2.http.*
@@ -16,9 +17,10 @@ interface RequestService {
     @GET("home")
     fun updateMmo() : Call<List<MindMapObject>>
 
+
     //Eventへの追加
-    @POST("home/{id}")
-    fun addEvent(@Path("id") id :Int,@Body title:String) : Call<MutableList<Event>>
+    @POST("event/create/{id}")
+    fun addEvent(@Path("id") id :Int, @Body title:Map<String,String>) : Call<MutableList<Event>>
 
 //    //Event新規作成(中間データベースへの追加 )
 //    @POST("user_event")
@@ -26,7 +28,7 @@ interface RequestService {
 
     //MindMapObjectを追加
     @POST("mindmap/{id}")
-    fun addMmo(@Path("id") id:Int, mmoJson:String):Call<MindMapObject>
+    fun addMmo(@Path("id") id:Int, mmo:Map<String,String>):Call<MindMapObject>
 
     //viewIndexのMindMapObject削除
     @DELETE("event/{id}")
