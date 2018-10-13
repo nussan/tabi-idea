@@ -2,16 +2,20 @@ package checkers.tabi_idea.fragment
 
 
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.TextViewCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
+import android.widget.ArrayAdapter
+import android.widget.EditText
 import checkers.tabi_idea.R
 import checkers.tabi_idea.activity.MainActivity
 import checkers.tabi_idea.custom.view.CustomBottomSheetDialogFragment
@@ -19,6 +23,7 @@ import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
+import kotlinx.android.synthetic.main.fragment_event_list.*
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 
 
@@ -87,24 +92,43 @@ class TravelMindMapFragment :
 
     override fun onAddClicked(position: Int) {
         Log.d(javaClass.simpleName, "onAddClicked")
-        val newId = event!!.mindMapObjectList.lastIndex + 1
-        val mmo = MindMapObject(
-                newId,
-                "長崎",
-                0.5f,
-                0.5f,
-                event!!.mindMapObjectList[position].viewIndex
-        )
-        event!!.mindMapObjectList.add(mmo)
+// レイアウトを取得
+        val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
 
-        val view = mindMapObjectToTextView(context, mmo)
-        view.setOnClickListener { v ->
-            val bottomSheetDialog = CustomBottomSheetDialogFragment.newInstance(v.id)
-            bottomSheetDialog.show(childFragmentManager, bottomSheetDialog.tag)
-        }
-        textViewList.add(view)
-        mindMapConstraintLayout.addView(view, mmo.viewIndex)
-        mindMapConstraintLayout.invalidate()
+        // ダイアログ内のテキストエリア
+        val inputText : EditText = inflater.findViewById(R.id.inputText)
+        inputText.requestFocus()
+
+        // ダイアログの設定
+        val inputForm = AlertDialog.Builder(context!!).apply {
+            setTitle("新しいアイデア")
+            setView(inflater)
+            setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
+                val newId = event!!.mindMapObjectList.lastIndex + 1
+                val mmo = MindMapObject(
+                        newId,
+                        "${inputText.text}",
+                        0.5f,
+                        0.5f,
+                        event!!.mindMapObjectList[position].viewIndex
+                )
+                event!!.mindMapObjectList.add(mmo)
+
+                val view = mindMapObjectToTextView(context, mmo)
+                view.setOnClickListener { v ->
+                    val bottomSheetDialog = CustomBottomSheetDialogFragment.newInstance(v.id)
+                    bottomSheetDialog.show(childFragmentManager, bottomSheetDialog.tag)
+                }
+                textViewList.add(view)
+                mindMapConstraintLayout.addView(view, mmo.viewIndex)
+                mindMapConstraintLayout.invalidate()
+            })
+            setNegativeButton("Cancel", null)
+        }.create()
+
+        // ダイアログ表示と同時にキーボードを表示
+        inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        inputForm.show()
 
     }
 

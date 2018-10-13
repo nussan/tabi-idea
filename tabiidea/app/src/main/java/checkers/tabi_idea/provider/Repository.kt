@@ -135,8 +135,8 @@ class Repository{
         })
     }
 
-    fun addMmoCallback(event_id:Int,mmoJson:String,callback: (MindMapObject) -> Unit){
-        requestService.addMmo(event_id,mmoJson).enqueue(object : Callback<MindMapObject> {
+    fun addMmoCallback(event_id:Int,mmo:Map<String,String>,callback: (MindMapObject) -> Unit){
+        requestService.addMmo(event_id,mmo).enqueue(object : Callback<MindMapObject> {
             override fun onResponse(call: Call<MindMapObject>?, response: Response<MindMapObject>?) {
                 Log.d("tubasa" , "success")
                 response?.let {
