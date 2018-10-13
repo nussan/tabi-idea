@@ -3,6 +3,7 @@ package checkers.tabi_idea.data
 import android.os.Parcelable
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
+import org.jetbrains.annotations.Nullable
 
 @Parcelize
 data class Event(
@@ -11,7 +12,7 @@ data class Event(
         @Json(name = "title")
         var title: String,
         @Json(name = "member")
-        var member: MutableList<Int>,
+        var member: MutableList<Int> = mutableListOf(),
 //        @Json(name = "mmo")
         @Transient
         var mindMapObjectList: MutableList<MindMapObject> = mutableListOf()

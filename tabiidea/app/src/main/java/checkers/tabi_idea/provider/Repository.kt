@@ -12,9 +12,11 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.nio.channels.FileChannel
 
 class Repository{
     private var requestService: RequestService
+    private var requestService2: RequestService
 
     init {
         val okHttpClient = OkHttpClient.Builder().build()
@@ -25,6 +27,12 @@ class Repository{
                 .client(okHttpClient)
                 .build()
         requestService = retrofit.create(RequestService::class.java)
+        val retrofit2 = Retrofit.Builder()
+                .baseUrl("https://fast-peak-71769.herokuapp.com/")
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .client(okHttpClient)
+                .build()
+        requestService2 = retrofit2.create(RequestService::class.java)
     }
 
     //user情報をget
@@ -109,10 +117,10 @@ class Repository{
     }
 
     //eventを追加
-    fun addEventCallback(callback: (Event) -> Unit){
-        requestService.addEvent().enqueue(object : Callback<Event> {
-            override fun onResponse(call: Call<Event>?, response: Response<Event>?) {
-                Log.d("tubasa2" , "success")
+    fun addEventCallback(userid:Int,title:Map<String,String>,callback: (MutableList<Event>) -> Unit){
+        requestService2.addEvent(userid,title).enqueue(object : Callback<MutableList<Event>> {
+            override fun onResponse(call: Call<MutableList<Event>>?, response: Response<MutableList<Event>>?) {
+                Log.d("tubasa3" , "success")
                 response?.let {
                     if (response.isSuccessful) {
                         response.body()?.let {
@@ -121,8 +129,26 @@ class Repository{
                     }
                 }
             }
-            override fun onFailure(call: Call<Event>?, t: Throwable?) {
-                Log.d("tubasa2",t.toString())
+            override fun onFailure(call: Call<MutableList<Event>>?, t: Throwable?) {
+                Log.d("tubasa3",t.toString())
+            }
+        })
+    }
+
+    fun addMmoCallback(event_id:Int,mmo:Map<String,String>,callback: (MindMapObject) -> Unit){
+        requestService.addMmo(event_id,mmo).enqueue(object : Callback<MindMapObject> {
+            override fun onResponse(call: Call<MindMapObject>?, response: Response<MindMapObject>?) {
+                Log.d("tubasa" , "success")
+                response?.let {
+                    if (response.isSuccessful) {
+                        response.body()?.let {
+                            callback(it)
+                        }
+                    }
+                }
+            }
+            override fun onFailure(call: Call<MindMapObject>?, t: Throwable?) {
+                Log.d("tubasa",t.toString())
             }
         })
     }
