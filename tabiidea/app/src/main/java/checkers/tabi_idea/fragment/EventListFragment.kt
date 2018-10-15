@@ -24,7 +24,6 @@ import kotlinx.android.synthetic.main.fragment_event_list.*
 import java.util.*
 
 class EventListFragment : Fragment() {
-    private val repository = Repository()
     private val eventManager = EventManager()
 
     private var userId = 0
@@ -89,12 +88,19 @@ class EventListFragment : Fragment() {
                 setTitle("新しいイベント")
                 setView(inflater)
                 setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
+                    val mindmapobject: MutableList<MindMapObject> = mutableListOf(
+                            MindMapObject(0, "旅行", 1f / 2, 1f / 2, 0),
+                            MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
+                            MindMapObject(2, "予算", 1f / 4, 1f / 2, 0),
+                            MindMapObject(3, "食事", 1f / 2, 3f / 4, 0),
+                            MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0)
+                    )
                     // OKボタンを押したときの処理
-                    eventManager.add(Event(0,"${inputText.text}", mutableListOf(), mutableListOf()))
+                    eventManager.add(Event(0,"${inputText.text}", mutableListOf(), mindmapobject))
                     val title = mapOf(
                             "title" to "${inputText.text}"
                     )
-                    repository.addEventCallback(userId,title){
+                    repository.addEventList(userId,title){
                         eventListView.adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_1, it)
                     }
                     (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()

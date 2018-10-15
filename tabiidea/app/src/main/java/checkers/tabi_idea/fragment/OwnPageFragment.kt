@@ -10,11 +10,13 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.User
+import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.fragment_own_page.*
 
 class OwnPageFragment : Fragment() {
 
     private var user: User? = null
+    private val repository = Repository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,13 +43,15 @@ class OwnPageFragment : Fragment() {
         listView.adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_1, list)
         listView.setOnItemClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
             when (list[position]) {
-                "イベント" ->
+                "イベント" -> repository.getEventList(user!!.id){
                     (activity as AppCompatActivity)
                             .supportFragmentManager
                             .beginTransaction()
-                            .replace(R.id.container, EventListFragment.newInstance(user!!.id,user!!.eventList))
+                            .replace(R.id.container, EventListFragment.newInstance(user!!.id,it))
                             .addToBackStack(null)
                             .commit()
+                }
+
                 "フレンド" ->
                     (activity as AppCompatActivity)
                             .supportFragmentManager
