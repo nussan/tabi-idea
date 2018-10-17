@@ -22,6 +22,7 @@ import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
+import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 
 
@@ -33,7 +34,9 @@ class TravelMindMapFragment :
 
 
     private var textViewList = mutableListOf<RoundRectTextView>()
+    private val repository = Repository()
     private var event: Event? = null
+    private var mindMapObjectList:MutableList<MindMapObject>? = null
 
     var layoutWidth = 0f
     var layoutHeight = 0f
@@ -42,6 +45,7 @@ class TravelMindMapFragment :
         super.onCreate(savedInstanceState)
         arguments?.let {
             event = it.getParcelable("eventKey")
+            mindMapObjectList = it.getParcelableArrayList("mmoKey")
         }
     }
 
@@ -102,15 +106,19 @@ class TravelMindMapFragment :
             setTitle("新しいアイデア")
             setView(inflater)
             setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
-                val newId = event!!.mindMapObjectList.lastIndex + 1
+                var newId:Int = 0
+                mindMapObjectList!!.forEach {
+                    if(newId<it.viewIndex) newId = it.viewIndex
+                }
                 val mmo = MindMapObject(
-                        newId,
+                        newId+1,
                         "${inputText.text}",
                         0.5f,
                         0.5f,
-                        event!!.mindMapObjectList[position].viewIndex
+                        mindMapObjectList!![position].viewIndex
                 )
-                event!!.mindMapObjectList.add(mmo)
+                repository.addMmo("1",mmo) //"1"は追加先event.id
+                mindMapObjectList!!.add(mmo)
 
                 val view = mindMapObjectToTextView(context, mmo)
                 view.setOnClickListener { v ->
@@ -142,7 +150,7 @@ class TravelMindMapFragment :
         paint.strokeWidth = 5f
 
         canvas?.scale(scale, scale, mindMapConstraintLayout.centerX, mindMapConstraintLayout.centerY)
-        event!!.mindMapObjectList.forEach {
+        mindMapObjectList!!.forEach {
             val child = mindMapConstraintLayout.getChildAt(it.viewIndex)
             val parent = mindMapConstraintLayout.getChildAt(it.parent)
             canvas?.drawLine(
@@ -163,7 +171,7 @@ class TravelMindMapFragment :
 
 //        prepareCanvas(context!!)
         // textViewListに追加
-        event!!.mindMapObjectList.forEach {
+        mindMapObjectList!!.forEach {
             val view = mindMapObjectToTextView(context!!, it)
             textViewList.add(it.viewIndex, view)
 //            textViewList.add(view)
@@ -200,9 +208,10 @@ class TravelMindMapFragment :
 
     companion object {
         @JvmStatic
-        fun newInstance(event: Event) = TravelMindMapFragment().apply {
+        fun newInstance(event: Event,mindMapObjectList:MutableList<MindMapObject>) = TravelMindMapFragment().apply {
             arguments = Bundle().apply {
                 putParcelable("eventKey", event)
+                putParcelableArrayList("mmoKey",ArrayList(mindMapObjectList))
             }
         }
     }

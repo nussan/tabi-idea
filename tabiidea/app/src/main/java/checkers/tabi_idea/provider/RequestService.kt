@@ -23,18 +23,7 @@ interface RequestService {
     @GET("event/show/{id}")
     fun getEvent(@Path("id") id:Int):Single<MutableList<Event>>
 
-    //最新のmmoを取得
-    @GET("home")
-    fun updateMmo() : Call<List<MindMapObject>>
 
-    @GET("home")
-    fun updateMmo2() : Single<List<MindMapObject>>
-
-
-
-//    //Event新規作成(中間データベースへの追加 )
-//    @POST("user_event")
-//    fun addUserEvent() {}
 
     //MindMapObjectを追加
     @POST("mindmap/{id}")

@@ -12,11 +12,6 @@ import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import okhttp3.OkHttpClient
-import org.xml.sax.DTDHandler
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -25,7 +20,6 @@ class Repository{
     private var requestService: RequestService
 
     init {
-        val okHttpClient = OkHttpClient.Builder().build()
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val retrofit = Retrofit.Builder()
                 .baseUrl("https://fast-peak-71769.herokuapp.com/")
@@ -33,59 +27,6 @@ class Repository{
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .build()
         requestService = retrofit.create(RequestService::class.java)
-    }
-
-    //mmoを更新
-    fun updateMmoCallback(callback: (List<MindMapObject>) -> Unit){
-        requestService.updateMmo().enqueue(object : Callback<List<MindMapObject>> {
-            override fun onResponse(call: Call<List<MindMapObject>>?, response: Response<List<MindMapObject>>?) {
-                Log.d("tubasa2" , "success")
-                val mindmapobject: List<MindMapObject> = mutableListOf(
-                        MindMapObject(0, "旅行", 1f / 2, 1f / 2, 0),
-                        MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
-                        MindMapObject(2, "予算", 1f / 4, 1f / 2, 0),
-                        MindMapObject(3, "食事", 1f / 2, 3f / 4, 0),
-                        MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0)
-                )
-                callback(mindmapobject)
-                response?.let {
-                    if (response.isSuccessful) {
-                        response.body()?.let {
-                            callback(it)
-                        }
-                    }
-                }
-            }
-            override fun onFailure(call: Call<List<MindMapObject>>?, t: Throwable?) {
-                Log.d("tubasa2",t.toString())
-                val mindmapobject: List<MindMapObject> = mutableListOf(
-                        MindMapObject(0, "旅行", 1f / 2, 1f / 2, 0),
-                        MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
-                        MindMapObject(2, "予算", 1f / 4, 1f / 2, 0),
-                        MindMapObject(3, "食事", 1f / 2, 3f / 4, 0),
-                        MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0)
-                )
-                callback(mindmapobject)
-            }
-        })
-    }
-
-    fun addMmoCallback(event_id:Int,mmo:Map<String,String>,callback: (MindMapObject) -> Unit){
-        requestService.addMmo(event_id,mmo).enqueue(object : Callback<MindMapObject> {
-            override fun onResponse(call: Call<MindMapObject>?, response: Response<MindMapObject>?) {
-                Log.d("tubasa" , "success")
-                response?.let {
-                    if (response.isSuccessful) {
-                        response.body()?.let {
-                            callback(it)
-                        }
-                    }
-                }
-            }
-            override fun onFailure(call: Call<MindMapObject>?, t: Throwable?) {
-                Log.d("tubasa",t.toString())
-            }
-        })
     }
 
     //user情報をget,rxjava2
@@ -105,7 +46,7 @@ class Repository{
 
     //eventlistをadd,rxjava2
     //ここでついでにfirebaseにeid追加したと仮定する
-    fun addEventList(userid:Int,title:Map<String,String>,callback:(MutableList<Event>) -> Unit){
+    fun addEvent(userid:Int,title:Map<String,String>,callback:(MutableList<Event>) -> Unit){
         val eventList:MutableList<Event> = mutableListOf()
         requestService.addEvent(userid,title)
                 .subscribeOn(Schedulers.io())
@@ -152,24 +93,28 @@ class Repository{
                 })
     }
 
-    //mmoを更新
-//    fun updateMmo(callback: (List<MindMapObject>) -> Unit){
-//        val mmo: List<MindMapObject> = mutableListOf(
-//                MindMapObject(0, "旅行", 1f / 2, 1f / 2, 0),
-//                MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
-//                MindMapObject(2, "予算", 1f / 4, 1f / 2, 0),
-//                MindMapObject(3, "食事", 1f / 2, 3f / 4, 0),
-//                MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0)
-//        )
-//        requestService3.updateMmo2()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(
-//                        {res -> callback(res)},
-//                        {err ->
-//                            Log.d("err",err.toString())
-//                            callback(mmo)
-//                        }
-//                )
-//    }
+    //userをadd
+    fun addUser() {
+    }
+
+    //userをedit
+    fun editUser(){
+
+    }
+
+    //eventをfbにadd
+    fun addEventtoFb(event_id: String){
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .push()
+                .setValue(event_id)
+    }
+
+    //mmoをfbにadd
+    fun addMmo(event_id: String,mmo:MindMapObject){
+        FirebaseDatabase.getInstance()
+                .getReference(event_id)
+                .push()
+                .setValue(mmo)
+    }
 }

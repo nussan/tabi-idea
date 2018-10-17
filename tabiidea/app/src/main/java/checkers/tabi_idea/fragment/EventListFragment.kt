@@ -22,12 +22,12 @@ import checkers.tabi_idea.manager.EventManager
 import checkers.tabi_idea.provider.Repository
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_event_list.*
 import java.util.*
 
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
-    private val listtoMutableList = ListtoMutableList()
     private var mindMapObjectList: MutableList<MindMapObject> = mutableListOf(
             MindMapObject(0, "旅行", 1f / 2, 1f / 2, 0),
             MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
@@ -73,12 +73,14 @@ class EventListFragment : Fragment() {
 
         eventListView.setOnItemClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
             repository.getMmo ("1"){ it ->
-                eventManager.eventList[id.toInt()].mindMapObjectList = listtoMutableList.listConverter(mindMapObjectList,it)
-                Log.d("err",eventManager.eventList[id.toInt()].mindMapObjectList.toString())
+                it.forEach{
+                    mindMapObjectList.add(it)
+                }
+                Log.d("err",mindMapObjectList.toString())
                 activity
                         ?.supportFragmentManager
                         ?.beginTransaction()
-                        ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()]))
+                        ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()],mindMapObjectList))
                         ?.addToBackStack(null)
                         ?.commit()
             }
@@ -99,13 +101,14 @@ class EventListFragment : Fragment() {
                 setView(inflater)
                 setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
                     // OKボタンを押したときの処理
-                    eventManager.add(Event(0,"${inputText.text}", mutableListOf(), mindMapObjectList))
+                    eventManager.add(Event(0,"${inputText.text}", mutableListOf()))
                     val title = mapOf(
                             "title" to "${inputText.text}"
                     )
-                    repository.addEventList(userId,title){
+                    repository.addEvent(userId,title){
                         eventListView.adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_1, it)
                     }
+                    repository.addEventtoFb("3")
                     (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
                 })
                 setNegativeButton("Cancel", null)
@@ -117,7 +120,6 @@ class EventListFragment : Fragment() {
 
             it.isEnabled = true
         }
-
     }
 
     companion object {
