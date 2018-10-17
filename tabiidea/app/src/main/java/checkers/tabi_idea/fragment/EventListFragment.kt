@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -15,6 +16,7 @@ import checkers.tabi_idea.*
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
+import checkers.tabi_idea.extention.ListtoMutableList
 import checkers.tabi_idea.extention.ViewExtention
 import checkers.tabi_idea.manager.EventManager
 import checkers.tabi_idea.provider.Repository
@@ -25,7 +27,14 @@ import java.util.*
 
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
-
+    private val listtoMutableList = ListtoMutableList()
+    private var mindMapObjectList: MutableList<MindMapObject> = mutableListOf(
+            MindMapObject(0, "旅行", 1f / 2, 1f / 2, 0),
+            MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
+            MindMapObject(2, "予算", 1f / 4, 1f / 2, 0),
+            MindMapObject(3, "食事", 1f / 2, 3f / 4, 0),
+            MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0)
+    )
     private var userId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,14 +72,15 @@ class EventListFragment : Fragment() {
         eventListView.adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_1, eventManager.eventList)
 
         eventListView.setOnItemClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
-            repository.updateMmoCallback { it ->
+            repository.getMmo ("1"){ it ->
+                eventManager.eventList[id.toInt()].mindMapObjectList = listtoMutableList.listConverter(mindMapObjectList,it)
+                Log.d("err",eventManager.eventList[id.toInt()].mindMapObjectList.toString())
                 activity
                         ?.supportFragmentManager
                         ?.beginTransaction()
                         ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()]))
                         ?.addToBackStack(null)
                         ?.commit()
-                eventManager.eventList[id.toInt()].mindMapObjectList = it as MutableList<MindMapObject>
             }
         }
 
@@ -88,15 +98,8 @@ class EventListFragment : Fragment() {
                 setTitle("新しいイベント")
                 setView(inflater)
                 setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
-                    val mindmapobject: MutableList<MindMapObject> = mutableListOf(
-                            MindMapObject(0, "旅行", 1f / 2, 1f / 2, 0),
-                            MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
-                            MindMapObject(2, "予算", 1f / 4, 1f / 2, 0),
-                            MindMapObject(3, "食事", 1f / 2, 3f / 4, 0),
-                            MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0)
-                    )
                     // OKボタンを押したときの処理
-                    eventManager.add(Event(0,"${inputText.text}", mutableListOf(), mindmapobject))
+                    eventManager.add(Event(0,"${inputText.text}", mutableListOf(), mindMapObjectList))
                     val title = mapOf(
                             "title" to "${inputText.text}"
                     )

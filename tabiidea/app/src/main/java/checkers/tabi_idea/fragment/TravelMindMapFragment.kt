@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
-import android.widget.ArrayAdapter
 import android.widget.EditText
 import checkers.tabi_idea.R
 import checkers.tabi_idea.activity.MainActivity
@@ -23,7 +22,6 @@ import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
-import kotlinx.android.synthetic.main.fragment_event_list.*
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 
 
@@ -96,7 +94,7 @@ class TravelMindMapFragment :
         val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
 
         // ダイアログ内のテキストエリア
-        val inputText : EditText = inflater.findViewById(R.id.inputText)
+        val inputText: EditText = inflater.findViewById(R.id.inputText)
         inputText.requestFocus()
 
         // ダイアログの設定
@@ -145,7 +143,7 @@ class TravelMindMapFragment :
 
         canvas?.scale(scale, scale, mindMapConstraintLayout.centerX, mindMapConstraintLayout.centerY)
         event!!.mindMapObjectList.forEach {
-val child = mindMapConstraintLayout.getChildAt(it.viewIndex)
+            val child = mindMapConstraintLayout.getChildAt(it.viewIndex)
             val parent = mindMapConstraintLayout.getChildAt(it.parent)
             canvas?.drawLine(
                     child.x + child.width / 2,
@@ -165,10 +163,10 @@ val child = mindMapConstraintLayout.getChildAt(it.viewIndex)
 
 //        prepareCanvas(context!!)
         // textViewListに追加
-        event!!.mindMapObjectList.forEach { it ->
+        event!!.mindMapObjectList.forEach {
             val view = mindMapObjectToTextView(context!!, it)
             textViewList.add(it.viewIndex, view)
-
+//            textViewList.add(view)
             if (view.parent == null)
                 mindMapConstraintLayout.addView(view, it.viewIndex)
 

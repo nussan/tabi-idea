@@ -4,12 +4,16 @@ import android.util.Log
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
+import org.xml.sax.DTDHandler
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,13 +27,6 @@ class Repository{
     init {
         val okHttpClient = OkHttpClient.Builder().build()
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-//        val retrofit = Retrofit.Builder()
-//                .baseUrl("http://quiet-sands-57575.herokuapp.com/")
-//                .addConverterFactory(MoshiConverterFactory.create(moshi))
-//                .client(okHttpClient)
-//                .build()
-//        requestService = retrofit.create(RequestService::class.java)
-
         val retrofit = Retrofit.Builder()
                 .baseUrl("https://fast-peak-71769.herokuapp.com/")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -93,24 +90,7 @@ class Repository{
 
     //user情報をget,rxjava2
     fun getUser(callback:(User)->Unit){
-        val user: User = User(
-                0,
-                "たきかわ",
-                mutableListOf(
-                        Event(0,"研究室旅行", mutableListOf(), mutableListOf(
-                                MindMapObject(0, "旅行", 1f / 2, 1f / 2, 0),
-                                MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
-                                MindMapObject(2, "予算", 1f / 4, 1f / 2, 0),
-                                MindMapObject(3, "食事", 1f / 2, 3f / 4, 0),
-                                MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0),
-                                MindMapObject(5, "熊本", 1f / 3, 1f / 15, 1),
-                                MindMapObject(6, "山口", 3f / 4, 1f / 5, 1),
-                                MindMapObject(7, "井澤", 1f / 4, 1f / 5, 1),
-                                MindMapObject(8, "瀧川", 5f / 8, 1f / 13f, 1)
-                        )),
-                        Event(1,"学会", mutableListOf(), mutableListOf()),
-                        Event(2,"USA", mutableListOf(), mutableListOf())
-                ))
+        val user: User = User(0, "たきかわ")
         requestService.getUser("tsubasa")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -124,6 +104,7 @@ class Repository{
     }
 
     //eventlistをadd,rxjava2
+    //ここでついでにfirebaseにeid追加したと仮定する
     fun addEventList(userid:Int,title:Map<String,String>,callback:(MutableList<Event>) -> Unit){
         val eventList:MutableList<Event> = mutableListOf()
         requestService.addEvent(userid,title)
@@ -151,6 +132,24 @@ class Repository{
                             callback(eventList)
                         }
                 )
+    }
+
+    //eventidを送る -> (トークンが帰ってくる) -> firebaseからeidのmmoをゲット
+    fun getMmo(event_id: String,callback: (Collection<MindMapObject>) -> Unit){
+        FirebaseDatabase.getInstance()
+                .getReference(event_id)
+                .addValueEventListener(object : ValueEventListener{
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        callback(dataSnapshot.children.mapNotNull {
+                            Log.d("err",it.toString())
+                            it.getValue(MindMapObject::class.java)
+                        })
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Log.d("err",databaseError.toString())
+                    }
+                })
     }
 
     //mmoを更新
