@@ -10,10 +10,17 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface RequestService {
+    //userの追加
+    @POST("home/user/{uuid}")
+    fun addUser(@Path("uuid") uuid : String)
+
     //user情報の取得
     @GET("home/index/{id}")
     fun getUser(@Path("id") id:String) : Single<User>
 
+    //user情報の編集
+    @POST("event/create/{editName}")
+    fun editUser(@Path("editName") editName:String)
 
     //Eventへの追加
     @POST("event/create/{id}")
@@ -22,8 +29,6 @@ interface RequestService {
     //eventListの取得
     @GET("event/show/{id}")
     fun getEvent(@Path("id") id:Int):Single<MutableList<Event>>
-
-
 
     //MindMapObjectを追加
     @POST("mindmap/{id}")

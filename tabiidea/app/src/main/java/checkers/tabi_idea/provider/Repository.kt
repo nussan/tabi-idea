@@ -33,6 +33,7 @@ class Repository{
     fun getUser(callback:(User)->Unit){
         val user: User = User(0, "たきかわ")
         requestService.getUser("tsubasa")
+                .retry(3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -94,12 +95,13 @@ class Repository{
     }
 
     //userをadd
-    fun addUser() {
+    fun addUser(uuid:String) {
+            requestService.addUser(uuid)
     }
 
     //userをedit
-    fun editUser(){
-
+    fun editUser(editName:String){
+            requestService.editUser(editName)
     }
 
     //eventをfbにadd
