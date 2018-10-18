@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
-import android.widget.ArrayAdapter
 import android.widget.EditText
 import checkers.tabi_idea.R
 import checkers.tabi_idea.activity.MainActivity
@@ -23,7 +22,7 @@ import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
-import kotlinx.android.synthetic.main.fragment_event_list.*
+import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 
 
@@ -35,7 +34,9 @@ class TravelMindMapFragment :
 
 
     private var textViewList = mutableListOf<RoundRectTextView>()
+    private val repository = Repository()
     private var event: Event? = null
+    private var mindMapObjectList:MutableList<MindMapObject>? = null
 
     var layoutWidth = 0f
     var layoutHeight = 0f
@@ -44,6 +45,7 @@ class TravelMindMapFragment :
         super.onCreate(savedInstanceState)
         arguments?.let {
             event = it.getParcelable("eventKey")
+            mindMapObjectList = it.getParcelableArrayList("mmoKey")
         }
     }
 
@@ -96,7 +98,7 @@ class TravelMindMapFragment :
         val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
 
         // ダイアログ内のテキストエリア
-        val inputText : EditText = inflater.findViewById(R.id.inputText)
+        val inputText: EditText = inflater.findViewById(R.id.inputText)
         inputText.requestFocus()
 
         // ダイアログの設定
@@ -104,15 +106,19 @@ class TravelMindMapFragment :
             setTitle("新しいアイデア")
             setView(inflater)
             setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
-                val newId = event!!.mindMapObjectList.lastIndex + 1
+                var newId:Int = 0
+                mindMapObjectList!!.forEach {
+                    if(newId<it.viewIndex) newId = it.viewIndex
+                }
                 val mmo = MindMapObject(
-                        newId,
+                        newId+1,
                         "${inputText.text}",
                         0.5f,
                         0.5f,
-                        event!!.mindMapObjectList[position].viewIndex
+                        mindMapObjectList!![position].viewIndex
                 )
-                event!!.mindMapObjectList.add(mmo)
+                repository.addMmo("1",mmo) //"1"は追加先event.id
+                mindMapObjectList!!.add(mmo)
 
                 val view = mindMapObjectToTextView(context, mmo)
                 view.setOnClickListener { v ->
@@ -144,8 +150,8 @@ class TravelMindMapFragment :
         paint.strokeWidth = 5f
 
         canvas?.scale(scale, scale, mindMapConstraintLayout.centerX, mindMapConstraintLayout.centerY)
-        event!!.mindMapObjectList.forEach {
-val child = mindMapConstraintLayout.getChildAt(it.viewIndex)
+        mindMapObjectList!!.forEach {
+            val child = mindMapConstraintLayout.getChildAt(it.viewIndex)
             val parent = mindMapConstraintLayout.getChildAt(it.parent)
             canvas?.drawLine(
                     child.x + child.width / 2,
@@ -165,10 +171,10 @@ val child = mindMapConstraintLayout.getChildAt(it.viewIndex)
 
 //        prepareCanvas(context!!)
         // textViewListに追加
-        event!!.mindMapObjectList.forEach { it ->
+        mindMapObjectList!!.forEach {
             val view = mindMapObjectToTextView(context!!, it)
             textViewList.add(it.viewIndex, view)
-
+//            textViewList.add(view)
             if (view.parent == null)
                 mindMapConstraintLayout.addView(view, it.viewIndex)
 
@@ -202,9 +208,10 @@ val child = mindMapConstraintLayout.getChildAt(it.viewIndex)
 
     companion object {
         @JvmStatic
-        fun newInstance(event: Event) = TravelMindMapFragment().apply {
+        fun newInstance(event: Event,mindMapObjectList:MutableList<MindMapObject>) = TravelMindMapFragment().apply {
             arguments = Bundle().apply {
                 putParcelable("eventKey", event)
+                putParcelableArrayList("mmoKey",ArrayList(mindMapObjectList))
             }
         }
     }
