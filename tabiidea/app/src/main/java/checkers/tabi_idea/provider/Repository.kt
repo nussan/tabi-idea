@@ -29,6 +29,17 @@ class Repository{
         requestService = retrofit.create(RequestService::class.java)
     }
 
+    /*---heroku---*/
+    //userをadd
+    fun addUser(uuid:String) {
+        requestService.addUser(uuid)
+    }
+
+    //userをedit
+    fun editUser(editName:String){
+        requestService.editUser(editName)
+    }
+
     //user情報をget,rxjava2
     fun getUser(callback:(User)->Unit){
         val user: User = User(0, "たきかわ")
@@ -46,25 +57,24 @@ class Repository{
     }
 
     //eventlistをadd,rxjava2
-    //ここでついでにfirebaseにeid追加したと仮定する
-    fun addEvent(userid:Int,title:Map<String,String>,callback:(MutableList<Event>) -> Unit){
-        val eventList:MutableList<Event> = mutableListOf()
+    fun addEvent(userid:Int,title:Map<String,String>,callback:(Event) -> Unit){
         requestService.addEvent(userid,title)
+                .retry(3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         {res -> callback(res)},
                         {err ->
                             Log.d("err",err.toString())
-                            callback(eventList)
                         }
                 )
     }
 
     //eventListをget,rxjava2
-    fun getEventList(userid: Int,callback:(MutableList<Event>) -> Unit){
+    fun getEventList(userid: Int,callback:(MutableList<Event>) -> Unit) {
         val eventList:MutableList<Event> = mutableListOf()
         requestService.getEvent(userid)
+                .retry(3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -94,22 +104,14 @@ class Repository{
                 })
     }
 
-    //userをadd
-    fun addUser(uuid:String) {
-            requestService.addUser(uuid)
-    }
-
-    //userをedit
-    fun editUser(editName:String){
-            requestService.editUser(editName)
-    }
-
+    /*---firebase---*/
     //eventをfbにadd
     fun addEventtoFb(event_id: String){
+        val mmo = MindMapObject(0, "旅行", 1f / 2, 1f / 2, 0)
         FirebaseDatabase.getInstance()
-                .getReference()
+                .getReference(event_id)
                 .push()
-                .setValue(event_id)
+                .setValue(mmo)
     }
 
     //mmoをfbにadd

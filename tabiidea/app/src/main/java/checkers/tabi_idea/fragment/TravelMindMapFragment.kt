@@ -117,7 +117,7 @@ class TravelMindMapFragment :
                         0.5f,
                         mindMapObjectList!![position].viewIndex
                 )
-                repository.addMmo("1",mmo) //"1"は追加先event.id
+                repository.addMmo("16",mmo) //"1"は追加先event.id
                 mindMapObjectList!!.add(mmo)
 
                 val view = mindMapObjectToTextView(context, mmo)
@@ -174,7 +174,6 @@ class TravelMindMapFragment :
         mindMapObjectList!!.forEach {
             val view = mindMapObjectToTextView(context!!, it)
             textViewList.add(it.viewIndex, view)
-//            textViewList.add(view)
             if (view.parent == null)
                 mindMapConstraintLayout.addView(view, it.viewIndex)
 
