@@ -11,6 +11,7 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.Toast
 import checkers.tabi_idea.*
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
@@ -65,8 +66,8 @@ class EventListFragment : Fragment() {
         eventListView.adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_1, eventManager.eventList)
 
         eventListView.setOnItemClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
-            repository.getMmo ("16"){
-                Log.d("err",mindMapObjectList.toString())
+            repository.getMmo (eventManager.eventList[position].id.toString()){
+                Log.d("err",eventManager.eventList[id.toInt()].id.toString())
                 activity
                         ?.supportFragmentManager
                         ?.beginTransaction()
@@ -91,8 +92,6 @@ class EventListFragment : Fragment() {
                 setView(inflater)
                 setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
                     // OKボタンを押したときの処理
-                    eventManager.add(Event(0,"${inputText.text}", mutableListOf()))
-
                     val eventMap = mapOf(
                             "title" to "${inputText.text}",
                             "eventpass" to "tubasa"
@@ -105,6 +104,7 @@ class EventListFragment : Fragment() {
                             repository.addMmo(event_id.toString(),it)
                         }
                     }
+                    eventManager.add(Event(event_id,"${inputText.text}", mutableListOf()))
 
                 (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
                 })

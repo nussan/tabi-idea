@@ -94,7 +94,7 @@ class TravelMindMapFragment :
 
     override fun onAddClicked(position: Int) {
         Log.d(javaClass.simpleName, "onAddClicked")
-// レイアウトを取得
+        // レイアウトを取得
         val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
 
         // ダイアログ内のテキストエリア
@@ -117,7 +117,7 @@ class TravelMindMapFragment :
                         0.5f,
                         mindMapObjectList!![position].viewIndex
                 )
-                repository.addMmo("16",mmo) //"1"は追加先event.id
+                repository.addMmo(event!!.id.toString(),mmo) //"1"は追加先event.id
                 mindMapObjectList!!.add(mmo)
 
                 val view = mindMapObjectToTextView(context, mmo)
@@ -201,7 +201,7 @@ class TravelMindMapFragment :
     }
 
     private fun setTextViewPosition(textView: RoundRectTextView, mindMapObject: MindMapObject) {
-        textView.setPositionXByCenterPositionX(mindMapObject.positionX * layoutWidth)
+        textView.setPositionXByCenterPositionX(mindMapObject.positionX * layoutWidth    )
         textView.setPositionYByCenterPositionY(mindMapObject.positionY * layoutHeight)
     }
 
