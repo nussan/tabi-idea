@@ -11,8 +11,8 @@ import retrofit2.http.*
 
 interface RequestService {
     //userの追加
-    @POST("home/user/{uuid}")
-    fun addUser(@Path("uuid") uuid : String)
+    @POST("home/usercreate")
+    fun addUser(@Body user:Map<String,String>) : Single<User>
 
     //user情報の取得
     @GET("home/index/{id}")
