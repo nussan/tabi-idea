@@ -31,8 +31,8 @@ class Repository{
 
     /*---heroku---*/
     //userをadd
-    fun addUser(user:Map<String,String>,callback: (User) -> Unit) {
-        requestService.addUser(user)
+    fun addUser(newUser:Map<String,String>,callback: (User) -> Unit) {
+        requestService.addUser(newUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

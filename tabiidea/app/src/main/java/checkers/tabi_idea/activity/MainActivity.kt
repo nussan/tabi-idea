@@ -29,11 +29,11 @@ class MainActivity : AppCompatActivity() {
             Log.d("uuid" , uuid)
             repository.getUser(uuid) {
                 if(it.id == -1){
-                    val newuser = mapOf(
-                            "id" to "uuid",
+                    val newUser = mapOf(
+                            "uuid" to uuid,
                             "name" to "新しいユーザー"
                     )
-                    repository.addUser(newuser){
+                    repository.addUser(newUser){
                         toOwnPageFragment(it)
                     }
                 }else{
