@@ -96,17 +96,16 @@ class EventListFragment : Fragment() {
                             "title" to "${inputText.text}",
                             "eventpass" to "tubasa"
                     )
-                    repository.addEvent(userId,eventMap){
+                    repository.addEvent(userId,eventMap) {
                         event_id = it.id
-                        Log.d("tubasa",it.id.toString())
+                        Log.d("tubasa", it.id.toString())
                         repository.addEventtoFb(event_id.toString())//event.id
-                        mindMapObjectList.forEach{
-                            repository.addMmo(event_id.toString(),it)
+                        mindMapObjectList.forEach {
+                            repository.addMmo(event_id.toString(), it)
                         }
+                        eventManager.add(it)
+                        (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
                     }
-                    eventManager.add(Event(event_id,"${inputText.text}", mutableListOf()))
-
-                (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
                 })
                 setNegativeButton("Cancel", null)
             }.create()
