@@ -2,7 +2,6 @@ package checkers.tabi_idea.fragment
 
 
 import android.content.Context
-import android.content.DialogInterface
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -15,6 +14,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.widget.EditText
+import android.widget.Toast
 import checkers.tabi_idea.R
 import checkers.tabi_idea.activity.MainActivity
 import checkers.tabi_idea.custom.view.CustomBottomSheetDialogFragment
@@ -36,7 +36,7 @@ class TravelMindMapFragment :
     private var textViewList = mutableListOf<RoundRectTextView>()
     private val repository = Repository()
     private var event: Event? = null
-    private var mindMapObjectList:MutableList<MindMapObject>? = null
+    private var mindMapObjectList: MutableList<MindMapObject>? = null
 
     var layoutWidth = 0f
     var layoutHeight = 0f
@@ -105,19 +105,25 @@ class TravelMindMapFragment :
         val inputForm = AlertDialog.Builder(context!!).apply {
             setTitle("新しいアイデア")
             setView(inflater)
-            setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
-                var newId:Int = 0
+            setPositiveButton("OK") { _, _ ->
+                var newId: Int = 0
                 mindMapObjectList!!.forEach {
-                    if(newId<it.viewIndex) newId = it.viewIndex
+                    if (newId < it.viewIndex)
+                        newId = it.viewIndex
                 }
+
+                val parent = mindMapObjectList!![position]
+                val textView = mindMapConstraintLayout.getChildAt(parent.viewIndex)
+                Toast.makeText(context, mindMapObjectList!![position].text, Toast.LENGTH_SHORT).show()
+
                 val mmo = MindMapObject(
-                        newId+1,
+                        newId + 1,
                         "${inputText.text}",
-                        0.5f,
-                        0.5f,
+                        - 200f,
+                        - 200f,
                         mindMapObjectList!![position].viewIndex
                 )
-                repository.addMmo(event!!.id.toString(),mmo) //"1"は追加先event.id
+                repository.addMmo(event!!.id.toString(), mmo) //"1"は追加先event.id
                 mindMapObjectList!!.add(mmo)
 
                 val view = mindMapObjectToTextView(context, mmo)
@@ -128,14 +134,13 @@ class TravelMindMapFragment :
                 textViewList.add(view)
                 mindMapConstraintLayout.addView(view, mmo.viewIndex)
                 mindMapConstraintLayout.invalidate()
-            })
+            }
             setNegativeButton("Cancel", null)
         }.create()
 
         // ダイアログ表示と同時にキーボードを表示
-        inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         inputForm.show()
-
     }
 
     override fun onDeleteClicked(position: Int) {
@@ -169,7 +174,6 @@ class TravelMindMapFragment :
             return
         }
 
-//        prepareCanvas(context!!)
         // textViewListに追加
         mindMapObjectList!!.forEach {
             val view = mindMapObjectToTextView(context!!, it)
@@ -200,17 +204,28 @@ class TravelMindMapFragment :
         return textView
     }
 
-    private fun setTextViewPosition(textView: RoundRectTextView, mindMapObject: MindMapObject) {
-        textView.setPositionXByCenterPositionX(mindMapObject.positionX * layoutWidth    )
-        textView.setPositionYByCenterPositionY(mindMapObject.positionY * layoutHeight)
+    private fun setTextViewPosition(textView: RoundRectTextView, mmo: MindMapObject) {
+        if (mindMapObjectList == null) {
+            Log.d(javaClass.simpleName, "mindMapObjectList is null")
+            return
+        }
+
+        val parent = mindMapObjectList!![mmo.parent]
+
+        textView.setPositionXByCenterPositionX(
+                if (mmo.viewIndex == parent.viewIndex) mmo.positionX
+                else parent.positionX - mmo.positionX)
+        textView.setPositionYByCenterPositionY(
+                if (mmo.viewIndex == parent.viewIndex) mmo.positionY
+                else parent.positionX - mmo.positionY)
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(event: Event,mindMapObjectList:MutableList<MindMapObject>) = TravelMindMapFragment().apply {
+        fun newInstance(event: Event, mindMapObjectList: MutableList<MindMapObject>) = TravelMindMapFragment().apply {
             arguments = Bundle().apply {
                 putParcelable("eventKey", event)
-                putParcelableArrayList("mmoKey",ArrayList(mindMapObjectList))
+                putParcelableArrayList("mmoKey", ArrayList(mindMapObjectList))
             }
         }
     }

@@ -96,7 +96,7 @@ class ZoomableLayout :
 
                 MotionEvent.ACTION_MOVE ->
                     if (mode == Mode.DRAG) {
-                        Log.e("MOVE", "Drag")
+//                        Log.e("MOVE", "Drag")
                         for (i in 0 until childCount) {
                             coordinates[i].dx = motionEvent.x / scale - coordinates[i].startX
                             coordinates[i].dy = motionEvent.y / scale - coordinates[i].startY
@@ -106,12 +106,12 @@ class ZoomableLayout :
 
                 MotionEvent.ACTION_POINTER_UP -> {
                     mode = Mode.NONE
-                    Log.e("ACTION_POINTER_UP", "Drag")
+//                    Log.e("ACTION_POINTER_UP", "Drag")
                 }
 
                 MotionEvent.ACTION_UP -> {
-                    Log.i(TAG, "UP")
-                    Log.e("ACTION_UP", "None")
+//                    Log.i(TAG, "UP")
+//                    Log.e("ACTION_UP", "None")
                     mode = Mode.NONE
 
                     for (i in 0 until childCount) {
@@ -144,13 +144,13 @@ class ZoomableLayout :
     }
 
     override fun onScaleBegin(scaleDetector: ScaleGestureDetector): Boolean {
-        Log.i(TAG, "onScaleBegin")
+//        Log.i(TAG, "onScaleBegin")
         return true
     }
 
     override fun onScale(scaleDetector: ScaleGestureDetector): Boolean {
         val scaleFactor = scaleDetector.scaleFactor
-        Log.i(TAG, "onScale$scaleFactor")
+//        Log.i(TAG, "onScale$scaleFactor")
         if (lastScaleFactor == 0f || Math.signum(scaleFactor) == Math.signum(lastScaleFactor)) {
             scale *= scaleFactor
             scale = Math.max(MIN_ZOOM, Math.min(scale, MAX_ZOOM))
@@ -162,7 +162,7 @@ class ZoomableLayout :
     }
 
     override fun onScaleEnd(scaleDetector: ScaleGestureDetector) {
-        Log.i(TAG, "onScaleEnd")
+//        Log.i(TAG, "onScaleEnd")
     }
 
     private fun applyScaleAndTranslation(index: Int) {
