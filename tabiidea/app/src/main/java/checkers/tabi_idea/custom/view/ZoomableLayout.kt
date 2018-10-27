@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.ViewTreeObserver
+import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.fragment.TravelMindMapFragment
 
 
@@ -24,7 +25,7 @@ class ZoomableLayout :
     private var lastScaleFactor = 0f
     private var mmoCount = 0
     // 各テキストビューの座標情報
-    private var coordinates: MutableList<Coordinates> = mutableListOf()
+    var coordinates: MutableList<Coordinates> = mutableListOf()
 
     var centerX = 0f
     var centerY = 0f
@@ -56,6 +57,7 @@ class ZoomableLayout :
 
     override fun addView(child: View?) {
         super.addView(child)
+
         child?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 coordinates.add(Coordinates(coordinates.size, child.x, child.y))
@@ -66,13 +68,15 @@ class ZoomableLayout :
         })
     }
 
-    override fun addView(child: View?, index: Int) {
-        super.addView(child, index)
+    fun addView(child: View?, mmo: MindMapObject) {
+        addView(child, mmo.viewIndex)
 
         (child as? RoundRectTextView)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                Log.d("aaaaa", "$index, ${coordinates.size}, $childCount")
-                coordinates.add(index, Coordinates(index, child.x, child.y))
+                child.x = if (mmo.parent == 0) width.toFloat() / 2 - mmo.positionX else getChildAt(mmo.parent).x - mmo.positionX
+                child.y = if (mmo.parent == 0) height.toFloat() / 2 - mmo.positionY else getChildAt(mmo.parent).y - mmo.positionY
+                Log.d("aaaaa", "${mmo.viewIndex}, ${coordinates.size}, $childCount, ${child.x}, ${child.y}")
+                coordinates.add(mmo.viewIndex, Coordinates(mmo.viewIndex, child.x, child.y))
                 updateListener(context)
                 viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
@@ -87,11 +91,6 @@ class ZoomableLayout :
                 MotionEvent.ACTION_DOWN -> {
                     mode = Mode.DRAG
 
-//                    for (i in 0 until childCount) {
-//                        coordinates[i].startX = motionEvent.x / scale - coordinates[i].prevDx
-//                        coordinates[i].startY = motionEvent.y / scale - coordinates[i].prevDy
-//                    }
-
                     coordinates.forEach {
                         it.startX = motionEvent.x / scale - it.prevDx
                         it.startY = motionEvent.y / scale - it.prevDy
@@ -101,10 +100,6 @@ class ZoomableLayout :
                 MotionEvent.ACTION_MOVE ->
                     if (mode == Mode.DRAG) {
 //                        Log.e("MOVE", "Drag")
-//                        for (i in 0 until childCount) {
-//                            coordinates[i].dx = motionEvent.x / scale - coordinates[i].startX
-//                            coordinates[i].dy = motionEvent.y / scale - coordinates[i].startY
-//                        }
                         coordinates.forEach {
                             it.dx = motionEvent.x /scale - it.startX
                             it.dy = motionEvent.y /scale - it.startY
@@ -122,11 +117,6 @@ class ZoomableLayout :
 //                    Log.e("ACTION_UP", "None")
                     mode = Mode.NONE
 
-//                    for (i in 0 until childCount) {
-//                        coordinates[i].prevDx = coordinates[i].dx
-//                        coordinates[i].prevDy = coordinates[i].dy
-//                    }
-
                     coordinates.forEach {
                         it.prevDx = it.dx
                         it.prevDy = it.dy
@@ -139,9 +129,6 @@ class ZoomableLayout :
             if (mode == Mode.DRAG && scale >= MIN_ZOOM || mode == Mode.ZOOM) {
                 parent.requestDisallowInterceptTouchEvent(true)
 
-//                for (i in 0 until childCount) {
-//                    applyScaleAndTranslation(i)
-//                }
                 coordinates.forEach{
                     applyScaleAndTranslation(it.index)
                 }
@@ -182,8 +169,8 @@ class ZoomableLayout :
     }
 
     private fun applyScaleAndTranslation(index: Int) {
-        getChildAt(index).pivotX = centerX - getChildAt(index).x
-        getChildAt(index).pivotY = centerY - getChildAt(index).y
+        getChildAt(index).pivotX = width / 2 - getChildAt(index).x
+        getChildAt(index).pivotY = height / 2 - getChildAt(index).y
         getChildAt(index).scaleX = scale
         getChildAt(index).scaleY = scale
         getChildAt(index).translationX = coordinates[index].dx
