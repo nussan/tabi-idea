@@ -23,6 +23,9 @@ import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.provider.Repository
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 
 
@@ -32,11 +35,9 @@ class TravelMindMapFragment :
         CustomBottomSheetDialogFragment.Listener,
         ZoomableLayout.LineDrawer {
 
-
-    private var textViewList = mutableListOf<RoundRectTextView>()
     private val repository = Repository()
     private var event: Event? = null
-    private var mindMapObjectList: MutableList<MindMapObject>? = null
+    private var mindMapObjectList: MutableList<MindMapObject> = mutableListOf()
 
     var layoutWidth = 0f
     var layoutHeight = 0f
@@ -45,7 +46,6 @@ class TravelMindMapFragment :
         super.onCreate(savedInstanceState)
         arguments?.let {
             event = it.getParcelable("eventKey")
-            mindMapObjectList = it.getParcelableArrayList("mmoKey")
         }
     }
 
@@ -68,8 +68,43 @@ class TravelMindMapFragment :
         layoutHeight = (activity as MainActivity).layoutHeight
         mindMapConstraintLayout.centerX = layoutWidth / 2
         mindMapConstraintLayout.centerY = layoutHeight / 2
-        mindMapConstraintLayout.removeAllViews()
-        prepareView()
+
+        val callback = fun(it: Collection<MindMapObject>) {
+
+            if(context == null) {
+                Log.d(javaClass.simpleName, "context is null")
+                return
+            }
+
+            val offset = mindMapObjectList.size
+
+            val ml = it as MutableList<MindMapObject>
+            if (offset == 0) {
+                mindMapObjectList = ml
+                mindMapObjectList.forEach {
+                    val v = mindMapObjectToTextView(context, it)
+                    mindMapConstraintLayout.addView(v, it.viewIndex)
+
+                    v.setOnClickListener { vv ->
+                        val bottomSheetDialog = CustomBottomSheetDialogFragment.newInstance(vv.id)
+                        bottomSheetDialog.show(childFragmentManager, bottomSheetDialog.tag)
+                    }
+                }
+            } else {
+                for (i in offset until ml.size) {
+                    mindMapObjectList.add(ml[i].viewIndex, ml[i])
+                    val v = mindMapObjectToTextView(context, ml[i])
+                    mindMapConstraintLayout.addView(v, ml[i].viewIndex)
+
+                    v.setOnClickListener { vv ->
+                        val bottomSheetDialog = CustomBottomSheetDialogFragment.newInstance(vv.id)
+                        bottomSheetDialog.show(childFragmentManager, bottomSheetDialog.tag)
+                    }
+                }
+            }
+        }
+
+        repository.getMmo(event?.id.toString(), callback)
         mindMapConstraintLayout.lineDrawer = this
     }
 
@@ -106,33 +141,25 @@ class TravelMindMapFragment :
             setTitle("新しいアイデア")
             setView(inflater)
             setPositiveButton("OK") { _, _ ->
-                var newId: Int = 0
-                mindMapObjectList!!.forEach {
-                    if (newId < it.viewIndex)
-                        newId = it.viewIndex
-                }
 
+                val newId = mindMapObjectList!![mindMapObjectList!!.lastIndex].viewIndex + 1
                 val parent = mindMapObjectList!![position]
-                val textView = mindMapConstraintLayout.getChildAt(parent.viewIndex)
-                Toast.makeText(context, mindMapObjectList!![position].text, Toast.LENGTH_SHORT).show()
-
                 val mmo = MindMapObject(
-                        newId + 1,
+                        newId,
                         "${inputText.text}",
-                        - 200f,
-                        - 200f,
-                        mindMapObjectList!![position].viewIndex
+                        -200f,
+                        -200f,
+                        parent.viewIndex
                 )
                 repository.addMmo(event!!.id.toString(), mmo) //"1"は追加先event.id
-                mindMapObjectList!!.add(mmo)
+//                mindMapObjectList!!.add(newId, mmo)
 
                 val view = mindMapObjectToTextView(context, mmo)
                 view.setOnClickListener { v ->
                     val bottomSheetDialog = CustomBottomSheetDialogFragment.newInstance(v.id)
                     bottomSheetDialog.show(childFragmentManager, bottomSheetDialog.tag)
                 }
-                textViewList.add(view)
-                mindMapConstraintLayout.addView(view, mmo.viewIndex)
+//                mindMapConstraintLayout.addView(view, mmo.viewIndex)
                 mindMapConstraintLayout.invalidate()
             }
             setNegativeButton("Cancel", null)
@@ -169,25 +196,6 @@ class TravelMindMapFragment :
         canvas?.scale(1 / scale, 1 / scale, mindMapConstraintLayout.centerX, mindMapConstraintLayout.centerY)
     }
 
-    private fun prepareView() {
-        if (event == null) {
-            return
-        }
-
-        // textViewListに追加
-        mindMapObjectList!!.forEach {
-            val view = mindMapObjectToTextView(context!!, it)
-            textViewList.add(it.viewIndex, view)
-            if (view.parent == null)
-                mindMapConstraintLayout.addView(view, it.viewIndex)
-
-            view.setOnClickListener { v ->
-                val bottomSheetDialog = CustomBottomSheetDialogFragment.newInstance(v.id)
-                bottomSheetDialog.show(childFragmentManager, bottomSheetDialog.tag)
-            }
-        }
-    }
-
     private fun mindMapObjectToTextView(context: Context?, mindMapObject: MindMapObject): RoundRectTextView {
         val textView = RoundRectTextView(context)
         textView.id = mindMapObject.viewIndex
@@ -222,10 +230,9 @@ class TravelMindMapFragment :
 
     companion object {
         @JvmStatic
-        fun newInstance(event: Event, mindMapObjectList: MutableList<MindMapObject>) = TravelMindMapFragment().apply {
+        fun newInstance(event: Event) = TravelMindMapFragment().apply {
             arguments = Bundle().apply {
                 putParcelable("eventKey", event)
-                putParcelableArrayList("mmoKey", ArrayList(mindMapObjectList))
             }
         }
     }

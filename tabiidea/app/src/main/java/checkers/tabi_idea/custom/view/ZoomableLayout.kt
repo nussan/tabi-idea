@@ -22,7 +22,7 @@ class ZoomableLayout :
     private var mode = Mode.NONE
     var scale = 1.0f
     private var lastScaleFactor = 0f
-
+    private var mmoCount = 0
     // 各テキストビューの座標情報
     private var coordinates: MutableList<Coordinates> = mutableListOf()
 
@@ -56,11 +56,10 @@ class ZoomableLayout :
 
     override fun addView(child: View?) {
         super.addView(child)
-
         child?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                coordinates.add(Coordinates(child.x, child.y))
-                Log.d(javaClass.simpleName, "${coordinates.size}")
+                coordinates.add(Coordinates(coordinates.size, child.x, child.y))
+                Log.d(javaClass.simpleName, "coordinates.size = ${coordinates.size} , ${child.x}, ${child.y}")
                 updateListener(context)
                 viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
@@ -72,8 +71,8 @@ class ZoomableLayout :
 
         (child as? RoundRectTextView)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                coordinates.add(index, Coordinates(child.x, child.y))
-                Log.d(javaClass.simpleName, "${coordinates.size}")
+                Log.d("aaaaa", "$index, ${coordinates.size}, $childCount")
+                coordinates.add(index, Coordinates(index, child.x, child.y))
                 updateListener(context)
                 viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
@@ -88,18 +87,27 @@ class ZoomableLayout :
                 MotionEvent.ACTION_DOWN -> {
                     mode = Mode.DRAG
 
-                    for (i in 0 until childCount) {
-                        coordinates[i].startX = motionEvent.x / scale - coordinates[i].prevDx
-                        coordinates[i].startY = motionEvent.y / scale - coordinates[i].prevDy
+//                    for (i in 0 until childCount) {
+//                        coordinates[i].startX = motionEvent.x / scale - coordinates[i].prevDx
+//                        coordinates[i].startY = motionEvent.y / scale - coordinates[i].prevDy
+//                    }
+
+                    coordinates.forEach {
+                        it.startX = motionEvent.x / scale - it.prevDx
+                        it.startY = motionEvent.y / scale - it.prevDy
                     }
                 }
 
                 MotionEvent.ACTION_MOVE ->
                     if (mode == Mode.DRAG) {
 //                        Log.e("MOVE", "Drag")
-                        for (i in 0 until childCount) {
-                            coordinates[i].dx = motionEvent.x / scale - coordinates[i].startX
-                            coordinates[i].dy = motionEvent.y / scale - coordinates[i].startY
+//                        for (i in 0 until childCount) {
+//                            coordinates[i].dx = motionEvent.x / scale - coordinates[i].startX
+//                            coordinates[i].dy = motionEvent.y / scale - coordinates[i].startY
+//                        }
+                        coordinates.forEach {
+                            it.dx = motionEvent.x /scale - it.startX
+                            it.dy = motionEvent.y /scale - it.startY
                         }
                     }
                 MotionEvent.ACTION_POINTER_DOWN -> mode = Mode.ZOOM
@@ -114,9 +122,14 @@ class ZoomableLayout :
 //                    Log.e("ACTION_UP", "None")
                     mode = Mode.NONE
 
-                    for (i in 0 until childCount) {
-                        coordinates[i].prevDx = coordinates[i].dx
-                        coordinates[i].prevDy = coordinates[i].dy
+//                    for (i in 0 until childCount) {
+//                        coordinates[i].prevDx = coordinates[i].dx
+//                        coordinates[i].prevDy = coordinates[i].dy
+//                    }
+
+                    coordinates.forEach {
+                        it.prevDx = it.dx
+                        it.prevDy = it.dy
                     }
                 }
             }
@@ -126,8 +139,11 @@ class ZoomableLayout :
             if (mode == Mode.DRAG && scale >= MIN_ZOOM || mode == Mode.ZOOM) {
                 parent.requestDisallowInterceptTouchEvent(true)
 
-                for (i in 0 until childCount) {
-                    applyScaleAndTranslation(i)
+//                for (i in 0 until childCount) {
+//                    applyScaleAndTranslation(i)
+//                }
+                coordinates.forEach{
+                    applyScaleAndTranslation(it.index)
                 }
             }
 
@@ -177,11 +193,12 @@ class ZoomableLayout :
 
     companion object {
         private val TAG = "ZoomableLayout"
-        private val MIN_ZOOM = 0.8f
-        private val MAX_ZOOM = 3.0f
+        private val MIN_ZOOM = 0.0f
+        private val MAX_ZOOM = 100f
     }
 
     data class Coordinates(
+            var index: Int,
             var dx: Float,
             var dy: Float,
             var prevDx: Float = dx,

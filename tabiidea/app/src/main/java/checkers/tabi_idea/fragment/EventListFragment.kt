@@ -1,7 +1,6 @@
 package checkers.tabi_idea.fragment
 
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -14,6 +13,9 @@ import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.manager.EventManager
 import checkers.tabi_idea.provider.Repository
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.fragment_event_list.*
 import java.util.*
 
@@ -63,15 +65,12 @@ class EventListFragment : Fragment() {
         eventListView.adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_1, eventManager.eventList)
 
         eventListView.setOnItemClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
-            repository.getMmo(eventManager.eventList[position].id.toString()) {
-                Log.d("err", eventManager.eventList[id.toInt()].id.toString())
-                activity
-                        ?.supportFragmentManager
-                        ?.beginTransaction()
-                        ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()], it as MutableList<MindMapObject>))
-                        ?.addToBackStack(null)
-                        ?.commit()
-            }
+            activity
+                    ?.supportFragmentManager
+                    ?.beginTransaction()
+                    ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()]))
+                    ?.addToBackStack(null)
+                    ?.commit()
         }
 
         fab.setOnClickListener {
