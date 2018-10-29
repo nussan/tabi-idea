@@ -55,19 +55,6 @@ class ZoomableLayout :
         fun drawLines(canvas: Canvas?, scale: Float)
     }
 
-    override fun addView(child: View?) {
-        super.addView(child)
-
-        child?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                coordinates.add(Coordinates(coordinates.size, child.x, child.y))
-                Log.d(javaClass.simpleName, "coordinates.size = ${coordinates.size} , ${child.x}, ${child.y}")
-                updateListener(context)
-                viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
-    }
-
     fun addView(child: View?, mmo: MindMapObject) {
         addView(child, mmo.viewIndex)
 

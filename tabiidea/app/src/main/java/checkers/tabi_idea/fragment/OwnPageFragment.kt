@@ -43,11 +43,11 @@ class OwnPageFragment : Fragment() {
         listView.adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_1, list)
         listView.setOnItemClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
             when (list[position]) {
-                "イベント" -> repository.getEventList(user!!.id){
+                "イベント" -> repository.getEventList(user!!.id) {
                     (activity as AppCompatActivity)
                             .supportFragmentManager
                             .beginTransaction()
-                            .replace(R.id.container, EventListFragment.newInstance(user!!.id,it))
+                            .replace(R.id.container, EventListFragment.newInstance(user!!.id, it))
                             .addToBackStack(null)
                             .commit()
                 }

@@ -196,7 +196,6 @@ class TravelMindMapFragment :
         textView.gravity = Gravity.CENTER
         textView.text = mindMapObject.text
         textView.setTextColor(Color.WHITE)
-//        setTextViewPosition(textView, mindMapObject)
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
                 textView,
                 10,
