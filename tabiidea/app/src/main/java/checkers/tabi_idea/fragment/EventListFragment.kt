@@ -102,9 +102,6 @@ class EventListFragment : Fragment() {
                         eventManager.add(it)
                         (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
                     }
-                    eventManager.add(Event(event_id, "${inputText.text}", mutableListOf()))
-
-                    (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
                 }
                 setNegativeButton("Cancel", null)
             }.create()
