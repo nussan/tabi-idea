@@ -1,13 +1,13 @@
 package checkers.tabi_idea.custom.view
 
 import android.content.Context
-import android.gesture.Gesture
 import android.graphics.Canvas
-import android.graphics.Matrix
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
-import android.util.Log
-import android.view.*
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.ScaleGestureDetector
+import android.view.View
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.fragment.TravelMindMapFragment
 
@@ -16,22 +16,10 @@ class ZoomableLayout :
         ConstraintLayout,
         ScaleGestureDetector.OnScaleGestureListener,
         GestureDetector.OnGestureListener,
-        GestureDetector.OnDoubleTapListener{
+        GestureDetector.OnDoubleTapListener {
 
-    private var mode = Mode.NONE
     private var scale = 1.0f
     private var lastScaleFactor = 0f
-    // 各テキストビューの座標情報
-    var coordinates: MutableList<Coordinates> = mutableListOf()
-
-    var centerX = 0f
-    var centerY = 0f
-
-    private enum class Mode {
-        NONE,
-        DRAG,
-        ZOOM
-    }
 
     constructor(context: Context) : this(context, null)
 
@@ -54,17 +42,6 @@ class ZoomableLayout :
 
     fun addView(child: View?, mmo: MindMapObject) {
         addView(child, mmo.viewIndex)
-
-        (child as? RoundRectTextView)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                child.x = if (mmo.parent == 0) width.toFloat() / 2 + mmo.positionX else getChildAt(mmo.parent).x + mmo.positionX
-                child.y = if (mmo.parent == 0) height.toFloat() / 2 + mmo.positionY else getChildAt(mmo.parent).y + mmo.positionY
-                Log.d("aaaaa", "${mmo.viewIndex}, ${coordinates.size}, $childCount, ${child.x}, ${child.y}, ${child.text}")
-                coordinates.add(mmo.viewIndex, Coordinates(mmo.viewIndex, child.x, child.y))
-                updateListener(context)
-                viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
     }
 
     private fun updateListener(context: Context) {
@@ -72,54 +49,8 @@ class ZoomableLayout :
         val gestureDetector = GestureDetector(context, this)
 
         this.setOnTouchListener { _, motionEvent ->
-            when (motionEvent.action and MotionEvent.ACTION_MASK) {
-                MotionEvent.ACTION_DOWN -> {
-                    mode = Mode.DRAG
-
-                    coordinates.forEach {
-                        it.startX = motionEvent.x / scale - it.prevDx
-                        it.startY = motionEvent.y / scale - it.prevDy
-                    }
-                }
-
-                MotionEvent.ACTION_MOVE ->
-                    if (mode == Mode.DRAG) {
-//                        Log.e("MOVE", "Drag")
-                        coordinates.forEach {
-                            it.dx = motionEvent.x / scale - it.startX
-                            it.dy = motionEvent.y / scale - it.startY
-                        }
-                    }
-                MotionEvent.ACTION_POINTER_DOWN -> mode = Mode.ZOOM
-
-                MotionEvent.ACTION_POINTER_UP -> {
-                    mode = Mode.NONE
-//                    Log.e("ACTION_POINTER_UP", "Drag")
-                }
-
-                MotionEvent.ACTION_UP -> {
-//                    Log.i(TAG, "UP")
-//                    Log.e("ACTION_UP", "None")
-                    mode = Mode.NONE
-
-                    coordinates.forEach {
-                        it.prevDx = it.dx
-                        it.prevDy = it.dy
-                    }
-                }
-            }
-
             scaleGestureDetector.onTouchEvent(motionEvent)
             gestureDetector.onTouchEvent(motionEvent)
-
-            if (mode == Mode.DRAG && scale >= MIN_ZOOM || mode == Mode.ZOOM) {
-                parent.requestDisallowInterceptTouchEvent(true)
-
-                coordinates.forEach {
-                    applyScaleAndTranslation(it.index)
-                }
-            }
-
             true
         }
     }
@@ -157,7 +88,7 @@ class ZoomableLayout :
     override fun onShowPress(e: MotionEvent?) {
     }
 
-    override fun onSingleTapUp(e: MotionEvent?): Boolean {
+    override fun onSingleTapUp(e: MotionEvent): Boolean {
         return true
     }
 
@@ -169,20 +100,26 @@ class ZoomableLayout :
         return true
     }
 
-    override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+    override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            child.translationX = child.x - distanceX / scale
+            child.translationY = child.y - distanceY / scale
+            child.pivotX = width / 2 - child.x
+            child.pivotY = height / 2 - child.y
+            child.scaleX = scale
+            child.scaleY = scale
+            invalidate()
+        }
         return true
     }
 
     override fun onLongPress(e: MotionEvent?) {
     }
 
-    override fun onDoubleTap(e: MotionEvent?): Boolean {
-        scale = if (scale == MIN_ZOOM) MAX_ZOOM else MIN_ZOOM
-
-        coordinates.forEach {
-            applyScaleAndTranslation(it.index)
-        }
-        mode = Mode.NONE
+    override fun onDoubleTap(e: MotionEvent): Boolean {
+        // とりあえずダブルタップで暴れないように
+        // ダブルタップで拡大縮小できるようにしてもいいかも
         return true
     }
 
@@ -194,30 +131,9 @@ class ZoomableLayout :
         return true
     }
 
-    private fun applyScaleAndTranslation(index: Int) {
-        val v = getChildAt(index)
-        v.pivotX = width / 2 - v.x
-        v.pivotY = height / 2 - v.y
-        v.scaleX = scale
-        v.scaleY = scale
-        v.translationX = coordinates[index].dx
-        v.translationY = coordinates[index].dy
-        invalidate()
-    }
-
     companion object {
         private val TAG = "ZoomableLayout"
-        private val MIN_ZOOM = 0.3f
-        private val MAX_ZOOM = 1.5f
+        private const val MIN_ZOOM = 0.3f
+        private const val MAX_ZOOM = 1.5f
     }
-
-    data class Coordinates(
-            var index: Int,
-            var dx: Float,
-            var dy: Float,
-            var prevDx: Float = dx,
-            var prevDy: Float = dy,
-            var startX: Float = 0f,
-            var startY: Float = 0f,
-            val matrix: Matrix = Matrix())
 }

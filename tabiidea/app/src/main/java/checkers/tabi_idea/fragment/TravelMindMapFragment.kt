@@ -27,16 +27,12 @@ import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 
 class TravelMindMapFragment :
         Fragment(),
-        MainActivity.IOnFocusListenable,
         CustomBottomSheetDialogFragment.Listener,
         ZoomableLayout.LineDrawer {
 
     private val repository = Repository()
     private var event: Event? = null
     private var mindMapObjectList: MutableList<MindMapObject> = mutableListOf()
-
-    var layoutWidth = 0f
-    var layoutHeight = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,11 +55,6 @@ class TravelMindMapFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(this.javaClass.simpleName, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
-
-        layoutWidth = (activity as MainActivity).layoutWidth
-        layoutHeight = (activity as MainActivity).layoutHeight
-        mindMapConstraintLayout.centerX = layoutWidth / 2
-        mindMapConstraintLayout.centerY = layoutHeight / 2
 
         val callback = fun(it: Collection<MindMapObject>) {
 
@@ -112,15 +103,6 @@ class TravelMindMapFragment :
 
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        if (hasFocus) {
-            layoutWidth = (activity as MainActivity).layoutWidth
-            layoutHeight = (activity as MainActivity).layoutHeight
-            mindMapConstraintLayout.centerX = layoutWidth / 2
-            mindMapConstraintLayout.centerY = layoutHeight / 2
-        }
     }
 
     override fun onAddClicked(position: Int) {
