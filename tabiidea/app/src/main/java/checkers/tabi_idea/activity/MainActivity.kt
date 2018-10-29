@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import checkers.tabi_idea.R
+import checkers.tabi_idea.data.Installation
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.fragment.OwnPageFragment
 import checkers.tabi_idea.provider.Repository
@@ -20,9 +21,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        //sIdを取得
+        val uuid = Installation.id(this)
+
         if( savedInstanceState == null)
-            repository.getUser {
-                toOwnPageFragment(it)
+            Log.d("uuid" , uuid)
+            repository.getUser(uuid) {
+                if(it.id == -1){
+                    val newUser = mapOf(
+                            "uuid" to uuid,
+                            "name" to "新しいユーザー"
+                    )
+                    repository.addUser(newUser){
+                        toOwnPageFragment(it)
+                    }
+                }else{
+                    toOwnPageFragment(it)
+                }
             }
     }
 

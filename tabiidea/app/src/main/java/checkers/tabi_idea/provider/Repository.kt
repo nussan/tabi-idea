@@ -31,8 +31,14 @@ class Repository{
 
     /*---heroku---*/
     //userをadd
-    fun addUser(uuid:String) {
-        requestService.addUser(uuid)
+    fun addUser(newUser:Map<String,String>,callback: (User) -> Unit) {
+        requestService.addUser(newUser)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {res -> callback(res)},
+                        {err -> Log.d("errAddUser" ,err.toString())}
+                )
     }
 
     //userをedit
@@ -41,16 +47,16 @@ class Repository{
     }
 
     //user情報をget,rxjava2
-    fun getUser(callback:(User)->Unit){
-        val user: User = User(0, "たきかわ")
-        requestService.getUser("tsubasa")
+    fun getUser(uuid: String,callback:(User)->Unit){
+        val user: User = User(-1,"")
+        requestService.getUser(uuid)
                 .retry(3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         {res -> callback(res) },
                         {err ->
-                            Log.d("err",err.toString())
+                            Log.d("errGetUser",err.toString())
                             callback(user)
                         }
                 )
@@ -59,13 +65,12 @@ class Repository{
     //eventlistをadd,rxjava2
     fun addEvent(userid:Int,title:Map<String,String>,callback:(Event) -> Unit){
         requestService.addEvent(userid,title)
-                .retry(3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         {res -> callback(res)},
                         {err ->
-                            Log.d("err",err.toString())
+                            Log.d("errAddEvent",err.toString())
                         }
                 )
     }
@@ -80,7 +85,7 @@ class Repository{
                 .subscribe(
                         {res -> callback(res)},
                         {err ->
-                            Log.d("err",err.toString())
+                            Log.d("errGetEventList",err.toString())
                             callback(eventList)
                         }
                 )
@@ -93,13 +98,12 @@ class Repository{
                 .addValueEventListener(object : ValueEventListener{
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         callback(dataSnapshot.children.mapNotNull {
-                            Log.d("err",it.toString())
                             it.getValue(MindMapObject::class.java)
                         })
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
-                        Log.d("err",databaseError.toString())
+                        Log.d("errGetMmo",databaseError.toString())
                     }
                 })
     }
