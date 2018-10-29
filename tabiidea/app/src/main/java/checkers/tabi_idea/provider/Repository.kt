@@ -111,7 +111,7 @@ class Repository{
     /*---firebase---*/
     //eventをfbにadd
     fun addEventtoFb(event_id: String){
-        val mmo = MindMapObject(0, "旅行", 1f / 2, 1f / 2, 0)
+        val mmo = MindMapObject(0, "旅行", 0f, 0f, 0)
         FirebaseDatabase.getInstance()
                 .getReference(event_id)
                 .push()

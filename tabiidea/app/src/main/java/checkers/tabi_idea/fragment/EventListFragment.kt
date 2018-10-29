@@ -1,22 +1,21 @@
 package checkers.tabi_idea.fragment
 
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.*
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import checkers.tabi_idea.*
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.manager.EventManager
 import checkers.tabi_idea.provider.Repository
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.fragment_event_list.*
 import java.util.*
 
@@ -24,10 +23,10 @@ class EventListFragment : Fragment() {
     private val eventManager = EventManager()
     private var event_id = 0
     private var mindMapObjectList: MutableList<MindMapObject> = mutableListOf(
-            MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
-            MindMapObject(2, "予算", 1f / 4, 1f / 2, 0),
-            MindMapObject(3, "食事", 1f / 2, 3f / 4, 0),
-            MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0)
+            MindMapObject(1, "行先", 200f, 200f, 0),
+            MindMapObject(2, "予算", 200f, -200f, 0),
+            MindMapObject(3, "食事", -200f, 200f,0),
+            MindMapObject(4, "宿泊", -200f, -200f, 0)
     )
     private var userId = 0
 
@@ -66,15 +65,12 @@ class EventListFragment : Fragment() {
         eventListView.adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_1, eventManager.eventList)
 
         eventListView.setOnItemClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
-            repository.getMmo (eventManager.eventList[position].id.toString()){
-                Log.d("err",eventManager.eventList[id.toInt()].id.toString())
-                activity
-                        ?.supportFragmentManager
-                        ?.beginTransaction()
-                        ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()],it as MutableList<MindMapObject>))
-                        ?.addToBackStack(null)
-                        ?.commit()
-            }
+            activity
+                    ?.supportFragmentManager
+                    ?.beginTransaction()
+                    ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()]))
+                    ?.addToBackStack(null)
+                    ?.commit()
         }
 
         fab.setOnClickListener {
@@ -83,20 +79,21 @@ class EventListFragment : Fragment() {
             val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
 
             // ダイアログ内のテキストエリア
-            val inputText : EditText = inflater.findViewById(R.id.inputText)
+            val inputText: EditText = inflater.findViewById(R.id.inputText)
             inputText.requestFocus()
 
             // ダイアログの設定
             val inputForm = AlertDialog.Builder(context!!).apply {
                 setTitle("新しいイベント")
                 setView(inflater)
-                setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
+                setPositiveButton("OK") { _, _ ->
                     // OKボタンを押したときの処理
                     val eventMap = mapOf(
                             "title" to "${inputText.text}",
                             "eventpass" to "tubasa"
                     )
-                    repository.addEvent(userId,eventMap) {
+                                         
+                    repository.addEvent(userId, eventMap) {
                         event_id = it.id
                         Log.d("tubasa", it.id.toString())
                         repository.addEventtoFb(event_id.toString())//event.id
@@ -106,7 +103,10 @@ class EventListFragment : Fragment() {
                         eventManager.add(it)
                         (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
                     }
-                })
+                    eventManager.add(Event(event_id, "${inputText.text}", mutableListOf()))
+
+                    (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
+                }
                 setNegativeButton("Cancel", null)
             }.create()
 
@@ -120,9 +120,9 @@ class EventListFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(user_id:Int,eventList: MutableList<Event>) = EventListFragment().apply {
+        fun newInstance(user_id: Int, eventList: MutableList<Event>) = EventListFragment().apply {
             arguments = Bundle().apply {
-                putInt("userId",user_id)
+                putInt("userId", user_id)
                 putParcelableArrayList("eventListKey", ArrayList(eventList))
             }
         }

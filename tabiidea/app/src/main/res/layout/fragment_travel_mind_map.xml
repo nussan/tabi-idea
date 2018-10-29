@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <FrameLayout
         android:id="@+id/container_bottom_sheet"
@@ -18,9 +20,12 @@
         android:id="@+id/mindMapConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="-300dp"
+        android:layout_marginEnd="-300dp"
+        android:layout_marginTop="-300dp"
+        android:layout_marginBottom="-300dp"
         android:background="@android:color/white"
         android:clickable="true"
-        android:clipToPadding="false"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:context=".fragment.TravelMindMapFragment">
