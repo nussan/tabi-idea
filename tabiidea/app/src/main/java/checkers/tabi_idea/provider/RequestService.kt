@@ -19,12 +19,12 @@ interface RequestService {
     fun getUser(@Path("uuid") uuid:String) : Single<User>
 
     //user情報の編集
-    @POST("event/create/{editName}")
+    @POST("home/create/{editName}")
     fun editUser(@Path("editName") editName:String)
 
     //Eventへの追加
     @POST("event/create/{id}")
-    fun addEvent(@Path("id") id :Int, @Body eventMap:Map<String,String>) : Single<Event>
+    fun addEvent(@Path("id") id :Int, @Body title:Map<String,String>) : Single<Event>
 
     //eventListの取得
     @GET("event/show/{id}")

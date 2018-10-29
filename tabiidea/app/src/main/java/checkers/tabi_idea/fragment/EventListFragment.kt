@@ -92,11 +92,10 @@ class EventListFragment : Fragment() {
                 setView(inflater)
                 setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
                     // OKボタンを押したときの処理
-                    val eventMap = mapOf(
-                            "title" to "${inputText.text}",
-                            "eventpass" to "tubasa"
+                    val title = mapOf(
+                            "title" to "${inputText.text}"
                     )
-                    repository.addEvent(userId,eventMap) {
+                    repository.addEvent(userId,title) {
                         event_id = it.id
                         Log.d("tubasa", it.id.toString())
                         repository.addEventtoFb(event_id.toString())//event.id

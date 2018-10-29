@@ -25,21 +25,22 @@ class MainActivity : AppCompatActivity() {
         //sIdを取得
         val uuid = Installation.id(this)
 
-        if( savedInstanceState == null)
-            Log.d("uuid" , uuid)
-            repository.getUser(uuid) {
-                if(it.id == -1){
+        if( savedInstanceState == null) {
+            Log.d("uuid", uuid)
+            repository.getUser("tsubasa") {
+                if (it.id == -1) {
                     val newUser = mapOf(
                             "uuid" to uuid,
                             "name" to "新しいユーザー"
                     )
-                    repository.addUser(newUser){
+                    repository.addUser(newUser) {
                         toOwnPageFragment(it)
                     }
-                }else{
+                } else {
                     toOwnPageFragment(it)
                 }
             }
+        }
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
