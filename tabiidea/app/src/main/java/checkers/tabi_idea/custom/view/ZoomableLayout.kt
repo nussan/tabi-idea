@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.fragment.TravelMindMapFragment
@@ -105,6 +106,7 @@ class ZoomableLayout :
     }
 
     override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
+        Log.d(TAG, "$velocityX, $velocityY")
         return true
     }
 
@@ -128,6 +130,15 @@ class ZoomableLayout :
     override fun onDoubleTap(e: MotionEvent): Boolean {
         // とりあえずダブルタップで暴れないように
         // ダブルタップで拡大縮小できるようにしてもいいかも
+        scale = if(scale == MIN_ZOOM) MAX_ZOOM else MIN_ZOOM
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            child.pivotX = width / 2 - child.x
+            child.pivotY = height / 2 - child.y
+            child.scaleX = scale
+            child.scaleY = scale
+            invalidate()
+        }
         return true
     }
 
