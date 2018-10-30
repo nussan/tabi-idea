@@ -14,8 +14,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     val repository = Repository()
-    var layoutWidth = 0f
-    var layoutHeight = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,15 +42,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
-        Log.d(this.javaClass.simpleName, "onWindowFocusChanged")
         super.onWindowFocusChanged(hasFocus)
-        layoutWidth = container.width.toFloat()
-        layoutHeight = container.height.toFloat()
-
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.container)
-        if ( currentFragment is IOnFocusListenable) {
-            currentFragment.onWindowFocusChanged(hasFocus)
-        }
     }
 
     private fun toOwnPageFragment(user: User) {
@@ -62,9 +52,4 @@ class MainActivity : AppCompatActivity() {
 //             初期状態のため戻るボタンで戻らない   .addToBackStack(null)
                 .commit()
     }
-
-    interface IOnFocusListenable {
-        fun onWindowFocusChanged(hasFocus: Boolean)
-    }
-
 }

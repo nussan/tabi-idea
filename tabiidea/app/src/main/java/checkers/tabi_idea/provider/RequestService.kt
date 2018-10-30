@@ -15,7 +15,7 @@ interface RequestService {
     fun addUser(@Body user:Map<String,String>) : Single<User>
 
     //user情報の取得
-    @GET("home/index/{uuid}")
+    @GET("home/show/{uuid}")
     fun getUser(@Path("uuid") uuid:String) : Single<User>
 
     //user情報の編集
