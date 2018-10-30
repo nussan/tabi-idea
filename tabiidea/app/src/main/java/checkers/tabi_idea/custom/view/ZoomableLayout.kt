@@ -4,10 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
-import android.view.GestureDetector
-import android.view.MotionEvent
-import android.view.ScaleGestureDetector
-import android.view.View
+import android.view.*
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.fragment.TravelMindMapFragment
 
@@ -42,6 +39,17 @@ class ZoomableLayout :
 
     fun addView(child: View?, mmo: MindMapObject) {
         addView(child, mmo.viewIndex)
+
+        (child as? RoundRectTextView)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                child.x = if (mmo.parent == 0) width.toFloat() / 2 + mmo.positionX else getChildAt(mmo.parent).x + mmo.positionX
+                child.y = if (mmo.parent == 0) height.toFloat() / 2 + mmo.positionY else getChildAt(mmo.parent).y + mmo.positionY
+
+                updateListener(context)
+
+                viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     private fun updateListener(context: Context) {
