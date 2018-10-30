@@ -15,7 +15,6 @@ import android.util.TypedValue
 import android.view.*
 import android.widget.EditText
 import checkers.tabi_idea.R
-import checkers.tabi_idea.activity.MainActivity
 import checkers.tabi_idea.custom.view.CustomBottomSheetDialogFragment
 import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
@@ -57,36 +56,23 @@ class TravelMindMapFragment :
         super.onViewCreated(view, savedInstanceState)
 
         val callback = fun(it: Collection<MindMapObject>) {
-
-            if(context == null) {
+            if (context == null) {
                 Log.d(javaClass.simpleName, "context is null")
                 return
             }
 
+            var view: RoundRectTextView
+            val ml = it as MutableList<MindMapObject>
             val offset = mindMapObjectList.size
 
-            val ml = it as MutableList<MindMapObject>
-            if (offset == 0) {
-                mindMapObjectList = ml
-                mindMapObjectList.forEach {
-                    val v = mindMapObjectToTextView(context, it)
-                    mindMapConstraintLayout.addView(v, it)
-
-                    v.setOnClickListener { vv ->
-                        val bottomSheetDialog = CustomBottomSheetDialogFragment.newInstance(vv.id)
-                        bottomSheetDialog.show(childFragmentManager, bottomSheetDialog.tag)
-                    }
-                }
-            } else {
-                for (i in offset until ml.size) {
-                    mindMapObjectList.add(ml[i].viewIndex, ml[i])
-                    val v = mindMapObjectToTextView(context, ml[i])
-                    mindMapConstraintLayout.addView(v, ml[i])
-
-                    v.setOnClickListener { vv ->
-                        val bottomSheetDialog = CustomBottomSheetDialogFragment.newInstance(vv.id)
-                        bottomSheetDialog.show(childFragmentManager, bottomSheetDialog.tag)
-                    }
+            for (i in offset until ml.size) {
+                Log.d(javaClass.simpleName, "$i , ${ml[i].positionX} , ${ml[i].positionY}")
+                mindMapObjectList.add(ml[i].viewIndex, ml[i])
+                view = mindMapObjectToTextView(context, ml[i])
+                mindMapConstraintLayout.addView(view, ml[i])
+                view.setOnClickListener { v ->
+                    val bottomSheetDialog = CustomBottomSheetDialogFragment.newInstance(v.id)
+                    bottomSheetDialog.show(childFragmentManager, bottomSheetDialog.tag)
                 }
             }
         }
@@ -157,7 +143,7 @@ class TravelMindMapFragment :
         paint.setARGB(255, 0, 0, 0)
         paint.strokeWidth = 5f
 
-        canvas?.scale(scale, scale, mindMapConstraintLayout.width.toFloat() / 2,  mindMapConstraintLayout.height.toFloat() / 2)
+        canvas?.scale(scale, scale, mindMapConstraintLayout.width.toFloat() / 2, mindMapConstraintLayout.height.toFloat() / 2)
         mindMapObjectList.forEach {
             val child = mindMapConstraintLayout.getChildAt(it.viewIndex)
             val parent = mindMapConstraintLayout.getChildAt(it.parent)
@@ -169,7 +155,7 @@ class TravelMindMapFragment :
                     paint
             )
         }
-        canvas?.scale(1 / scale, 1 / scale, mindMapConstraintLayout.width.toFloat() / 2,  mindMapConstraintLayout.height.toFloat() / 2)
+        canvas?.scale(1 / scale, 1 / scale, mindMapConstraintLayout.width.toFloat() / 2, mindMapConstraintLayout.height.toFloat() / 2)
     }
 
     private fun mindMapObjectToTextView(context: Context?, mindMapObject: MindMapObject): RoundRectTextView {
