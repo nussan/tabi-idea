@@ -14,7 +14,7 @@ class ZoomableLayout :
         ConstraintLayout,
         ScaleGestureDetector.OnScaleGestureListener,
         GestureDetector.OnGestureListener,
-        GestureDetector.OnDoubleTapListener {
+        GestureDetector.OnDoubleTapListener{
 
     private var scale = 1.0f
     private var lastScaleFactor = 0f
@@ -130,7 +130,7 @@ class ZoomableLayout :
     override fun onDoubleTap(e: MotionEvent): Boolean {
         // とりあえずダブルタップで暴れないように
         // ダブルタップで拡大縮小できるようにしてもいいかも
-        scale = if(scale == MIN_ZOOM) MAX_ZOOM else MIN_ZOOM
+        scale = if (scale == MIN_ZOOM) MAX_ZOOM else MIN_ZOOM
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             child.pivotX = width / 2 - child.x

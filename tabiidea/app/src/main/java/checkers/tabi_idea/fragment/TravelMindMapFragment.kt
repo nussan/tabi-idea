@@ -1,11 +1,15 @@
 package checkers.tabi_idea.fragment
 
 
+import android.content.ClipData
+import android.content.ClipDescription
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.PorterDuff
 import android.os.Bundle
+import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.Fragment
 import android.support.v4.widget.TextViewCompat
 import android.support.v7.app.AlertDialog
@@ -14,8 +18,8 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.widget.EditText
+import android.widget.LinearLayout
 import checkers.tabi_idea.R
-import checkers.tabi_idea.custom.view.CustomBottomSheetDialogFragment
 import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Event
@@ -26,13 +30,13 @@ import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 
 class TravelMindMapFragment :
         Fragment(),
-        CustomBottomSheetDialogFragment.Listener,
-        ZoomableLayout.LineDrawer {
+        ZoomableLayout.LineDrawer,
+        View.OnDragListener {
 
     private val repository = Repository()
     private var event: Event? = null
     private var mindMapObjectList: MutableList<MindMapObject> = mutableListOf()
-
+    private var behavior: BottomSheetBehavior<LinearLayout>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -55,6 +59,17 @@ class TravelMindMapFragment :
         Log.d(this.javaClass.simpleName, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
 
+        val l = coordinatorLayout.findViewById<LinearLayout>(R.id.linear_left)
+        val c = coordinatorLayout.findViewById<LinearLayout>(R.id.linear_center)
+        val r = coordinatorLayout.findViewById<LinearLayout>(R.id.linear_right)
+        l.setOnDragListener(this)
+        c.setOnDragListener(this)
+        r.setOnDragListener(this)
+
+
+        behavior = BottomSheetBehavior.from(coordinatorLayout.findViewById(R.id.bottom_sheet))
+        behavior?.isHideable = true
+        behavior?.state = BottomSheetBehavior.STATE_HIDDEN
         val callback = fun(it: Collection<MindMapObject>) {
             if (context == null) {
                 Log.d(javaClass.simpleName, "context is null")
@@ -66,19 +81,24 @@ class TravelMindMapFragment :
             val offset = mindMapObjectList.size
 
             for (i in offset until ml.size) {
-                Log.d(javaClass.simpleName, "$i , ${ml[i].positionX} , ${ml[i].positionY}")
                 mindMapObjectList.add(ml[i].viewIndex, ml[i])
                 view = mindMapObjectToTextView(context, ml[i])
+                view.tag = ml[i].viewIndex
                 mindMapConstraintLayout.addView(view, ml[i])
-                view.setOnClickListener { v ->
-                    val bottomSheetDialog = CustomBottomSheetDialogFragment.newInstance(v.id)
-                    bottomSheetDialog.show(childFragmentManager, bottomSheetDialog.tag)
+
+                view.setOnLongClickListener {
+                    behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+
+                    val item = ClipData.Item(view.tag as? CharSequence)
+                    val data = ClipData(view.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
+                    it.startDrag(data, View.DragShadowBuilder(it), it, 0)
                 }
             }
         }
 
         repository.getMmo(event?.id.toString(), callback)
         mindMapConstraintLayout.lineDrawer = this
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -91,7 +111,7 @@ class TravelMindMapFragment :
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onAddClicked(position: Int) {
+    fun onAddClicked(position: Int) {
         Log.d(javaClass.simpleName, "onAddClicked")
         // レイアウトを取得
         val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
@@ -117,11 +137,6 @@ class TravelMindMapFragment :
                 )
                 repository.addMmo(event!!.id.toString(), mmo) //"1"は追加先event.id
 
-                val view = mindMapObjectToTextView(context, mmo)
-                view.setOnClickListener { v ->
-                    val bottomSheetDialog = CustomBottomSheetDialogFragment.newInstance(v.id)
-                    bottomSheetDialog.show(childFragmentManager, bottomSheetDialog.tag)
-                }
                 mindMapConstraintLayout.invalidate()
             }
             setNegativeButton("Cancel", null)
@@ -132,10 +147,49 @@ class TravelMindMapFragment :
         inputForm.show()
     }
 
-    override fun onDeleteClicked(position: Int) {
-    }
-
-    override fun onEditClicked(position: Int) {
+    override fun onDrag(v: View?, event: DragEvent?): Boolean {
+        val action = event?.action
+        Log.d("onDrag", v.toString())
+        when (action) {
+            DragEvent.ACTION_DRAG_STARTED -> {
+                Log.d("Drag", "DRAG_STARTED")
+                if (event.clipDescription.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
+                    return true
+                }
+                return false
+            }
+            DragEvent.ACTION_DRAG_ENTERED -> {
+                Log.d("Drag", "DRAG_ENTERED")
+                v?.background?.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN)//set background color to your v
+                v?.invalidate()
+                return true
+            }
+            DragEvent.ACTION_DRAG_LOCATION -> {
+                Log.d("Drag", "DRAG_LOCATION")
+                return true
+            }
+            DragEvent.ACTION_DRAG_EXITED -> {
+                Log.d("Drag", "DRAG_EXITED")
+                v?.background?.clearColorFilter()
+                v?.invalidate()
+                return true
+            }
+            DragEvent.ACTION_DROP -> {
+                Log.d("Drag", "DROP")
+                behavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                return true
+            }
+            DragEvent.ACTION_DRAG_ENDED -> {
+                Log.d("Drag", "DRAG_ENDED")
+                v?.background?.clearColorFilter()
+                v?.invalidate()
+                behavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                return true
+            }
+            else -> {
+                return false
+            }
+        }
     }
 
     override fun drawLines(canvas: Canvas?, scale: Float) {
