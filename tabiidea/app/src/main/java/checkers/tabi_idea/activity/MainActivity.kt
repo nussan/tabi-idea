@@ -35,12 +35,12 @@ class MainActivity : AppCompatActivity() {
                     )
                     repository.addUser(newUser) {user: User ->
                         repository.getEventList(user!!.id) {
-                            toEventListFragment(user.id, it)
+                            toEventListFragment(user, it)
                         }
                     }
                 } else {
                     repository.getEventList(it.id) { evel : MutableList<Event> ->
-                        toEventListFragment(it.id, evel)
+                        toEventListFragment(it, evel)
                     }
                 }
             }
@@ -59,10 +59,10 @@ class MainActivity : AppCompatActivity() {
                 .commit()
     }
     //追加しました
-    private fun toEventListFragment(user_id: Int, eventList: MutableList<Event>) {
+    private fun toEventListFragment(user: User, eventList: MutableList<Event>) {
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.container, EventListFragment.newInstance(user_id,eventList))
+                .replace(R.id.container, EventListFragment.newInstance(user,eventList))
                 .commit()
     }
 }
