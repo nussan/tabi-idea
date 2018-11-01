@@ -4,20 +4,15 @@ package checkers.tabi_idea.fragment
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.PorterDuff
+import android.graphics.*
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.Fragment
 import android.support.v4.widget.TextViewCompat
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
-import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import checkers.tabi_idea.R
@@ -119,11 +114,14 @@ class TravelMindMapFragment :
                 val newId = mindMapObjectList[mindMapObjectList.lastIndex].viewIndex + 1
                 val parentId = mindMapObjectList[position].viewIndex
                 val parent = mindMapConstraintLayout.getChildAt(parentId)
+                Log.d("add","${parent.matrix}")
+                val matrix = FloatArray(9)
+                parent.matrix.getValues(matrix)
                 val mmo = MindMapObject(
                         newId,
                         "追加",
-                        (e.x -  parent.x - parent.width / 2),
-                        (e.y -  parent.y - parent.height / 2),
+                        (e.x - matrix[Matrix.MTRANS_X]) / scale - parent.width / 2,
+                        (e.y - matrix[Matrix.MTRANS_Y]) / scale - parent.height / 2,
                         parentId
                 )
                 Log.d("add", "${parent.x}, ${parent.y}, ${mmo.positionX}, ${mmo.positionY}")
