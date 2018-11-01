@@ -32,7 +32,7 @@ class TravelMindMapFragment :
 
     private val repository = Repository()
     private var event: Event? = null
-    private var mindMapObjectList: MutableList<MindMapObject> = mutableListOf()
+    private var mindMapObjectList : MutableList<Pair<String,MindMapObject>> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,32 +56,26 @@ class TravelMindMapFragment :
         Log.d(this.javaClass.simpleName, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
 
-        val callback = fun(it: Collection<MindMapObject>) {
-
-            if(context == null) {
-                Log.d(javaClass.simpleName, "context is null")
-                return
-            }
-
+        val callback = fun(it:Collection<Pair<String,MindMapObject>>){
             val offset = mindMapObjectList.size
 
-            val ml = it as MutableList<MindMapObject>
-            if (offset == 0) {
+            val ml = it as MutableList<Pair<String, MindMapObject>>
+            if (offset==0){
                 mindMapObjectList = ml
-                mindMapObjectList.forEach {
-                    val v = mindMapObjectToTextView(context, it)
-                    mindMapConstraintLayout.addView(v, it)
+                mindMapObjectList.forEach{
+                    val v = mindMapObjectToTextView(context,it.second)
+                    mindMapConstraintLayout.addView(v,it.second)
 
                     v.setOnClickListener { vv ->
                         val bottomSheetDialog = CustomBottomSheetDialogFragment.newInstance(vv.id)
                         bottomSheetDialog.show(childFragmentManager, bottomSheetDialog.tag)
                     }
                 }
-            } else {
-                for (i in offset until ml.size) {
-                    mindMapObjectList.add(ml[i].viewIndex, ml[i])
-                    val v = mindMapObjectToTextView(context, ml[i])
-                    mindMapConstraintLayout.addView(v, ml[i])
+            }else {
+                for (i in offset until ml.size) {  //もしかしたらforEachで解決？
+                    mindMapObjectList.add(ml[i].second.viewIndex, ml[i])
+                    val v = mindMapObjectToTextView(context, ml[i].second)
+                    mindMapConstraintLayout.addView(v, ml[i].second)
 
                     v.setOnClickListener { vv ->
                         val bottomSheetDialog = CustomBottomSheetDialogFragment.newInstance(vv.id)
@@ -91,7 +85,7 @@ class TravelMindMapFragment :
             }
         }
 
-        repository.getMmo(event?.id.toString(), callback)
+        repository.getMmo(event?.id.toString(),callback)
         mindMapConstraintLayout.lineDrawer = this
     }
 
@@ -120,8 +114,8 @@ class TravelMindMapFragment :
             setView(inflater)
             setPositiveButton("OK") { _, _ ->
 
-                val newId = mindMapObjectList[mindMapObjectList.lastIndex].viewIndex + 1
-                val parent = mindMapObjectList[position]
+                val newId = mindMapObjectList[mindMapObjectList.lastIndex].second.viewIndex + 1
+                val parent = mindMapObjectList[position].second
                 val mmo = MindMapObject(
                         newId,
                         "${inputText.text}",
@@ -159,8 +153,9 @@ class TravelMindMapFragment :
 
         canvas?.scale(scale, scale, mindMapConstraintLayout.width.toFloat() / 2,  mindMapConstraintLayout.height.toFloat() / 2)
         mindMapObjectList.forEach {
-            val child = mindMapConstraintLayout.getChildAt(it.viewIndex)
-            val parent = mindMapConstraintLayout.getChildAt(it.parent)
+            Log.d("mmol",it.toString())
+            val child = mindMapConstraintLayout.getChildAt(it.second.viewIndex)
+            val parent = mindMapConstraintLayout.getChildAt(it.second.parent)
             canvas?.drawLine(
                     child.x + child.width / 2,
                     child.y + child.height / 2,
@@ -171,6 +166,7 @@ class TravelMindMapFragment :
         }
         canvas?.scale(1 / scale, 1 / scale, mindMapConstraintLayout.width.toFloat() / 2,  mindMapConstraintLayout.height.toFloat() / 2)
     }
+
 
     private fun mindMapObjectToTextView(context: Context?, mindMapObject: MindMapObject): RoundRectTextView {
         val textView = RoundRectTextView(context)
