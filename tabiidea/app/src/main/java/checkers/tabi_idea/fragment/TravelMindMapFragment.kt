@@ -111,8 +111,8 @@ class TravelMindMapFragment :
 
         val listener = object : ZoomableLayout.TapListener {
             override fun onTap(e: MotionEvent, centerX: Float, centerY: Float, scale: Float) {
-                val newId = mindMapObjectList[mindMapObjectList.lastIndex].viewIndex + 1
-                val parentId = mindMapObjectList[position].viewIndex
+                val newId = mindMapObjectList[mindMapObjectList.lastIndex].second.viewIndex + 1
+                val parentId = mindMapObjectList[position].second.viewIndex
                 val parent = mindMapConstraintLayout.getChildAt(parentId)
                 Log.d("add","${parent.matrix}")
                 val matrix = FloatArray(9)
@@ -135,7 +135,7 @@ class TravelMindMapFragment :
     }
 
     fun onEditSelected(position: Int) {
-        mindMapObjectList[position].text
+        mindMapObjectList[position].second.text
     }
 
     override fun onDrag(v: View?, event: DragEvent?): Boolean {
