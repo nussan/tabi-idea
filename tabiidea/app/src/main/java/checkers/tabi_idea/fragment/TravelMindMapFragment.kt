@@ -67,6 +67,7 @@ class TravelMindMapFragment :
         behavior?.isHideable = true
         behavior?.state = BottomSheetBehavior.STATE_HIDDEN
         val callback = fun(it: Collection<Pair<String,MindMapObject>>) {
+            Log.d(javaClass.simpleName, "called")
             if (context == null) {
                 Log.d(javaClass.simpleName, "context is null")
                 return
@@ -79,6 +80,7 @@ class TravelMindMapFragment :
             for (i in offset until ml.size) {
                 mindMapObjectList.add(ml[i].second.viewIndex, ml[i])
                 view = mindMapObjectToTextView(context, ml[i].second)
+                view.tag = ml[i].second.viewIndex
                 mindMapConstraintLayout.addView(view, ml[i].second)
 
                 view.setOnLongClickListener {
@@ -111,8 +113,8 @@ class TravelMindMapFragment :
 
         val listener = object : ZoomableLayout.TapListener {
             override fun onTap(e: MotionEvent, centerX: Float, centerY: Float, scale: Float) {
-                val newId = mindMapObjectList[mindMapObjectList.lastIndex].viewIndex + 1
-                val parentId = mindMapObjectList[position].viewIndex
+                val newId = mindMapObjectList[mindMapObjectList.lastIndex].second.viewIndex + 1
+                val parentId = mindMapObjectList[position].second.viewIndex
                 val parent = mindMapConstraintLayout.getChildAt(parentId)
                 Log.d("add","${parent.matrix}")
                 val matrix = FloatArray(9)
@@ -135,7 +137,12 @@ class TravelMindMapFragment :
     }
 
     fun onEditSelected(position: Int) {
-        mindMapObjectList[position].text
+        val text = "更新"
+        mindMapObjectList[position].second.text = text
+        repository.updateMmo(event!!.id.toString() , mindMapObjectList[position] )
+//
+//        (mindMapConstraintLayout.getChildAt(position) as? RoundRectTextView)?.text = text
+
     }
 
     override fun onDrag(v: View?, event: DragEvent?): Boolean {
@@ -168,8 +175,12 @@ class TravelMindMapFragment :
             DragEvent.ACTION_DROP -> {
                 Log.d("Drag", "DROP")
                 val view = event.localState as View
-                if (v!! == linear_left)
-                    onAddSelected(view.id)
+
+                when(v) {
+                    linear_left -> onAddSelected(view.id)
+                    linear_right -> onEditSelected(view.id)
+                }
+
                 behavior?.state = BottomSheetBehavior.STATE_HIDDEN
                 return true
             }
