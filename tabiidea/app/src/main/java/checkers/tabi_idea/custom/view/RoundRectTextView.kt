@@ -46,10 +46,6 @@ class RoundRectTextView : AppCompatTextView {
         super.draw(canvas)
     }
 
-    override fun performClick(): Boolean {
-        return super.performClick()
-    }
-
     fun setPositionXByCenterPositionX(f: Float) {
         this.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
