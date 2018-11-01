@@ -90,15 +90,15 @@ class Repository{
                         }
                 )
     }
-
-    //eventidを送る -> (トークンが帰ってくる) -> firebaseからeidのmmoをゲット
-    fun getMmo(event_id: String,callback: (Collection<MindMapObject>) -> Unit){
+    /*---firebase---*/
+    //firebaseからeidのmmoをゲット
+    fun getMmo(event_id: String,callback: (Collection<Pair<String, MindMapObject>>) -> Unit){
         FirebaseDatabase.getInstance()
                 .getReference(event_id)
                 .addValueEventListener(object : ValueEventListener{
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        callback(dataSnapshot.children.mapNotNull {
-                            it.getValue(MindMapObject::class.java)
+                        callback(dataSnapshot.children.mapNotNull{
+                            it.key!! to it.getValue(MindMapObject::class.java)!!
                         })
                     }
 
@@ -108,7 +108,6 @@ class Repository{
                 })
     }
 
-    /*---firebase---*/
     //eventをfbにadd
     fun addEventtoFb(event_id: String){
         val mmo = MindMapObject(0, "旅行", 0f, 0f, 0)
@@ -124,5 +123,13 @@ class Repository{
                 .getReference(event_id)
                 .push()
                 .setValue(mmo)
+    }
+
+    //mmoのtextをアップデート
+    fun updateMmo(event_id: String,pair: Pair<String,MindMapObject>){
+        FirebaseDatabase.getInstance()
+                .getReference(event_id)
+                .child(pair.first)
+                .setValue(pair.second)
     }
 }

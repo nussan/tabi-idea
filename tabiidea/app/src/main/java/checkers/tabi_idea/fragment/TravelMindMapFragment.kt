@@ -30,8 +30,9 @@ class TravelMindMapFragment :
         View.OnDragListener {
     private val repository = Repository()
     private var event: Event? = null
-    private var mindMapObjectList: MutableList<MindMapObject> = mutableListOf()
+    private var mindMapObjectList : MutableList<Pair<String,MindMapObject>> = mutableListOf()
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
+          
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -65,21 +66,20 @@ class TravelMindMapFragment :
         behavior = BottomSheetBehavior.from(coordinatorLayout.findViewById(R.id.bottom_sheet))
         behavior?.isHideable = true
         behavior?.state = BottomSheetBehavior.STATE_HIDDEN
-        val callback = fun(it: Collection<MindMapObject>) {
+        val callback = fun(it: Collection<Pair<String,MindMapObject>>) {
             if (context == null) {
                 Log.d(javaClass.simpleName, "context is null")
                 return
             }
 
             var view: RoundRectTextView
-            val ml = it as MutableList<MindMapObject>
+            val ml = it as MutableList<Pair<String, MindMapObject>>
             val offset = mindMapObjectList.size
 
             for (i in offset until ml.size) {
-                mindMapObjectList.add(ml[i].viewIndex, ml[i])
-                view = mindMapObjectToTextView(context, ml[i])
-                view.tag = ml[i].viewIndex
-                mindMapConstraintLayout.addView(view, ml[i])
+                mindMapObjectList.add(ml[i].second.viewIndex, ml[i])
+                view = mindMapObjectToTextView(context, ml[i].second)
+                mindMapConstraintLayout.addView(view, ml[i].second)
 
                 view.setOnLongClickListener {
                     behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -91,7 +91,7 @@ class TravelMindMapFragment :
             }
         }
 
-        repository.getMmo(event?.id.toString(), callback)
+        repository.getMmo(event?.id.toString(),callback)
         mindMapConstraintLayout.lineDrawer = this
 
     }
@@ -117,6 +117,7 @@ class TravelMindMapFragment :
                 Log.d("add","${parent.matrix}")
                 val matrix = FloatArray(9)
                 parent.matrix.getValues(matrix)
+
                 val mmo = MindMapObject(
                         newId,
                         "追加",
@@ -192,8 +193,9 @@ class TravelMindMapFragment :
 
         canvas?.scale(scale, scale, mindMapConstraintLayout.width.toFloat() / 2, mindMapConstraintLayout.height.toFloat() / 2)
         mindMapObjectList.forEach {
-            val child = mindMapConstraintLayout.getChildAt(it.viewIndex)
-            val parent = mindMapConstraintLayout.getChildAt(it.parent)
+            Log.d("mmol",it.toString())
+            val child = mindMapConstraintLayout.getChildAt(it.second.viewIndex)
+            val parent = mindMapConstraintLayout.getChildAt(it.second.parent)
             canvas?.drawLine(
                     child.x + child.width / 2,
                     child.y + child.height / 2,
@@ -204,6 +206,7 @@ class TravelMindMapFragment :
         }
         canvas?.scale(1 / scale, 1 / scale, mindMapConstraintLayout.width.toFloat() / 2, mindMapConstraintLayout.height.toFloat() / 2)
     }
+
 
     private fun mindMapObjectToTextView(context: Context?, mindMapObject: MindMapObject): RoundRectTextView {
         val textView = RoundRectTextView(context)

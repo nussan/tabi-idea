@@ -13,15 +13,13 @@ import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.manager.EventManager
 import checkers.tabi_idea.provider.Repository
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.fragment_event_list.*
 import java.util.*
 
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
     private var event_id = 0
+    private var event_password:String? = null
     private var mindMapObjectList: MutableList<MindMapObject> = mutableListOf(
             MindMapObject(1, "行先", 200f, 200f, 0),
             MindMapObject(2, "予算", 200f, -200f, 0),
@@ -92,8 +90,8 @@ class EventListFragment : Fragment() {
                             "title" to "${inputText.text}"
                     )
                     repository.addEvent(userId,title) {
-
                         event_id = it.id
+                        event_password = it.password
                         Log.d("tubasa", it.id.toString())
                         repository.addEventtoFb(event_id.toString())//event.id
                         mindMapObjectList.forEach {
@@ -102,6 +100,7 @@ class EventListFragment : Fragment() {
                         eventManager.add(it)
                         (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
                     }
+
                 }
                 setNegativeButton("Cancel", null)
             }.create()
