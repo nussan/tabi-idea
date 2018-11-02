@@ -68,14 +68,13 @@ class EventListFragment : Fragment() {
         //RecyclerViewを設定
         eventListView.adapter = EventListAdapter(context,eventManager.eventList)
         eventListView.layoutManager =  LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        eventListView.setOnClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
-            activity
-                    ?.supportFragmentManager
-                    ?.beginTransaction()
-                    ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()]))
-                    ?.addToBackStack(null)
-                    ?.commit()
-        }
+//        eventListView.setOnClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
+//            activity?.supportFragmentManager
+//                    ?.beginTransaction()
+//                    ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()]))
+//                    ?.addToBackStack(null)
+//                    ?.commit()
+//        }
 
         fab.setOnClickListener {
             it.isEnabled = false
