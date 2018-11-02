@@ -2,10 +2,13 @@ package checkers.tabi_idea.fragment
 
 
 import android.os.Bundle
+import android.support.constraint.R.id.parent
 import android.support.v4.app.Fragment
 import checkers.tabi_idea.data.User
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -64,9 +67,10 @@ class EventListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val repository = Repository()
-        eventListView.adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_1, eventManager.eventList)
-
-        eventListView.setOnItemClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
+        //RecyclerViewを設定
+        eventListView.adapter = EventListAdapter(context,eventManager.eventList)
+        eventListView.layoutManager =  LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        eventListView.setOnClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
             activity
                     ?.supportFragmentManager
                     ?.beginTransaction()
