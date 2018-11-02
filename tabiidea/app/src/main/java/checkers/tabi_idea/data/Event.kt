@@ -13,9 +13,9 @@ data class Event(
         @Json(name = "title")
         var title: String,
         @Json(name = "password")
-        var password : String
-//        @Json(name = "member")
-//        var member: MutableList<Int> = mutableListOf()
+        var password : String,
+        @Json(name = "member")
+        var member: MutableList<Int> = mutableListOf()
 ): Parcelable {
         override fun toString(): String {
                 return title
