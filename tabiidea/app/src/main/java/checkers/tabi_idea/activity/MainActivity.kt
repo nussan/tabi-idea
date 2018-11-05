@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Installation
 import checkers.tabi_idea.data.User
+import checkers.tabi_idea.fragment.EventListFragment
 import checkers.tabi_idea.fragment.OwnPageFragment
 import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.activity_main.*
@@ -31,11 +33,15 @@ class MainActivity : AppCompatActivity() {
                             "uuid" to uuid,
                             "name" to "新しいユーザー"
                     )
-                    repository.addUser(newUser) {
-                        toOwnPageFragment(it)
+                    repository.addUser(newUser) {user: User ->
+                        repository.getEventList(user!!.id) {
+                            toEventListFragment(user, it)
+                        }
                     }
                 } else {
-                    toOwnPageFragment(it)
+                    repository.getEventList(it.id) { evel : MutableList<Event> ->
+                        toEventListFragment(it, evel)
+                    }
                 }
             }
         }
@@ -50,6 +56,13 @@ class MainActivity : AppCompatActivity() {
                 .beginTransaction()
                 .replace(R.id.container, OwnPageFragment.newInstance(user))
 //             初期状態のため戻るボタンで戻らない   .addToBackStack(null)
+                .commit()
+    }
+    //追加しました
+    private fun toEventListFragment(user: User, eventList: MutableList<Event>) {
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.container, EventListFragment.newInstance(user,eventList))
                 .commit()
     }
 }

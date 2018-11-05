@@ -3,8 +3,11 @@ package checkers.tabi_idea.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import checkers.tabi_idea.data.User
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.*
 import android.widget.AdapterView
@@ -29,6 +32,7 @@ class EventListFragment : Fragment() {
             MindMapObject(4, "宿泊", -200f, -200f, 0)
     )
     private var userId = 0
+    private lateinit var myuser :User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,9 +44,9 @@ class EventListFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        (activity as AppCompatActivity).supportActionBar?.title = "イベント"
+        (activity as AppCompatActivity).supportActionBar?.title = myuser.name
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
         setHasOptionsMenu(true)
 
@@ -62,16 +66,30 @@ class EventListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val repository = Repository()
+        //RecyclerViewを設定
+        eventListView.adapter = EventListAdapter(context,eventManager.eventList)
+        eventListView.layoutManager =  GridLayoutManager(context,2)
 
-        eventListView.adapter = ArrayAdapter(context, android.R.layout.simple_list_item_1, eventManager.eventList)
-        eventListView.setOnItemClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
-            activity
-                    ?.supportFragmentManager
-                    ?.beginTransaction()
-                    ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()]))
-                    ?.addToBackStack(null)
-                    ?.commit()
-        }
+        (eventListView.adapter as EventListAdapter).setOnClickListener (object: View.OnClickListener {
+            override fun onClick(view: View?) {
+                Log.d(javaClass.simpleName, "onTouch!!")
+                val position = eventListView.getChildAdapterPosition(view)
+                val eid = eventListView.adapter.getItemId(position)
+                activity?.supportFragmentManager
+                        ?.beginTransaction()
+                        ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[position]))
+                        ?.addToBackStack(null)
+                        ?.commit()
+            }
+        })
+
+//        { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
+//            activity?.supportFragmentManager
+//                    ?.beginTransaction()
+//                    ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()]))
+//                    ?.addToBackStack(null)
+//                    ?.commit()
+//        }
 
         fab.setOnClickListener {
             it.isEnabled = false
@@ -100,7 +118,7 @@ class EventListFragment : Fragment() {
                             repository.addMmo(event_id.toString(), it)
                         }
                         eventManager.add(it)
-                        (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
+                        eventListView.adapter.notifyDataSetChanged()
                     }
 
                 }
@@ -117,9 +135,10 @@ class EventListFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(user_id: Int, eventList: MutableList<Event>) = EventListFragment().apply {
+        fun newInstance(user: User, eventList: MutableList<Event>) = EventListFragment().apply {
             arguments = Bundle().apply {
-                putInt("userId", user_id)
+                putInt("userId", user.id)
+                myuser = user
                 putParcelableArrayList("eventListKey", ArrayList(eventList))
             }
         }
