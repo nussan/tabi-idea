@@ -2,13 +2,12 @@ package checkers.tabi_idea.fragment
 
 
 import android.os.Bundle
-import android.support.constraint.R.id.parent
 import android.support.v4.app.Fragment
 import checkers.tabi_idea.data.User
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -67,8 +66,22 @@ class EventListFragment : Fragment() {
         val repository = Repository()
         //RecyclerViewを設定
         eventListView.adapter = EventListAdapter(context,eventManager.eventList)
-        eventListView.layoutManager =  LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-//        eventListView.setOnClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
+        eventListView.layoutManager =  GridLayoutManager(context,2)
+
+        (eventListView.adapter as EventListAdapter).setOnClickListener (object: View.OnClickListener {
+            override fun onClick(view: View?) {
+                Log.d(javaClass.simpleName, "onTouch!!")
+                val position = eventListView.getChildAdapterPosition(view)
+                val eid = eventListView.adapter.getItemId(position)
+                activity?.supportFragmentManager
+                        ?.beginTransaction()
+                        ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[position]))
+                        ?.addToBackStack(null)
+                        ?.commit()
+            }
+        })
+
+//        { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
 //            activity?.supportFragmentManager
 //                    ?.beginTransaction()
 //                    ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()]))
@@ -103,7 +116,7 @@ class EventListFragment : Fragment() {
                             repository.addMmo(event_id.toString(), it)
                         }
                         eventManager.add(it)
-                        (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
+                        eventListView.adapter.notifyDataSetChanged()
                     }
 
                 }
