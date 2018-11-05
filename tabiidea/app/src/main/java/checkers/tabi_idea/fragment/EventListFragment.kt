@@ -10,8 +10,10 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.*
-import android.widget.*
-import checkers.tabi_idea.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.manager.EventManager
@@ -22,11 +24,11 @@ import java.util.*
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
     private var event_id = 0
-    private var event_password:String? = null
+    private var event_password: String? = null
     private var mindMapObjectList: MutableList<MindMapObject> = mutableListOf(
             MindMapObject(1, "行先", 200f, 200f, 0),
             MindMapObject(2, "予算", 200f, -200f, 0),
-            MindMapObject(3, "食事", -200f, 200f,0),
+            MindMapObject(3, "食事", -200f, 200f, 0),
             MindMapObject(4, "宿泊", -200f, -200f, 0)
     )
     private var userId = 0
@@ -107,7 +109,7 @@ class EventListFragment : Fragment() {
                     val title = mapOf(
                             "title" to "${inputText.text}"
                     )
-                    repository.addEvent(userId,title) {
+                    repository.addEvent(userId, title) {
                         event_id = it.id
                         event_password = it.password
                         Log.d("tubasa", it.id.toString())
