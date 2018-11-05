@@ -123,6 +123,7 @@ class ZoomableLayout :
     }
 
     override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+        Log.d("distance", "$distanceX, $distanceY")
         applyTranslation(distanceX, distanceY)
         applyScale()
         return true

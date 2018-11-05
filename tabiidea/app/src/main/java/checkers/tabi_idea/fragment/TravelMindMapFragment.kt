@@ -22,6 +22,7 @@ import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
+import android.view.MotionEvent
 
 
 class TravelMindMapFragment :
@@ -30,9 +31,9 @@ class TravelMindMapFragment :
         View.OnDragListener {
     private val repository = Repository()
     private var event: Event? = null
-    private var mindMapObjectList : MutableList<Pair<String,MindMapObject>> = mutableListOf()
+    private var mindMapObjectList: MutableList<Pair<String, MindMapObject>> = mutableListOf()
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
-          
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -66,34 +67,51 @@ class TravelMindMapFragment :
         behavior = BottomSheetBehavior.from(coordinatorLayout.findViewById(R.id.bottom_sheet))
         behavior?.isHideable = true
         behavior?.state = BottomSheetBehavior.STATE_HIDDEN
-        val callback = fun(it: Collection<Pair<String,MindMapObject>>) {
+        val callback = fun(it: Collection<Pair<String, MindMapObject>>) {
             Log.d(javaClass.simpleName, "called")
             if (context == null) {
                 Log.d(javaClass.simpleName, "context is null")
                 return
             }
 
-            var view: RoundRectTextView
+
             val ml = it as MutableList<Pair<String, MindMapObject>>
             val offset = mindMapObjectList.size
 
             for (i in offset until ml.size) {
                 mindMapObjectList.add(ml[i].second.viewIndex, ml[i])
-                view = mindMapObjectToTextView(context, ml[i].second)
+                val view = mindMapObjectToTextView(context, ml[i].second)
                 view.tag = ml[i].second.viewIndex
                 mindMapConstraintLayout.addView(view, ml[i].second)
 
-                view.setOnLongClickListener {
+                view.setOnLongClickListener { v ->
                     behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
 
-                    val item = ClipData.Item(view.tag as? CharSequence)
-                    val data = ClipData(view.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
-                    it.startDrag(data, View.DragShadowBuilder(it), it, 0)
+                    val item = ClipData.Item(v.tag as? CharSequence)
+                    val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
+                    v.startDrag(data, View.DragShadowBuilder(v), v, 0)
+                }
+
+                view.setOnTouchListener { v, event ->
+                    when (event.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                        }
+
+                        MotionEvent.ACTION_MOVE -> {
+
+                        }
+
+                        MotionEvent.ACTION_UP -> {
+
+                        }
+                    }
+                    false
+
                 }
             }
         }
 
-        repository.getMmo(event?.id.toString(),callback)
+        repository.getMmo(event?.id.toString(), callback)
         mindMapConstraintLayout.lineDrawer = this
 
     }
@@ -116,7 +134,7 @@ class TravelMindMapFragment :
                 val newId = mindMapObjectList[mindMapObjectList.lastIndex].second.viewIndex + 1
                 val parentId = mindMapObjectList[position].second.viewIndex
                 val parent = mindMapConstraintLayout.getChildAt(parentId)
-                Log.d("add","${parent.matrix}")
+                Log.d("add", "${parent.matrix}")
                 val matrix = FloatArray(9)
                 parent.matrix.getValues(matrix)
 
@@ -139,10 +157,7 @@ class TravelMindMapFragment :
     fun onEditSelected(position: Int) {
         val text = "更新"
         mindMapObjectList[position].second.text = text
-        repository.updateMmo(event!!.id.toString() , mindMapObjectList[position] )
-//
-//        (mindMapConstraintLayout.getChildAt(position) as? RoundRectTextView)?.text = text
-
+        repository.updateMmo(event!!.id.toString(), mindMapObjectList[position])
     }
 
     override fun onDrag(v: View?, event: DragEvent?): Boolean {
@@ -176,7 +191,7 @@ class TravelMindMapFragment :
                 Log.d("Drag", "DROP")
                 val view = event.localState as View
 
-                when(v) {
+                when (v) {
                     linear_left -> onAddSelected(view.id)
                     linear_right -> onEditSelected(view.id)
                 }
@@ -204,7 +219,7 @@ class TravelMindMapFragment :
 
         canvas?.scale(scale, scale, mindMapConstraintLayout.width.toFloat() / 2, mindMapConstraintLayout.height.toFloat() / 2)
         mindMapObjectList.forEach {
-            Log.d("mmol",it.toString())
+            Log.d("mmol", it.toString())
             val child = mindMapConstraintLayout.getChildAt(it.second.viewIndex)
             val parent = mindMapConstraintLayout.getChildAt(it.second.parent)
             canvas?.drawLine(
