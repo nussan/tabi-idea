@@ -4,10 +4,7 @@ import android.util.Log
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -95,11 +92,41 @@ class Repository{
     fun getMmo(event_id: String,callback: (Collection<Pair<String, MindMapObject>>) -> Unit){
         FirebaseDatabase.getInstance()
                 .getReference(event_id)
-                .addValueEventListener(object : ValueEventListener{
+                .addListenerForSingleValueEvent(object : ValueEventListener{
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         callback(dataSnapshot.children.mapNotNull{
                             it.key!! to it.getValue(MindMapObject::class.java)!!
                         })
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Log.d("errGetMmo",databaseError.toString())
+                    }
+                })
+    }
+
+    fun mmoListener(event_id: String,callback: (Pair<String, MindMapObject>) -> Unit){
+        FirebaseDatabase.getInstance()
+                .getReference(event_id)
+                .addChildEventListener(object : ChildEventListener{
+                    override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                        Log.d("onChildAdded",previousChildName)
+                        Log.d("onchildAdded",dataSnapshot.toString())
+                        callback(dataSnapshot.key!! to dataSnapshot.getValue(MindMapObject::class.java)!!)
+                    }
+
+                    override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                        Log.d("onChildChaged", previousChildName)
+                        callback(dataSnapshot.key!! to dataSnapshot.getValue(MindMapObject::class.java)!!)
+                    }
+
+                    override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                        Log.d("onChildMoved",previousChildName)
+                        callback(dataSnapshot.key!! to dataSnapshot.getValue(MindMapObject::class.java)!!)
+                    }
+
+                    override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+                        Log.d("onChildRemoved", dataSnapshot.toString())
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {

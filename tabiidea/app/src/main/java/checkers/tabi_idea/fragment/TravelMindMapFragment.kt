@@ -110,8 +110,7 @@ class TravelMindMapFragment :
                 }
             }
         }
-
-        repository.getMmo(event?.id.toString(), callback)
+        repository.getMmo(event?.id.toString(),callback)
         mindMapConstraintLayout.lineDrawer = this
 
     }
