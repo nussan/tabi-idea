@@ -83,14 +83,6 @@ class EventListFragment : Fragment() {
             }
         })
 
-//        { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
-//            activity?.supportFragmentManager
-//                    ?.beginTransaction()
-//                    ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()]))
-//                    ?.addToBackStack(null)
-//                    ?.commit()
-//        }
-
         fab.setOnClickListener {
             it.isEnabled = false
             // レイアウトを取得

@@ -20,25 +20,33 @@ import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
-import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 import android.view.MotionEvent
+import checkers.tabi_idea.provider.FirebaseApiClient
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 
 
 class TravelMindMapFragment :
         Fragment(),
         ZoomableLayout.LineDrawer,
         View.OnDragListener {
-    private val repository = Repository()
+    private var fbApiClient: FirebaseApiClient? = null
     private var event: Event? = null
     private var mindMapObjectList: MutableList<Pair<String, MindMapObject>> = mutableListOf()
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
+    private var listener: ChildEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             event = it.getParcelable("eventKey")
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -67,18 +75,19 @@ class TravelMindMapFragment :
         behavior = BottomSheetBehavior.from(coordinatorLayout.findViewById(R.id.bottom_sheet))
         behavior?.isHideable = true
         behavior?.state = BottomSheetBehavior.STATE_HIDDEN
-        val callback = fun(it: Collection<Pair<String, MindMapObject>>) {
-            Log.d(javaClass.simpleName, "called")
+
+        fbApiClient = FirebaseApiClient(event!!.id.toString())
+        fbApiClient?.getMmo {
             if (context == null) {
                 Log.d(javaClass.simpleName, "context is null")
-                return
+                return@getMmo
             }
-
 
             val ml = it as MutableList<Pair<String, MindMapObject>>
             val offset = mindMapObjectList.size
 
             for (i in offset until ml.size) {
+                Log.d("TravelMindMapFragment", "${ml[i]}")
                 mindMapObjectList.add(ml[i].second.viewIndex, ml[i])
                 val view = mindMapObjectToTextView(context, ml[i].second)
                 view.tag = ml[i].second.viewIndex
@@ -98,21 +107,71 @@ class TravelMindMapFragment :
                         }
 
                         MotionEvent.ACTION_MOVE -> {
-
                         }
 
                         MotionEvent.ACTION_UP -> {
-
                         }
                     }
                     false
-
                 }
             }
         }
-        repository.getMmo(event?.id.toString(),callback)
-        mindMapConstraintLayout.lineDrawer = this
 
+        listener = object : ChildEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                Log.d("TravelMindMapFragment", "onCancelled")
+            }
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+                Log.d("TravelMindMapFragment", "onChildMoved")
+            }
+
+            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                Log.d("TravelMindMapFragment", "onChildChanged")
+                val pair = dataSnapshot.key!! to dataSnapshot.getValue(MindMapObject::class.java)!!
+                val index = pair.second.viewIndex
+                mindMapObjectList[index] = pair
+                (mindMapConstraintLayout.getChildAt(index) as RoundRectTextView).text = mindMapObjectList[index].second.text
+                mindMapConstraintLayout.invalidate()
+            }
+
+            override fun onChildAdded(dataSnapshot: DataSnapshot, p1: String?) {
+                Log.d("TravelMindMapFragment", "onChildAdded")
+                Log.d("TravelMindMapFragment", "$dataSnapshot")
+                val pair = dataSnapshot.key!! to dataSnapshot.getValue(MindMapObject::class.java)!!
+                val index = pair.second.viewIndex
+                mindMapObjectList.add(index, pair)
+
+                val view = mindMapObjectToTextView(context, pair.second)
+                view.tag = pair.second.viewIndex
+                mindMapConstraintLayout.addView(view, pair.second)
+
+                view.setOnLongClickListener { v ->
+                    behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+
+                    val item = ClipData.Item(v.tag as? CharSequence)
+                    val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
+                    v.startDrag(data, View.DragShadowBuilder(v), v, 0)
+                }
+
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+                Log.d("TravelMindMapFragment", "onChildRemoved")
+            }
+
+        }
+        if (listener != null)
+            fbApiClient?.setListener(listener!!)
+
+        mindMapConstraintLayout.lineDrawer = this
+    }
+
+    override fun onStop() {
+        Log.d("TravelMindMapFragment", "onStop")
+        super.onStop()
+        if (listener != null)
+            fbApiClient?.removeListener(listener!!)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -128,9 +187,10 @@ class TravelMindMapFragment :
     private fun onAddSelected(position: Int) {
         Log.d(javaClass.simpleName, "onAddSelected")
 
-        val listener = object : ZoomableLayout.TapListener {
+        mindMapConstraintLayout.tapListener = object : ZoomableLayout.TapListener {
             override fun onTap(e: MotionEvent, centerX: Float, centerY: Float, scale: Float) {
                 val newId = mindMapObjectList[mindMapObjectList.lastIndex].second.viewIndex + 1
+                Log.d("TravelMindMapFragment", "$newId")
                 val parentId = mindMapObjectList[position].second.viewIndex
                 val parent = mindMapConstraintLayout.getChildAt(parentId)
                 Log.d("add", "${parent.matrix}")
@@ -145,18 +205,17 @@ class TravelMindMapFragment :
                         parentId
                 )
                 Log.d("add", "${parent.x}, ${parent.y}, ${mmo.positionX}, ${mmo.positionY}")
-                repository.addMmo(event!!.id.toString(), mmo) //"1"は追加先event.id
+                fbApiClient?.addMmo(mmo) //"1"は追加先event.id
                 mindMapConstraintLayout.invalidate()
             }
         }
-        mindMapConstraintLayout.tapListener = listener
         Toast.makeText(context, "タップした位置に追加します", Toast.LENGTH_SHORT).show()
     }
 
     fun onEditSelected(position: Int) {
         val text = "更新"
         mindMapObjectList[position].second.text = text
-        repository.updateMmo(event!!.id.toString(), mindMapObjectList[position])
+        fbApiClient?.updateMmo(mindMapObjectList[position])
     }
 
     override fun onDrag(v: View?, event: DragEvent?): Boolean {
@@ -164,30 +223,30 @@ class TravelMindMapFragment :
         Log.d("onDrag", v.toString())
         when (action) {
             DragEvent.ACTION_DRAG_STARTED -> {
-                Log.d("Drag", "DRAG_STARTED")
+//                Log.d("Drag", "DRAG_STARTED")
                 if (event.clipDescription.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
                     return true
                 }
                 return false
             }
             DragEvent.ACTION_DRAG_ENTERED -> {
-                Log.d("Drag", "DRAG_ENTERED")
+//                Log.d("Drag", "DRAG_ENTERED")
                 v?.background?.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN)//set background color to your v
                 v?.invalidate()
                 return true
             }
             DragEvent.ACTION_DRAG_LOCATION -> {
-                Log.d("Drag", "DRAG_LOCATION")
+//                Log.d("Drag", "DRAG_LOCATION")
                 return true
             }
             DragEvent.ACTION_DRAG_EXITED -> {
-                Log.d("Drag", "DRAG_EXITED")
+//                Log.d("Drag", "DRAG_EXITED")
                 v?.background?.clearColorFilter()
                 v?.invalidate()
                 return true
             }
             DragEvent.ACTION_DROP -> {
-                Log.d("Drag", "DROP")
+//                Log.d("Drag", "DROP")
                 val view = event.localState as View
 
                 when (v) {
@@ -199,7 +258,7 @@ class TravelMindMapFragment :
                 return true
             }
             DragEvent.ACTION_DRAG_ENDED -> {
-                Log.d("Drag", "DRAG_ENDED")
+//                Log.d("Drag", "DRAG_ENDED")
                 v?.background?.clearColorFilter()
                 v?.invalidate()
                 behavior?.state = BottomSheetBehavior.STATE_HIDDEN
@@ -218,7 +277,6 @@ class TravelMindMapFragment :
 
         canvas?.scale(scale, scale, mindMapConstraintLayout.width.toFloat() / 2, mindMapConstraintLayout.height.toFloat() / 2)
         mindMapObjectList.forEach {
-            Log.d("mmol", it.toString())
             val child = mindMapConstraintLayout.getChildAt(it.second.viewIndex)
             val parent = mindMapConstraintLayout.getChildAt(it.second.parent)
             canvas?.drawLine(
