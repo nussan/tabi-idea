@@ -1,6 +1,8 @@
 package checkers.tabi_idea.fragment
 
 
+import android.animation.ObjectAnimator
+import android.content.res.Resources
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import checkers.tabi_idea.data.User
@@ -8,11 +10,9 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
+import android.text.Layout
 import android.util.Log
 import android.view.*
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
@@ -84,44 +84,46 @@ class EventListFragment : Fragment() {
         })
 
         fab.setOnClickListener {
-            it.isEnabled = false
-            // レイアウトを取得
-            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
-
-            // ダイアログ内のテキストエリア
-            val inputText: EditText = inflater.findViewById(R.id.inputText)
-            inputText.requestFocus()
-
-            // ダイアログの設定
-            val inputForm = AlertDialog.Builder(context!!).apply {
-                setTitle("新しいイベント")
-                setView(inflater)
-                setPositiveButton("OK") { _, _ ->
-                    // OKボタンを押したときの処理
-                    val title = mapOf(
-                            "title" to "${inputText.text}"
-                    )
-                    repository.addEvent(userId, title) {
-                        event_id = it.id
-                        event_password = it.password
-                        Log.d("tubasa", it.id.toString())
-                        repository.addEventtoFb(event_id.toString())//event.id
-                        mindMapObjectList.forEach {
-                            repository.addMmo(event_id.toString(), it)
-                        }
-                        eventManager.add(it)
-                        eventListView.adapter.notifyDataSetChanged()
-                    }
-
-                }
-                setNegativeButton("Cancel", null)
-            }.create()
+            if(mButtonState == ButtonState.CLOSE) fabOpen(dpToPx(66))
+            else fabClose()
+//            it.isEnabled = false
+//            // レイアウトを取得
+//            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
+//
+//            // ダイアログ内のテキストエリア
+//            val inputText: EditText = inflater.findViewById(R.id.inputText)
+//            inputText.requestFocus()
+//
+//            // ダイアログの設定
+//            val inputForm = AlertDialog.Builder(context!!).apply {
+//                setTitle("新しいイベント")
+//                setView(inflater)
+//                setPositiveButton("OK") { _, _ ->
+//                    // OKボタンを押したときの処理
+//                    val title = mapOf(
+//                            "title" to "${inputText.text}"
+//                    )
+//                    repository.addEvent(userId, title) {
+//                        event_id = it.id
+//                        event_password = it.password
+//                        Log.d("tubasa", it.id.toString())
+//                        repository.addEventtoFb(event_id.toString())//event.id
+//                        mindMapObjectList.forEach {
+//                            repository.addMmo(event_id.toString(), it)
+//                        }
+//                        eventManager.add(it)
+//                        eventListView.adapter.notifyDataSetChanged()
+//                    }
+//
+//                }
+//                setNegativeButton("Cancel", null)
+//            }.create()
 
             // ダイアログ表示と同時にキーボードを表示
-            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-            inputForm.show()
-
-            it.isEnabled = true
+//            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+//            inputForm.show()
+//
+//            it.isEnabled = true
         }
     }
 
@@ -135,4 +137,42 @@ class EventListFragment : Fragment() {
             }
         }
     }
+    private fun dpToPx(dp: Int): Float {
+        return (dp * Resources.getSystem().getDisplayMetrics().density)
+    }
+
+    private fun fabClose() {
+        join_button_layout.setVisibility(View.GONE)
+        var anim = ObjectAnimator.ofFloat(join_button_layout, "translationY", 0f)
+        anim.setDuration(200)
+        anim.start()
+
+        create_button_layout.setVisibility(View.GONE)
+        anim = ObjectAnimator.ofFloat(create_button_layout, "translationY", 0f)
+        anim.setDuration(200)
+        anim.start()
+
+        mButtonState = ButtonState.CLOSE
+    }
+
+    private fun fabOpen(size:Float) {
+        join_button_layout.setVisibility(View.VISIBLE)
+        var anim = ObjectAnimator.ofFloat(join_button_layout, "translationY", -size)
+        anim.duration = 200
+        anim.start()
+
+        create_button_layout.setVisibility(View.VISIBLE)
+        anim = ObjectAnimator.ofFloat(create_button_layout,"translationY",-size*2)
+        anim.duration = 200
+        anim.start()
+
+        mButtonState = ButtonState.OPEN
+    }
+
+    enum class ButtonState{
+        OPEN,
+        CLOSE
+    }
+
+    var mButtonState: ButtonState = ButtonState.CLOSE
 }
