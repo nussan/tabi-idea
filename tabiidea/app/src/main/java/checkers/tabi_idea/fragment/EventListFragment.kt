@@ -3,19 +3,16 @@ package checkers.tabi_idea.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import checkers.tabi_idea.data.User
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.*
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.EditText
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
+import checkers.tabi_idea.data.User
 import checkers.tabi_idea.manager.EventManager
 import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.fragment_event_list.*
@@ -26,10 +23,10 @@ class EventListFragment : Fragment() {
     private var event_id = 0
     private var event_password: String? = null
     private var mindMapObjectList: MutableList<MindMapObject> = mutableListOf(
-            MindMapObject(1, "行先", 200f, 200f, 0),
-            MindMapObject(2, "予算", 200f, -200f, 0),
-            MindMapObject(3, "食事", -200f, 200f, 0),
-            MindMapObject(4, "宿泊", -200f, -200f, 0)
+            MindMapObject(1, "行先", 200f, 200f, 0,0,"destination"),
+            MindMapObject(2, "予算", 200f, -200f, 0,0,"budget"),
+            MindMapObject(3, "食事", -200f, 200f, 0,0,"food"),
+            MindMapObject(4, "宿泊", -200f, -200f, 0,0,"hotel")
     )
     private var userId = 0
     private lateinit var myuser :User

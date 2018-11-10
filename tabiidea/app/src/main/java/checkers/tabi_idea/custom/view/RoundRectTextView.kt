@@ -16,7 +16,7 @@ class RoundRectTextView : AppCompatTextView {
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         setBackgroundColor(Color.parseColor("#00CED1"))
-        elevation = 30f
+        elevation = 10f
         outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(view: View, outline: Outline) {
                 outline.setRoundRect(0, 0, width, height, 30f )
