@@ -20,12 +20,11 @@ import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
-import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
-import android.view.MotionEvent
 import checkers.tabi_idea.provider.FirebaseApiClient
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 
 
 class TravelMindMapFragment :
@@ -202,7 +201,9 @@ class TravelMindMapFragment :
                         "追加",
                         (e.x - matrix[Matrix.MTRANS_X]) / scale - parent.width / 2,
                         (e.y - matrix[Matrix.MTRANS_Y]) / scale - parent.height / 2,
-                        parentId
+                        parentId,
+                        0,
+                        mindMapObjectList[parentId].second.type
                 )
                 Log.d("add", "${parent.x}, ${parent.y}, ${mmo.positionX}, ${mmo.positionY}")
                 fbApiClient?.addMmo(mmo) //"1"は追加先event.id
@@ -297,6 +298,22 @@ class TravelMindMapFragment :
         textView.gravity = Gravity.CENTER
         textView.text = mindMapObject.text
         textView.setTextColor(Color.WHITE)
+        Log.d("MindMapType",mindMapObject.type)
+        when (mindMapObject.type){
+            "destination" -> {
+                textView.setBackgroundColor(Color.parseColor("#ffb6c1"))
+            }
+            "budget" -> {
+                textView.setBackgroundColor(Color.parseColor("#32cd32"))
+            }
+            "food" -> {
+                textView.setBackgroundColor(Color.parseColor("#ff8c00"))
+            }
+            "hotel" -> {
+                textView.setBackgroundColor(Color.parseColor("#ffe4b5"))
+            }
+
+        }
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
                 textView,
                 10,
