@@ -37,6 +37,8 @@ class TravelMindMapFragment :
     private var mindMapObjectList: MutableList<Pair<String, MindMapObject>> = mutableListOf()
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
+    private var matrix: Matrix? = null
+    var lastRaw = PointF(0f, 0f)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,20 +102,6 @@ class TravelMindMapFragment :
                     val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
                     v.startDrag(data, View.DragShadowBuilder(v), v, 0)
                 }
-
-                view.setOnTouchListener { v, event ->
-                    when (event.action) {
-                        MotionEvent.ACTION_DOWN -> {
-                        }
-
-                        MotionEvent.ACTION_MOVE -> {
-                        }
-
-                        MotionEvent.ACTION_UP -> {
-                        }
-                    }
-                    false
-                }
             }
         }
 
@@ -154,6 +142,41 @@ class TravelMindMapFragment :
                     v.startDrag(data, View.DragShadowBuilder(v), v, 0)
                 }
 
+                view.setOnTouchListener { v, event ->
+                    when (event.action and event.actionMasked) {
+                        MotionEvent.ACTION_DOWN -> {
+                            Log.d("TravelMindMapFragment", "ACTION_DOWN")
+                            lastRaw.set(event.rawX, event.rawY)
+                            matrix = v.matrix
+                            Log.d("TravelMindMapFragment", v.matrix.toShortString())
+                        }
+
+                        MotionEvent.ACTION_MOVE -> {
+                            Log.d("TravelMindMapFragment", "ACTION_MOVE")
+//                            Log.d("TravelMindMapFragment", "${event.rawX}, ${event.rawY}")
+                            val trans = PointF((event.rawX - lastRaw.x), (event.rawY - lastRaw.y))
+                            Log.d("TravelMindMapFragment", "${trans.x}, ${trans.y}")
+                            matrix?.postTranslate(trans.x, trans.y)
+                            val f = FloatArray(9)
+//                            f[0] = v.x
+//                            f[1] = v.y
+                            matrix?.getValues(f)
+//                            Log.d("TravelMindMapFragment", "pivot : ${v.pivotX}, ${v.pivotY}")
+                            v.translationX += trans.x
+                            v.translationY += trans.y
+
+//                            Log.d("TravelMindMapFragment", "${v.x}, ${v.y}")
+                            Log.d("TravelMindMapFragment", v.matrix.toShortString())
+                            lastRaw.set(event.rawX, event.rawY)
+                            mindMapConstraintLayout.invalidate()
+                        }
+
+                        MotionEvent.ACTION_UP -> {
+                            Log.d("TravelMindMapFragment", "ACTION_UP")
+                        }
+                    }
+                    true
+                }
             }
 
             override fun onChildRemoved(p0: DataSnapshot) {
@@ -275,19 +298,23 @@ class TravelMindMapFragment :
         paint.setARGB(255, 0, 0, 0)
         paint.strokeWidth = 5f
 
-        canvas?.scale(scale, scale, mindMapConstraintLayout.width.toFloat() / 2, mindMapConstraintLayout.height.toFloat() / 2)
+//        canvas?.scale(scale, scale, mindMapConstraintLayout.width.toFloat() / 2, mindMapConstraintLayout.height.toFloat() / 2)
         mindMapObjectList.forEach {
             val child = mindMapConstraintLayout.getChildAt(it.second.viewIndex)
             val parent = mindMapConstraintLayout.getChildAt(it.second.parent)
+            val ca = FloatArray(9)
+            child.matrix.getValues(ca)
+            val pa = FloatArray(9)
+            parent.matrix.getValues(pa)
             canvas?.drawLine(
-                    child.x + child.width / 2,
-                    child.y + child.height / 2,
-                    parent.x + parent.width / 2,
-                    parent.y + parent.height / 2,
+                    ca[Matrix.MTRANS_X] + child.width * child.scaleX / 2,
+                    ca[Matrix.MTRANS_Y] + child.height * child.scaleY / 2,
+                    pa[Matrix.MTRANS_X] + parent.width * parent.scaleX / 2,
+                    pa[Matrix.MTRANS_Y] + parent.height * parent.scaleY / 2,
                     paint
             )
         }
-        canvas?.scale(1 / scale, 1 / scale, mindMapConstraintLayout.width.toFloat() / 2, mindMapConstraintLayout.height.toFloat() / 2)
+//        canvas?.scale(1 / scale, 1 / scale, mindMapConstraintLayout.width.toFloat() / 2, mindMapConstraintLayout.height.toFloat() / 2)
     }
 
 
