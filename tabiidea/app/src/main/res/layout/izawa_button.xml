@@ -1,9 +1,15 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
+
+    <View
+        android:id="@+id/fab_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/join_button_layout"
@@ -13,16 +19,6 @@
         android:layout_alignParentTop="true"
         android:orientation="horizontal"
         android:visibility="gone">
-
-        <TextView
-            android:id="@+id/join_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_weight="1"
-            android:text="参加する"
-            android:textSize="20sp" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/join_fab"
@@ -43,25 +39,14 @@
         android:orientation="horizontal"
         android:visibility="gone">
 
-        <TextView
-            android:id="@+id/create_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="58dp"
-            android:layout_weight="1"
-            android:text="作成する"
-            android:textSize="20sp" />
-
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/create_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="83dp"
-            android:layout_marginTop="39dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
             android:layout_weight="1"
             android:clickable="true"
             app:srcCompat="@android:drawable/ic_input_add" />
@@ -72,11 +57,17 @@
         android:id="@+id/add_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="105dp"
-        android:layout_marginTop="224dp"
         android:clickable="true"
+        app:fabSize="normal"
         app:srcCompat="@android:drawable/presence_online" />
+
+    <View
+        android:id="@+id/mockview"
+        android:layout_width="85dp"
+        android:layout_height="97dp"
+        android:layout_centerInParent="true"
+        android:background="@mipmap/ic_launcher_round" />
 
 </RelativeLayout>
