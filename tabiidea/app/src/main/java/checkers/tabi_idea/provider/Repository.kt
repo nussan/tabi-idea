@@ -10,8 +10,8 @@ import com.squareup.moshi.Moshi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 class Repository {
     private var requestService: RequestService
@@ -39,8 +39,14 @@ class Repository {
     }
 
     //userをedit
-    fun editUser(editName: String) {
-        requestService.editUser(editName)
+    fun editUser(id:Int,editName: Map<String,String>,callback: (User) -> Unit) {
+        requestService.editUser(id,editName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {res -> callback(res)},
+                        {err -> Log.d("errEditUser",err.toString())}
+                )
     }
 
     //user情報をget,rxjava2
