@@ -9,7 +9,8 @@ import android.view.ViewOutlineProvider
 import android.view.ViewTreeObserver
 
 
-class RoundRectTextView : AppCompatTextView {
+//ホーム画面のイベントを丸に表示するためのView
+class RoundTextView : AppCompatTextView {
     constructor(context: Context?) : this(context, null)
 
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -19,7 +20,7 @@ class RoundRectTextView : AppCompatTextView {
         elevation = 10f
         outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(view: View, outline: Outline) {
-                outline.setRoundRect(0, 0, width, height, 30f )
+                outline.setOval(0, 0, width, height)
             }
         }
         clipToOutline = true
