@@ -3,7 +3,6 @@ package checkers.tabi_idea.custom.view
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Matrix
-import android.graphics.PointF
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 import android.util.Log
@@ -17,8 +16,8 @@ class ZoomableLayout :
         ScaleGestureDetector.OnScaleGestureListener,
         GestureDetector.OnGestureListener,
         GestureDetector.OnDoubleTapListener {
-
     private var scale = 1.0f
+    private var scaleFactor = 1.0f
     private var lastScaleFactor = 0f
 
     constructor(context: Context) : this(context, null)
@@ -34,7 +33,7 @@ class ZoomableLayout :
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        (lineDrawer as? TravelMindMapFragment)?.drawLines(canvas, scale)
+        (lineDrawer as? TravelMindMapFragment)?.drawLines(canvas, scaleFactor)
     }
 
     interface LineDrawer {
@@ -74,18 +73,20 @@ class ZoomableLayout :
     }
 
     override fun onScaleBegin(scaleDetector: ScaleGestureDetector): Boolean {
-        Log.i(TAG, "onScaleBegin: $scale")
-        return scale in MIN_ZOOM..MAX_ZOOM
-
+//        Log.i(TAG, "onScaleBegin: ${scaleDetector.scaleFactor}")
+        return true
     }
 
     override fun onScale(scaleDetector: ScaleGestureDetector): Boolean {
-        val scaleFactor = scaleDetector.scaleFactor
+        scaleFactor = scaleDetector.scaleFactor
 //        Log.i(TAG, "onScale$scaleFactor")
+        if(scale in MIN_ZOOM .. MAX_ZOOM) Log.i(TAG, "onScale: true")
+        else if ((scale < MIN_ZOOM && scaleDetector.scaleFactor > 1.0f) || (scale > MAX_ZOOM && scaleDetector.scaleFactor < 1.0f)) Log.i(TAG, "onScale: true")
+        else return false
+
         if (lastScaleFactor == 0f || Math.signum(scaleFactor) == Math.signum(lastScaleFactor)) {
             scale *= scaleFactor
             lastScaleFactor = scaleFactor
-            scale = Math.max(MIN_ZOOM, Math.min(scale, MAX_ZOOM))
             applyScale()
             invalidate()
         } else {
@@ -95,14 +96,14 @@ class ZoomableLayout :
     }
 
     override fun onScaleEnd(scaleDetector: ScaleGestureDetector) {
-        Log.i(TAG, "onScaleEnd")
+//        Log.i(TAG, "onScaleEnd")
     }
 
     override fun onShowPress(e: MotionEvent?) {
     }
 
     override fun onSingleTapUp(e: MotionEvent): Boolean {
-        tapListener?.onTap(e, (width / 2).toFloat(), (height / 2).toFloat(), scale)
+        tapListener?.onTap(e, (width / 2).toFloat(), (height / 2).toFloat(), scaleFactor)
         tapListener = null
         return true
     }
@@ -126,8 +127,8 @@ class ZoomableLayout :
     private fun applyTranslation(distanceX: Float, distanceY: Float) {
         for (i in 0 until childCount) {
             val child = getChildAt(i)
-            child.translationX -= distanceX / scale
-            child.translationY -= distanceY / scale
+            child.translationX -= distanceX
+            child.translationY -= distanceY
         }
         invalidate()
     }
@@ -136,8 +137,8 @@ class ZoomableLayout :
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             val matrix = child.matrix
-            matrix.setScale(scale, scale, width.toFloat() / 2 - child.x, height.toFloat() / 2 - child.y)
-            Log.d(TAG, matrix.toShortString())
+            matrix.setScale(scaleFactor, scaleFactor, width.toFloat() / 2 - child.x, height.toFloat() / 2 - child.y)
+//            Log.d(TAG, "${child.id} : ${matrix.toShortString()}")
             val m = FloatArray(9)
             matrix.getValues(m)
             child.translationX += m[Matrix.MTRANS_X]
@@ -146,13 +147,14 @@ class ZoomableLayout :
             child.scaleY = scale
         }
     }
+
     override fun onLongPress(e: MotionEvent?) {
     }
 
     override fun onDoubleTap(e: MotionEvent): Boolean {
-        scale = if (scale == MIN_ZOOM) MAX_ZOOM else MIN_ZOOM
-        applyScale()
-        invalidate()
+//        scale = if (scale == MAX_ZOOM) MAX_ZOOM else MIN_ZOOM
+//        applyScale()
+//        invalidate()
         return true
     }
 

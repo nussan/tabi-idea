@@ -3,7 +3,6 @@ package checkers.tabi_idea.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import checkers.tabi_idea.data.User
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
@@ -13,6 +12,7 @@ import android.widget.EditText
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
+import checkers.tabi_idea.data.User
 import checkers.tabi_idea.manager.EventManager
 import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.fragment_event_list.*
@@ -29,7 +29,7 @@ class EventListFragment : Fragment() {
             MindMapObject(4, "宿泊", -200f, -200f, 0)
     )
     private var userId = 0
-    private lateinit var myuser :User
+    private lateinit var myuser : User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,7 +116,7 @@ class EventListFragment : Fragment() {
             }.create()
 
             // ダイアログ表示と同時にキーボードを表示
-            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
             inputForm.show()
 
             it.isEnabled = true

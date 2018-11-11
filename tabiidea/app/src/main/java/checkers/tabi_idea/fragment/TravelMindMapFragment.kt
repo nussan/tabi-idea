@@ -20,12 +20,11 @@ import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
-import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
-import android.view.MotionEvent
 import checkers.tabi_idea.provider.FirebaseApiClient
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 
 
 class TravelMindMapFragment :
@@ -145,27 +144,19 @@ class TravelMindMapFragment :
                 view.setOnTouchListener { v, event ->
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
-                            Log.d("TravelMindMapFragment", "ACTION_DOWN")
+//                            Log.d("TravelMindMapFragment", "ACTION_DOWN")
                             lastRaw.set(event.rawX, event.rawY)
                             matrix = v.matrix
-                            Log.d("TravelMindMapFragment", v.matrix.toShortString())
                         }
 
                         MotionEvent.ACTION_MOVE -> {
-                            Log.d("TravelMindMapFragment", "ACTION_MOVE")
-//                            Log.d("TravelMindMapFragment", "${event.rawX}, ${event.rawY}")
+//                            Log.d("TravelMindMapFragment", "ACTION_MOVE")
                             val trans = PointF((event.rawX - lastRaw.x), (event.rawY - lastRaw.y))
-                            Log.d("TravelMindMapFragment", "${trans.x}, ${trans.y}")
                             matrix?.postTranslate(trans.x, trans.y)
                             val f = FloatArray(9)
-//                            f[0] = v.x
-//                            f[1] = v.y
                             matrix?.getValues(f)
-//                            Log.d("TravelMindMapFragment", "pivot : ${v.pivotX}, ${v.pivotY}")
                             v.translationX += trans.x
                             v.translationY += trans.y
-
-//                            Log.d("TravelMindMapFragment", "${v.x}, ${v.y}")
                             Log.d("TravelMindMapFragment", v.matrix.toShortString())
                             lastRaw.set(event.rawX, event.rawY)
                             mindMapConstraintLayout.invalidate()
@@ -175,7 +166,7 @@ class TravelMindMapFragment :
                             Log.d("TravelMindMapFragment", "ACTION_UP")
                         }
                     }
-                    true
+                    false
                 }
             }
 
@@ -235,7 +226,7 @@ class TravelMindMapFragment :
         Toast.makeText(context, "タップした位置に追加します", Toast.LENGTH_SHORT).show()
     }
 
-    fun onEditSelected(position: Int) {
+    private fun onEditSelected(position: Int) {
         val text = "更新"
         mindMapObjectList[position].second.text = text
         fbApiClient?.updateMmo(mindMapObjectList[position])
