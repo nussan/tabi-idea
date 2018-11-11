@@ -46,7 +46,8 @@ class ZoomableLayout :
             override fun onGlobalLayout() {
                 child.x = if (mmo.parent == 0) width.toFloat() / 2 + mmo.positionX - child.width / 2 else getChildAt(mmo.parent).x + mmo.positionX
                 child.y = if (mmo.parent == 0) height.toFloat() / 2 + mmo.positionY - child.height / 2 else getChildAt(mmo.parent).y + mmo.positionY
-                applyScale()
+                child.scaleX = scale
+                child.scaleY = scale
                 viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })

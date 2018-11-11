@@ -214,8 +214,8 @@ class TravelMindMapFragment :
                 val mmo = MindMapObject(
                         newId,
                         "追加",
-                        (e.x - matrix[Matrix.MTRANS_X]) / scale - parent.width / 2,
-                        (e.y - matrix[Matrix.MTRANS_Y]) / scale - parent.height / 2,
+                        (e.x - matrix[Matrix.MTRANS_X]) - parent.width * scale / 2,
+                        (e.y - matrix[Matrix.MTRANS_Y]) - parent.height * scale / 2,
                         parentId
                 )
                 Log.d("add", "${parent.x}, ${parent.y}, ${mmo.positionX}, ${mmo.positionY}")
