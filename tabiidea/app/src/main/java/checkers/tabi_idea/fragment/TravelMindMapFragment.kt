@@ -9,10 +9,12 @@ import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.Fragment
 import android.support.v4.widget.TextViewCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import checkers.tabi_idea.R
@@ -24,6 +26,7 @@ import checkers.tabi_idea.provider.FirebaseApiClient
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import kotlinx.android.synthetic.main.fragment_event_list.*
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 
 
@@ -200,36 +203,70 @@ class TravelMindMapFragment :
 
     private fun onAddSelected(position: Int) {
         Log.d(javaClass.simpleName, "onAddSelected")
+        Toast.makeText(context, "タップした位置に追加します", Toast.LENGTH_SHORT).show()
 
         mindMapConstraintLayout.tapListener = object : ZoomableLayout.TapListener {
             override fun onTap(e: MotionEvent, centerX: Float, centerY: Float, scale: Float) {
+                val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
+                val inputText: EditText = inflater.findViewById(R.id.inputText)
+                inputText.requestFocus()
+
                 val newId = mindMapObjectList[mindMapObjectList.lastIndex].second.viewIndex + 1
                 Log.d("TravelMindMapFragment", "$newId")
                 val parentId = mindMapObjectList[position].second.viewIndex
                 val parent = mindMapConstraintLayout.getChildAt(parentId)
-                Log.d("add", "${parent.matrix}")
+
                 val matrix = FloatArray(9)
                 parent.matrix.getValues(matrix)
 
                 val mmo = MindMapObject(
                         newId,
-                        "追加",
+                        "",
                         (e.x - matrix[Matrix.MTRANS_X]) - parent.width * scale / 2,
                         (e.y - matrix[Matrix.MTRANS_Y]) - parent.height * scale / 2,
                         parentId
                 )
-                Log.d("add", "${parent.x}, ${parent.y}, ${mmo.positionX}, ${mmo.positionY}")
-                fbApiClient?.addMmo(mmo) //"1"は追加先event.id
-                mindMapConstraintLayout.invalidate()
+                // ダイアログの設定
+                val inputForm = AlertDialog.Builder(context!!).apply {
+                    setTitle("新しいアイデア")
+                    setView(inflater)
+                    setPositiveButton("OK") { _, _ ->
+                        mmo.text = inputText.text.toString()
+                        fbApiClient?.addMmo(mmo)
+                        mindMapConstraintLayout.invalidate()
+                    }
+                    setNegativeButton("Cancel", null)
+                }.create()
+
+                // ダイアログ表示と同時にキーボードを表示
+                inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+                inputForm.show()
             }
         }
-        Toast.makeText(context, "タップした位置に追加します", Toast.LENGTH_SHORT).show()
     }
 
     private fun onEditSelected(position: Int) {
-        val text = "更新"
-        mindMapObjectList[position].second.text = text
-        fbApiClient?.updateMmo(mindMapObjectList[position])
+        val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
+
+        // ダイアログ内のテキストエリア
+        val inputText: EditText = inflater.findViewById(R.id.inputText)
+        inputText.requestFocus()
+
+        // ダイアログの設定
+        val inputForm = AlertDialog.Builder(context!!).apply {
+            setTitle("アイデアを編集")
+            setView(inflater)
+            setPositiveButton("OK") { _, _ ->
+                mindMapObjectList[position].second.text = inputText.text.toString()
+                fbApiClient?.updateMmo(mindMapObjectList[position])
+                mindMapConstraintLayout.invalidate()
+            }
+            setNegativeButton("Cancel", null)
+        }.create()
+
+        // ダイアログ表示と同時にキーボードを表示
+        inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        inputForm.show()
     }
 
     override fun onDrag(v: View?, event: DragEvent?): Boolean {
@@ -287,9 +324,8 @@ class TravelMindMapFragment :
     override fun drawLines(canvas: Canvas?, scale: Float) {
         val paint = Paint()
         paint.setARGB(255, 0, 0, 0)
-        paint.strokeWidth = 5f
+        paint.strokeWidth = 5f * scale
 
-//        canvas?.scale(scale, scale, mindMapConstraintLayout.width.toFloat() / 2, mindMapConstraintLayout.height.toFloat() / 2)
         mindMapObjectList.forEach {
             val child = mindMapConstraintLayout.getChildAt(it.second.viewIndex)
             val parent = mindMapConstraintLayout.getChildAt(it.second.parent)
@@ -305,7 +341,6 @@ class TravelMindMapFragment :
                     paint
             )
         }
-//        canvas?.scale(1 / scale, 1 / scale, mindMapConstraintLayout.width.toFloat() / 2, mindMapConstraintLayout.height.toFloat() / 2)
     }
 
 
