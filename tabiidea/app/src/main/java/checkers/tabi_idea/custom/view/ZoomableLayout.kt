@@ -1,5 +1,7 @@
 package checkers.tabi_idea.custom.view
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Matrix
@@ -16,7 +18,8 @@ class ZoomableLayout :
         ScaleGestureDetector.OnScaleGestureListener,
         GestureDetector.OnGestureListener,
         GestureDetector.OnDoubleTapListener {
-    private var scale = 1.0f
+    var scale = 1.0f
+        private set
     private var scaleFactor = 1.0f
     private var lastScaleFactor = 0f
 
@@ -46,8 +49,14 @@ class ZoomableLayout :
             override fun onGlobalLayout() {
                 child.x = if (mmo.parent == 0) width.toFloat() / 2 + mmo.positionX - child.width / 2 else getChildAt(mmo.parent).x + mmo.positionX
                 child.y = if (mmo.parent == 0) height.toFloat() / 2 + mmo.positionY - child.height / 2 else getChildAt(mmo.parent).y + mmo.positionY
-                child.scaleX = scale
-                child.scaleY = scale
+                child.scaleX = 0f
+                child.scaleY = 0f
+                val set = AnimatorSet()
+                set.duration = 200
+                set.playTogether(
+                        ObjectAnimator.ofFloat(child, "scaleX", scale),
+                        ObjectAnimator.ofFloat(child, "scaleY", scale))
+                set.start()
                 viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
@@ -81,7 +90,7 @@ class ZoomableLayout :
     override fun onScale(scaleDetector: ScaleGestureDetector): Boolean {
         scaleFactor = scaleDetector.scaleFactor
 //        Log.i(TAG, "onScale$scaleFactor")
-        if(scale in MIN_ZOOM .. MAX_ZOOM) Log.i(TAG, "onScale: true")
+        if (scale in MIN_ZOOM..MAX_ZOOM) Log.i(TAG, "onScale: true")
         else if ((scale < MIN_ZOOM && scaleDetector.scaleFactor > 1.0f) || (scale > MAX_ZOOM && scaleDetector.scaleFactor < 1.0f)) Log.i(TAG, "onScale: true")
         else return false
 
@@ -169,7 +178,7 @@ class ZoomableLayout :
 
     companion object {
         private const val TAG = "ZoomableLayout"
-        private const val MIN_ZOOM = 0.5f
+        private const val MIN_ZOOM = 0.3f
         private const val MAX_ZOOM = 2.0f
     }
 

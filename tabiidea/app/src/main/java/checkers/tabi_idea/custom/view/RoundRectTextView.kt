@@ -6,7 +6,6 @@ import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewOutlineProvider
-import android.view.ViewTreeObserver
 
 
 class RoundRectTextView : AppCompatTextView {
@@ -16,7 +15,7 @@ class RoundRectTextView : AppCompatTextView {
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         setBackgroundColor(Color.parseColor("#00CED1"))
-        elevation = 30f
+        elevation = 10f
         outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(view: View, outline: Outline) {
                 outline.setRoundRect(0, 0, width, height, 30f )
@@ -49,27 +48,4 @@ class RoundRectTextView : AppCompatTextView {
     override fun performClick(): Boolean {
         return super.performClick()
     }
-
-    fun setPositionXByCenterPositionX(f: Float) {
-        this.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                x = f - width / 2
-
-                viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
-    }
-
-    fun setPositionYByCenterPositionY(f: Float) {
-        this.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                y = f - height / 2
-
-                viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
-    }
-
-    fun getCenterPositionX() = x + width / 2
-    fun getCenterPositionY() = y + height / 2
 }
