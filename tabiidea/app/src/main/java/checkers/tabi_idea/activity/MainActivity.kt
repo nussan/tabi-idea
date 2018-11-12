@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         if( savedInstanceState == null) {
             Log.d("uuid", uuid)
-            repository.getUser("tsubasa") {
+            repository.getUser("izawaMAN") {
                 if (it.id == -1) {
                     val newUser = mapOf(
                             "uuid" to uuid,
