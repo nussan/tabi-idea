@@ -8,8 +8,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.text.Layout
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
 import android.widget.EditText
@@ -69,7 +68,7 @@ class EventListFragment : Fragment() {
         val repository = Repository()
         //RecyclerViewを設定
         eventListView.adapter = EventListAdapter(context,eventManager.eventList)
-        eventListView.layoutManager =  GridLayoutManager(context,2)
+        eventListView.layoutManager = GridLayoutManager(context,2) as RecyclerView.LayoutManager?
 
         (eventListView.adapter as EventListAdapter).setOnClickListener (object: View.OnClickListener {
             override fun onClick(view: View?) {
@@ -125,6 +124,41 @@ class EventListFragment : Fragment() {
 //            inputForm.show()
 //
 //            it.isEnabled = true
+        }
+
+        nameEdit.setOnClickListener {
+            it.isEnabled = false
+            // レイアウトを取得
+            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
+
+            // ダイアログ内のテキストエリア
+            val inputText: EditText = inflater.findViewById(R.id.inputText)
+            inputText.requestFocus()
+
+            // ダイアログの設定
+            val inputForm = AlertDialog.Builder(context!!).apply {
+                setTitle("名前の編集")
+                setView(inflater)
+                setPositiveButton("OK") { _, _ ->
+                    // OKボタンを押したときの処理
+                    val name = mapOf(
+                            "name" to "${inputText.text}"
+                    )
+                    Log.d("EventListFragment", "")
+                    repository.editUser(userId, name){
+                        // コールバックの操作
+                        (activity as AppCompatActivity).supportActionBar?.title = it.name
+                    }
+
+                }
+                setNegativeButton("Cancel", null)
+            }.create()
+
+            // ダイアログ表示と同時にキーボードを表示
+            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            inputForm.show()
+
+            it.isEnabled = true
         }
     }
 
