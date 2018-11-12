@@ -40,7 +40,7 @@ class TravelMindMapFragment :
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
     private var matrix: Matrix? = null
-    var lastRaw = PointF(0f, 0f)
+    private var lastRaw = PointF(0f, 0f)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -245,6 +245,10 @@ class TravelMindMapFragment :
         }
     }
 
+    private fun onDeleteSelected(position: Int) {
+        fbApiClient?.deleteMmo(mindMapObjectList[position])
+    }
+
     private fun onEditSelected(position: Int) {
         val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
 
@@ -302,6 +306,7 @@ class TravelMindMapFragment :
 
                 when (v) {
                     linear_left -> onAddSelected(view.id)
+                    linear_center -> onDeleteSelected(view.id)
                     linear_right -> onEditSelected(view.id)
                 }
 
