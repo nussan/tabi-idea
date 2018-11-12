@@ -158,6 +158,7 @@ class EventListFragment : Fragment() {
                     repository.editUser(userId, name){
                         // コールバックの操作
                         (activity as AppCompatActivity).supportActionBar?.title = it.name
+                        myuser = it
                     }
 
                 }
