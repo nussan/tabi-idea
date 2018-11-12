@@ -38,7 +38,7 @@ class TravelMindMapFragment :
     private var map: Map<String, MindMapObject> = mutableMapOf()
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
-    private var lastRaw = PointF(0f, 0f)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,15 +115,19 @@ class TravelMindMapFragment :
                     v.startDrag(data, View.DragShadowBuilder(v), v, 0)
                 }
 
+                val lastRaw = PointF(0f, 0f)
                 view.setOnTouchListener { v, event ->
+                    Log.d("TravelMindMapFragment", "${event.pointerCount}")
+
+
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
-//                            Log.d("TravelMindMapFragment", "ACTION_DOWN")
+                            Log.d("TravelMindMapFragment", "ACTION_DOWN")
                             lastRaw.set(event.rawX, event.rawY)
                         }
 
                         MotionEvent.ACTION_MOVE -> {
-//                            Log.d("TravelMindMapFragment", "ACTION_MOVE")
+                            Log.d("TravelMindMapFragment", "ACTION_MOVE")
                             val trans = PointF((event.rawX - lastRaw.x), (event.rawY - lastRaw.y))
                             val matrix = v.matrix
                             matrix?.postTranslate(trans.x, trans.y)
@@ -131,7 +135,7 @@ class TravelMindMapFragment :
                             matrix?.getValues(f)
                             v.translationX += trans.x
                             v.translationY += trans.y
-                            Log.d("TravelMindMapFragment", v.matrix.toShortString())
+//                            Log.d("TravelMindMapFragment", v.matrix.toShortString())
                             lastRaw.set(event.rawX, event.rawY)
                             mindMapConstraintLayout.invalidate()
                             v.cancelLongPress()
@@ -141,7 +145,7 @@ class TravelMindMapFragment :
                             Log.d("TravelMindMapFragment", "ACTION_UP")
                         }
                     }
-                    false
+                    true
                 }
                 map = map.plus(key to mmo)
                 mindMapConstraintLayout.addView(view, mmo)
