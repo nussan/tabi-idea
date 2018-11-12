@@ -26,7 +26,6 @@ import checkers.tabi_idea.provider.FirebaseApiClient
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import kotlinx.android.synthetic.main.fragment_event_list.*
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 
 
@@ -36,7 +35,7 @@ class TravelMindMapFragment :
         View.OnDragListener {
     private var fbApiClient: FirebaseApiClient? = null
     private var event: Event? = null
-    private var mindMapObjectList: MutableList<Pair<String, MindMapObject>> = mutableListOf()
+    private var map: Map<String, Pair<MindMapObject, RoundRectTextView>> = mutableMapOf()
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
     private var matrix: Matrix? = null
@@ -81,31 +80,6 @@ class TravelMindMapFragment :
         behavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
         fbApiClient = FirebaseApiClient(event!!.id.toString())
-        fbApiClient?.getMmo {
-            if (context == null) {
-                Log.d(javaClass.simpleName, "context is null")
-                return@getMmo
-            }
-
-            val ml = it as MutableList<Pair<String, MindMapObject>>
-            val offset = mindMapObjectList.size
-
-            for (i in offset until ml.size) {
-                Log.d("TravelMindMapFragment", "${ml[i]}")
-                mindMapObjectList.add(ml[i].second.viewIndex, ml[i])
-                val view = mindMapObjectToTextView(context, ml[i].second)
-                view.tag = ml[i].second.viewIndex
-                mindMapConstraintLayout.addView(view, ml[i].second)
-
-                view.setOnLongClickListener { v ->
-                    behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-
-                    val item = ClipData.Item(v.tag as? CharSequence)
-                    val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
-                    v.startDrag(data, View.DragShadowBuilder(v), v, 0)
-                }
-            }
-        }
 
         listener = object : ChildEventListener {
             override fun onCancelled(p0: DatabaseError) {
@@ -118,23 +92,16 @@ class TravelMindMapFragment :
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 Log.d("TravelMindMapFragment", "onChildChanged")
-                val pair = dataSnapshot.key!! to dataSnapshot.getValue(MindMapObject::class.java)!!
-                val index = pair.second.viewIndex
-                mindMapObjectList[index] = pair
-                (mindMapConstraintLayout.getChildAt(index) as RoundRectTextView).text = mindMapObjectList[index].second.text
-                mindMapConstraintLayout.invalidate()
             }
 
             override fun onChildAdded(dataSnapshot: DataSnapshot, p1: String?) {
                 Log.d("TravelMindMapFragment", "onChildAdded")
                 Log.d("TravelMindMapFragment", "$dataSnapshot")
-                val pair = dataSnapshot.key!! to dataSnapshot.getValue(MindMapObject::class.java)!!
-                val index = pair.second.viewIndex
-                mindMapObjectList.add(index, pair)
+                val key = dataSnapshot.key!!
+                val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
 
-                val view = mindMapObjectToTextView(context, pair.second)
-                view.tag = pair.second.viewIndex
-                mindMapConstraintLayout.addView(view, pair.second)
+                val view = mindMapObjectToTextView(context, mmo)
+                view.tag = key
 
                 view.setOnLongClickListener { v ->
                     behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -171,13 +138,18 @@ class TravelMindMapFragment :
                     }
                     false
                 }
+                map = map.plus(key to Pair(mmo, view))
+                mindMapConstraintLayout.addView(view, mmo)
             }
 
-            override fun onChildRemoved(p0: DataSnapshot) {
+            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
                 Log.d("TravelMindMapFragment", "onChildRemoved")
+                map.minus(dataSnapshot.key)
+                val target = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(dataSnapshot.key)
+                mindMapConstraintLayout.removeView(target)
             }
-
         }
+
         if (listener != null)
             fbApiClient?.setListener(listener!!)
 
@@ -201,7 +173,7 @@ class TravelMindMapFragment :
         return super.onOptionsItemSelected(item)
     }
 
-    private fun onAddSelected(position: Int) {
+    private fun onAddSelected(tag: String) {
         Log.d(javaClass.simpleName, "onAddSelected")
         Toast.makeText(context, "タップした位置に追加します", Toast.LENGTH_SHORT).show()
 
@@ -210,11 +182,8 @@ class TravelMindMapFragment :
                 val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
                 val inputText: EditText = inflater.findViewById(R.id.inputText)
                 inputText.requestFocus()
-
-                val newId = mindMapObjectList[mindMapObjectList.lastIndex].second.viewIndex + 1
-                Log.d("TravelMindMapFragment", "$newId")
-                val parentId = mindMapObjectList[position].second.viewIndex
-                val parent = mindMapConstraintLayout.getChildAt(parentId)
+                val newId = map.size
+                val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(tag)
 
                 val matrix = FloatArray(9)
                 parent.matrix.getValues(matrix)
@@ -224,7 +193,7 @@ class TravelMindMapFragment :
                         "",
                         (e.x - matrix[Matrix.MTRANS_X]) - parent.width * scale / 2,
                         (e.y - matrix[Matrix.MTRANS_Y]) - parent.height * scale / 2,
-                        parentId
+                        parent.id
                 )
                 // ダイアログの設定
                 val inputForm = AlertDialog.Builder(context!!).apply {
@@ -245,11 +214,12 @@ class TravelMindMapFragment :
         }
     }
 
-    private fun onDeleteSelected(position: Int) {
-        fbApiClient?.deleteMmo(mindMapObjectList[position])
+    private fun onDeleteSelected(tag: String) {
+        val mmo = map[tag]?.first ?: return
+        fbApiClient?.deleteMmo(Pair(tag, mmo))
     }
 
-    private fun onEditSelected(position: Int) {
+    private fun onEditSelected(tag: String) {
         val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
 
         // ダイアログ内のテキストエリア
@@ -261,9 +231,7 @@ class TravelMindMapFragment :
             setTitle("アイデアを編集")
             setView(inflater)
             setPositiveButton("OK") { _, _ ->
-                mindMapObjectList[position].second.text = inputText.text.toString()
-                fbApiClient?.updateMmo(mindMapObjectList[position])
-                mindMapConstraintLayout.invalidate()
+
             }
             setNegativeButton("Cancel", null)
         }.create()
@@ -305,9 +273,9 @@ class TravelMindMapFragment :
                 val view = event.localState as View
 
                 when (v) {
-                    linear_left -> onAddSelected(view.id)
-                    linear_center -> onDeleteSelected(view.id)
-                    linear_right -> onEditSelected(view.id)
+                    linear_left -> onAddSelected(view.tag as String)
+                    linear_center -> onDeleteSelected(view.tag as String)
+                    linear_right -> onEditSelected(view.tag as String)
                 }
 
                 behavior?.state = BottomSheetBehavior.STATE_HIDDEN
@@ -330,22 +298,22 @@ class TravelMindMapFragment :
         val paint = Paint()
         paint.setARGB(255, 0, 0, 0)
         paint.strokeWidth = 5f * scale
-
-        mindMapObjectList.forEach {
-            val child = mindMapConstraintLayout.getChildAt(it.second.viewIndex)
-            val parent = mindMapConstraintLayout.getChildAt(it.second.parent)
-            val ca = FloatArray(9)
-            child.matrix.getValues(ca)
-            val pa = FloatArray(9)
-            parent.matrix.getValues(pa)
-            canvas?.drawLine(
-                    ca[Matrix.MTRANS_X] + child.width * child.scaleX / 2,
-                    ca[Matrix.MTRANS_Y] + child.height * child.scaleY / 2,
-                    pa[Matrix.MTRANS_X] + parent.width * parent.scaleX / 2,
-                    pa[Matrix.MTRANS_Y] + parent.height * parent.scaleY / 2,
-                    paint
-            )
-        }
+//      親の情報がとれなくなった!!
+//        map.forEach {
+//            val child = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(it.key)
+//            val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(it.value.first.parent)
+//            val ca = FloatArray(9)
+//            child.matrix.getValues(ca)
+//            val pa = FloatArray(9)
+//            parent.matrix.getValues(pa)
+//            canvas?.drawLine(
+//                    ca[Matrix.MTRANS_X] + child.width * child.scaleX / 2,
+//                    ca[Matrix.MTRANS_Y] + child.height * child.scaleY / 2,
+//                    pa[Matrix.MTRANS_X] + parent.width * parent.scaleX / 2,
+//                    pa[Matrix.MTRANS_Y] + parent.height * parent.scaleY / 2,
+//                    paint
+//            )
+//        }
     }
 
 

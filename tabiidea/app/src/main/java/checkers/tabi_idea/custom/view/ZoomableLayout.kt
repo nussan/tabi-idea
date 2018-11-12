@@ -44,7 +44,7 @@ class ZoomableLayout :
     }
 
     fun addView(child: View?, mmo: MindMapObject) {
-        addView(child, mmo.viewIndex)
+        addView(child)
         (child as? RoundRectTextView)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 child.x = if (mmo.parent == 0) width.toFloat() / 2 + mmo.positionX - child.width / 2 else getChildAt(mmo.parent).x + mmo.positionX
