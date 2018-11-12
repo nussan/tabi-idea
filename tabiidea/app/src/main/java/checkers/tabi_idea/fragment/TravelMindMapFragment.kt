@@ -145,7 +145,7 @@ class TravelMindMapFragment :
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
                 Log.d("TravelMindMapFragment", "onChildRemoved")
                 map.minus(dataSnapshot.key)
-                val target = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(dataSnapshot.key)
+                val target = map[dataSnapshot.key]?.second
                 mindMapConstraintLayout.removeView(target)
             }
         }
@@ -193,7 +193,9 @@ class TravelMindMapFragment :
                         "",
                         (e.x - matrix[Matrix.MTRANS_X]) - parent.width * scale / 2,
                         (e.y - matrix[Matrix.MTRANS_Y]) - parent.height * scale / 2,
-                        parent.id
+                        parent.tag as String,
+                        0,
+                        map[parent.tag as String]!!.first.type
                 )
                 // ダイアログの設定
                 val inputForm = AlertDialog.Builder(context!!).apply {
@@ -239,6 +241,9 @@ class TravelMindMapFragment :
         // ダイアログ表示と同時にキーボードを表示
         inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         inputForm.show()
+
+        map[tag]!!.first.text = inputText.text.toString()
+        fbApiClient?.updateMmo(tag to map[tag]!!.first)
     }
 
     override fun onDrag(v: View?, event: DragEvent?): Boolean {
@@ -298,22 +303,23 @@ class TravelMindMapFragment :
         val paint = Paint()
         paint.setARGB(255, 0, 0, 0)
         paint.strokeWidth = 5f * scale
-//      親の情報がとれなくなった!!
-//        map.forEach {
-//            val child = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(it.key)
-//            val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(it.value.first.parent)
-//            val ca = FloatArray(9)
-//            child.matrix.getValues(ca)
-//            val pa = FloatArray(9)
-//            parent.matrix.getValues(pa)
-//            canvas?.drawLine(
-//                    ca[Matrix.MTRANS_X] + child.width * child.scaleX / 2,
-//                    ca[Matrix.MTRANS_Y] + child.height * child.scaleY / 2,
-//                    pa[Matrix.MTRANS_X] + parent.width * parent.scaleX / 2,
-//                    pa[Matrix.MTRANS_Y] + parent.height * parent.scaleY / 2,
-//                    paint
-//            )
-//        }
+
+        map.forEach {
+            val child = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(it.key)
+            val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(it.value.first.parent)
+            Log.d("TravelMindMapFragment", it.value.first.parent)
+            val ca = FloatArray(9)
+            child.matrix.getValues(ca)
+            val pa = FloatArray(9)
+            parent.matrix.getValues(pa)
+            canvas?.drawLine(
+                    ca[Matrix.MTRANS_X] + child.width * child.scaleX / 2,
+                    ca[Matrix.MTRANS_Y] + child.height * child.scaleY / 2,
+                    pa[Matrix.MTRANS_X] + parent.width * parent.scaleX / 2,
+                    pa[Matrix.MTRANS_Y] + parent.height * parent.scaleY / 2,
+                    paint
+            )
+        }
     }
 
 
