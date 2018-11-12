@@ -27,7 +27,6 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
-import kotlinx.android.synthetic.main.fui_auth_method_picker_layout.*
 
 
 class TravelMindMapFragment :
@@ -36,10 +35,9 @@ class TravelMindMapFragment :
         View.OnDragListener {
     private var fbApiClient: FirebaseApiClient? = null
     private var event: Event? = null
-    private var map: Map<String, Pair<MindMapObject, RoundRectTextView>> = mutableMapOf()
+    private var map: Map<String, MindMapObject> = mutableMapOf()
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
-    private var matrix: Matrix? = null
     private var lastRaw = PointF(0f, 0f)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,7 +91,12 @@ class TravelMindMapFragment :
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 Log.d("TravelMindMapFragment", "onChildChanged")
-
+                val key = dataSnapshot.key!!
+                val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
+                map = map.minus(key)
+                map = map.plus(key to mmo)
+                mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(key).text = mmo.text
+                mindMapConstraintLayout.invalidate()
             }
 
             override fun onChildAdded(dataSnapshot: DataSnapshot, p1: String?) {
@@ -117,12 +120,12 @@ class TravelMindMapFragment :
                         MotionEvent.ACTION_DOWN -> {
 //                            Log.d("TravelMindMapFragment", "ACTION_DOWN")
                             lastRaw.set(event.rawX, event.rawY)
-                            matrix = v.matrix
                         }
 
                         MotionEvent.ACTION_MOVE -> {
 //                            Log.d("TravelMindMapFragment", "ACTION_MOVE")
                             val trans = PointF((event.rawX - lastRaw.x), (event.rawY - lastRaw.y))
+                            val matrix = v.matrix
                             matrix?.postTranslate(trans.x, trans.y)
                             val f = FloatArray(9)
                             matrix?.getValues(f)
@@ -140,15 +143,14 @@ class TravelMindMapFragment :
                     }
                     false
                 }
-                map = map.plus(key to Pair(mmo, view))
+                map = map.plus(key to mmo)
                 mindMapConstraintLayout.addView(view, mmo)
             }
 
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
                 Log.d("TravelMindMapFragment", "onChildRemoved")
                 map.minus(dataSnapshot.key)
-                val target = map[dataSnapshot.key]?.second
-                mindMapConstraintLayout.removeView(target)
+                mindMapConstraintLayout.removeView(mindMapConstraintLayout.findViewWithTag(dataSnapshot.key))
             }
         }
 
@@ -197,7 +199,7 @@ class TravelMindMapFragment :
                         (e.y - matrix[Matrix.MTRANS_Y]) - parent.height * scale / 2,
                         parent.tag as String,
                         0,
-                        map[parent.tag as String]!!.first.type
+                        map[parent.tag as String]!!.type
                 )
                 // ダイアログの設定
                 val inputForm = AlertDialog.Builder(context!!).apply {
@@ -206,7 +208,6 @@ class TravelMindMapFragment :
                     setPositiveButton("OK") { _, _ ->
                         mmo.text = inputText.text.toString()
                         fbApiClient?.addMmo(mmo)
-                        mindMapConstraintLayout.invalidate()
                     }
                     setNegativeButton("Cancel", null)
                 }.create()
@@ -219,7 +220,7 @@ class TravelMindMapFragment :
     }
 
     private fun onDeleteSelected(tag: String) {
-        val mmo = map[tag]?.first ?: return
+        val mmo = map[tag] ?: return
         if(mmo.type == "root") {
             Toast.makeText(context, "ルートノードは削除できません", Toast.LENGTH_SHORT).show()
             return
@@ -239,7 +240,8 @@ class TravelMindMapFragment :
             setTitle("アイデアを編集")
             setView(inflater)
             setPositiveButton("OK") { _, _ ->
-
+                map[tag]!!.text = inputText.text.toString()
+                fbApiClient?.updateMmo(tag to map[tag]!!)
             }
             setNegativeButton("Cancel", null)
         }.create()
@@ -248,13 +250,12 @@ class TravelMindMapFragment :
         inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         inputForm.show()
 
-        map[tag]!!.first.text = inputText.text.toString()
-        fbApiClient?.updateMmo(tag to map[tag]!!.first)
+
     }
 
     override fun onDrag(v: View?, event: DragEvent?): Boolean {
         val action = event?.action
-        Log.d("onDrag", v.toString())
+//        Log.d("onDrag", v.toString())
         when (action) {
             DragEvent.ACTION_DRAG_STARTED -> {
 //                Log.d("Drag", "DRAG_STARTED")
@@ -312,8 +313,7 @@ class TravelMindMapFragment :
 
         map.forEach {
             val child = mindMapConstraintLayout.findViewWithTag<RoundRectTextView?>(it.key) ?: return@forEach
-            val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView?>(it.value.first.parent) ?: return@forEach
-            Log.d("TravelMindMapFragment", it.value.first.parent)
+            val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView?>(it.value.parent) ?: return@forEach
             val ca = FloatArray(9)
             child.matrix.getValues(ca)
             val pa = FloatArray(9)
