@@ -132,7 +132,7 @@ class EventListFragment : Fragment() {
 
 
         fab.setOnClickListener {
-            if(mButtonState == ButtonState.CLOSE) fabOpen(dpToPx(66))
+            if(mButtonState == ButtonState.CLOSE) fabOpen(dpToPx(70))
             else fabClose()
         }
 
@@ -198,6 +198,11 @@ class EventListFragment : Fragment() {
         anim.setDuration(200)
         anim.start()
 
+        edit_name_button_layout.setVisibility(View.GONE)
+        anim = ObjectAnimator.ofFloat(edit_name_button_layout, "translationY", 0f)
+        anim.setDuration(200)
+        anim.start()
+
         mButtonState = ButtonState.CLOSE
     }
 
@@ -211,6 +216,12 @@ class EventListFragment : Fragment() {
         anim = ObjectAnimator.ofFloat(create_button_layout,"translationY",-size*2)
         anim.duration = 200
         anim.start()
+
+        edit_name_button_layout.setVisibility(View.VISIBLE)
+        anim = ObjectAnimator.ofFloat(edit_name_button_layout,"translationY",-size*3)
+        anim.duration = 200
+        anim.start()
+
 
         mButtonState = ButtonState.OPEN
     }
