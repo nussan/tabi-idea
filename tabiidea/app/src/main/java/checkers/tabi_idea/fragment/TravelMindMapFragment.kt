@@ -27,6 +27,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
+import kotlinx.android.synthetic.main.fui_auth_method_picker_layout.*
 
 
 class TravelMindMapFragment :
@@ -218,6 +219,10 @@ class TravelMindMapFragment :
 
     private fun onDeleteSelected(tag: String) {
         val mmo = map[tag]?.first ?: return
+        if(mmo.type == "root") {
+            Toast.makeText(context, "ルートノードは削除できません", Toast.LENGTH_SHORT).show()
+            return
+        }
         fbApiClient?.deleteMmo(Pair(tag, mmo))
     }
 
