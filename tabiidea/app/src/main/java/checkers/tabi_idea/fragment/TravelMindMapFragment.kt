@@ -145,7 +145,7 @@ class TravelMindMapFragment :
                             Log.d("TravelMindMapFragment", "ACTION_UP")
                         }
                     }
-                    true
+                    false
                 }
                 map = map.plus(key to mmo)
                 mindMapConstraintLayout.addView(view, mmo)
