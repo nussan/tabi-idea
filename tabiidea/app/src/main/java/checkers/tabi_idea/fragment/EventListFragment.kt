@@ -24,8 +24,8 @@ import java.util.*
 
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
-    private var event_id = 0
-    private var event_password: String? = null
+    private var eventId = 0
+    private var eventPassword: String? = null
     private var mindMapObjectList: MutableList<MindMapObject> = mutableListOf(
             MindMapObject(1, "行先", 200f, 200f, 0,0,"destination"),
             MindMapObject(2, "予算", 200f, -200f, 0,0,"budget"),
@@ -33,12 +33,13 @@ class EventListFragment : Fragment() {
             MindMapObject(4, "宿泊", -200f, -200f, 0,0,"hotel")
     )
     private var userId = 0
-    private lateinit var myuser :User
+    private lateinit var myuser : User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             userId = it.getInt("userId")
+            myuser = it.getParcelable("user")
             eventManager.eventList = it.getParcelableArrayList<Event>("eventListKey") as MutableList<Event>
         }
     }
@@ -133,7 +134,7 @@ class EventListFragment : Fragment() {
         fun newInstance(user: User, eventList: MutableList<Event>) = EventListFragment().apply {
             arguments = Bundle().apply {
                 putInt("userId", user.id)
-                myuser = user
+                putParcelable("user", user)
                 putParcelableArrayList("eventListKey", ArrayList(eventList))
             }
         }

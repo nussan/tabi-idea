@@ -1,7 +1,10 @@
 package checkers.tabi_idea.custom.view
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Matrix
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 import android.util.Log
@@ -15,8 +18,9 @@ class ZoomableLayout :
         ScaleGestureDetector.OnScaleGestureListener,
         GestureDetector.OnGestureListener,
         GestureDetector.OnDoubleTapListener {
-
     var scale = 1.0f
+        private set
+    private var scaleFactor = 1.0f
     private var lastScaleFactor = 0f
 
     constructor(context: Context) : this(context, null)
@@ -32,7 +36,7 @@ class ZoomableLayout :
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        (lineDrawer as? TravelMindMapFragment)?.drawLines(canvas, scale)
+        (lineDrawer as? TravelMindMapFragment)?.drawLines(canvas, scaleFactor)
     }
 
     interface LineDrawer {
@@ -43,9 +47,16 @@ class ZoomableLayout :
         addView(child, mmo.viewIndex)
         (child as? RoundRectTextView)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                child.x = if (mmo.parent == 0) width.toFloat() / 2 + mmo.positionX  - child.width / 2 else getChildAt(mmo.parent).x + mmo.positionX
+                child.x = if (mmo.parent == 0) width.toFloat() / 2 + mmo.positionX - child.width / 2 else getChildAt(mmo.parent).x + mmo.positionX
                 child.y = if (mmo.parent == 0) height.toFloat() / 2 + mmo.positionY - child.height / 2 else getChildAt(mmo.parent).y + mmo.positionY
-                applyScale()
+                child.scaleX = 0f
+                child.scaleY = 0f
+                val set = AnimatorSet()
+                set.duration = 200
+                set.playTogether(
+                        ObjectAnimator.ofFloat(child, "scaleX", scale),
+                        ObjectAnimator.ofFloat(child, "scaleY", scale))
+                set.start()
                 viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
@@ -67,33 +78,27 @@ class ZoomableLayout :
         updateListener(context)
     }
 
-    private fun applyScale() {
-        for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            child.pivotX = width / 2 - child.x
-            child.pivotY = height / 2 - child.y
-            child.scaleX = scale
-            child.scaleY = scale
-            invalidate()
-        }
-    }
-
     override fun performClick(): Boolean {
         return super.performClick()
     }
 
     override fun onScaleBegin(scaleDetector: ScaleGestureDetector): Boolean {
-//        Log.i(TAG, "onScaleBegin")
+//        Log.i(TAG, "onScaleBegin: ${scaleDetector.scaleFactor}")
         return true
     }
 
     override fun onScale(scaleDetector: ScaleGestureDetector): Boolean {
-        val scaleFactor = scaleDetector.scaleFactor
+        scaleFactor = scaleDetector.scaleFactor
 //        Log.i(TAG, "onScale$scaleFactor")
+        if (scale in MIN_ZOOM..MAX_ZOOM) Log.i(TAG, "onScale: true")
+        else if ((scale < MIN_ZOOM && scaleDetector.scaleFactor > 1.0f) || (scale > MAX_ZOOM && scaleDetector.scaleFactor < 1.0f)) Log.i(TAG, "onScale: true")
+        else return false
+
         if (lastScaleFactor == 0f || Math.signum(scaleFactor) == Math.signum(lastScaleFactor)) {
             scale *= scaleFactor
-            scale = Math.max(MIN_ZOOM, Math.min(scale, MAX_ZOOM))
             lastScaleFactor = scaleFactor
+            applyScale()
+            invalidate()
         } else {
             lastScaleFactor = 0f
         }
@@ -108,7 +113,7 @@ class ZoomableLayout :
     }
 
     override fun onSingleTapUp(e: MotionEvent): Boolean {
-        tapListener?.onTap(e, (width / 2).toFloat(), (height / 2).toFloat(), scale)
+        tapListener?.onTap(e, (width / 2).toFloat(), (height / 2).toFloat(), scaleFactor)
         tapListener = null
         return true
     }
@@ -118,23 +123,38 @@ class ZoomableLayout :
     }
 
     override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
-        Log.d(TAG, "$velocityX, $velocityY")
+//        Log.d(TAG, "$velocityX, $velocityY")
         return true
     }
 
     override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
-        Log.d("distance", "$distanceX, $distanceY")
+        Log.d(TAG, "onScroll")
         applyTranslation(distanceX, distanceY)
-        applyScale()
+        invalidate()
         return true
     }
 
     private fun applyTranslation(distanceX: Float, distanceY: Float) {
         for (i in 0 until childCount) {
             val child = getChildAt(i)
-            child.translationX = child.x - distanceX / scale
-            child.translationY = child.y - distanceY / scale
-            invalidate()
+            child.translationX -= distanceX
+            child.translationY -= distanceY
+        }
+        invalidate()
+    }
+
+    private fun applyScale() {
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            val matrix = child.matrix
+            matrix.setScale(scaleFactor, scaleFactor, width.toFloat() / 2 - child.x, height.toFloat() / 2 - child.y)
+//            Log.d(TAG, "${child.id} : ${matrix.toShortString()}")
+            val m = FloatArray(9)
+            matrix.getValues(m)
+            child.translationX += m[Matrix.MTRANS_X]
+            child.translationY += m[Matrix.MTRANS_Y]
+            child.scaleX = scale
+            child.scaleY = scale
         }
     }
 
@@ -142,8 +162,9 @@ class ZoomableLayout :
     }
 
     override fun onDoubleTap(e: MotionEvent): Boolean {
-        scale = if (scale == MIN_ZOOM) MAX_ZOOM else MIN_ZOOM
-        applyScale()
+//        scale = if (scale == MAX_ZOOM) MAX_ZOOM else MIN_ZOOM
+//        applyScale()
+//        invalidate()
         return true
     }
 
@@ -156,9 +177,9 @@ class ZoomableLayout :
     }
 
     companion object {
-        private val TAG = "ZoomableLayout"
+        private const val TAG = "ZoomableLayout"
         private const val MIN_ZOOM = 0.3f
-        private const val MAX_ZOOM = 1.5f
+        private const val MAX_ZOOM = 2.0f
     }
 
     interface TapListener {
