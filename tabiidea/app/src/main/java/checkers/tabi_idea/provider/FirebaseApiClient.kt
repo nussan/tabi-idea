@@ -42,6 +42,10 @@ class FirebaseApiClient(event_id: String) {
         ref.child(pair.first).setValue(pair.second)
     }
 
+    fun deleteMmo(pair: Pair<String, MindMapObject>) {
+        ref.child(pair.first).removeValue()
+    }
+
     fun removeListener(listener: ChildEventListener) {
         ref.removeEventListener(listener)
     }
