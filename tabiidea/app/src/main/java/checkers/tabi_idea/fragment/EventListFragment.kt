@@ -83,47 +83,56 @@ class EventListFragment : Fragment() {
             }
         })
 
+        create_fab.setOnClickListener{
+            it.isEnabled = false
+            // レイアウトを取得
+            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
+
+            // ダイアログ内のテキストエリア
+            val inputText: EditText = inflater.findViewById(R.id.inputText)
+            inputText.requestFocus()
+
+            // ダイアログの設定
+            val inputForm = AlertDialog.Builder(context!!).apply {
+                setTitle("新しいイベント")
+                setView(inflater)
+                setPositiveButton("OK") { _, _ ->
+                    // OKボタンを押したときの処理
+                    val title = mapOf(
+                            "title" to "${inputText.text}"
+                    )
+                    repository.addEvent(userId, title) {
+                        event_id = it.id
+                        event_password = it.password
+                        Log.d("tubasa", it.id.toString())
+                        repository.addEventtoFb(event_id.toString())//event.id
+                        mindMapObjectList.forEach {
+                            repository.addMmo(event_id.toString(), it)
+                        }
+                        eventManager.add(it)
+                        eventListView.adapter.notifyDataSetChanged()
+                    }
+
+                }
+                setNegativeButton("Cancel", null)
+            }.create()
+
+            //ダイアログ表示と同時にキーボードを表示
+            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            inputForm.show()
+
+            it.isEnabled = true
+
+        }
+
+        join_fab.setOnClickListener{
+
+        }
+
+
         fab.setOnClickListener {
             if(mButtonState == ButtonState.CLOSE) fabOpen(dpToPx(66))
             else fabClose()
-//            it.isEnabled = false
-//            // レイアウトを取得
-//            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
-//
-//            // ダイアログ内のテキストエリア
-//            val inputText: EditText = inflater.findViewById(R.id.inputText)
-//            inputText.requestFocus()
-//
-//            // ダイアログの設定
-//            val inputForm = AlertDialog.Builder(context!!).apply {
-//                setTitle("新しいイベント")
-//                setView(inflater)
-//                setPositiveButton("OK") { _, _ ->
-//                    // OKボタンを押したときの処理
-//                    val title = mapOf(
-//                            "title" to "${inputText.text}"
-//                    )
-//                    repository.addEvent(userId, title) {
-//                        event_id = it.id
-//                        event_password = it.password
-//                        Log.d("tubasa", it.id.toString())
-//                        repository.addEventtoFb(event_id.toString())//event.id
-//                        mindMapObjectList.forEach {
-//                            repository.addMmo(event_id.toString(), it)
-//                        }
-//                        eventManager.add(it)
-//                        eventListView.adapter.notifyDataSetChanged()
-//                    }
-//
-//                }
-//                setNegativeButton("Cancel", null)
-//            }.create()
-
-            // ダイアログ表示と同時にキーボードを表示
-//            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-//            inputForm.show()
-//
-//            it.isEnabled = true
         }
 
         nameEdit.setOnClickListener {
