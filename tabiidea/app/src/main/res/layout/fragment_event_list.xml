@@ -7,25 +7,86 @@
     android:layout_height="match_parent"
     tools:context=".fragment.EventListFragment">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@android:drawable/ic_input_add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/eventListView"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/create_button_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/create_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:backgroundTint="@android:color/holo_orange_dark"
+            app:fabSize="mini"
+            app:srcCompat="@android:drawable/ic_input_add" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/join_button_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/join_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:backgroundTint="@android:color/holo_red_dark"
+            app:fabSize="mini"
+            app:srcCompat="@android:drawable/ic_input_add" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/fab_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
+        tools:layout_editor_absoluteX="320dp"
+        tools:layout_editor_absoluteY="503dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@android:drawable/ic_input_add"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

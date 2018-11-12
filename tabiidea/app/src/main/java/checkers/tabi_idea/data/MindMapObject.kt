@@ -20,6 +20,8 @@ data class MindMapObject(
         @Json(name = "parent")
         var parent : Int =0,
         @Json(name = "point")
-        var point : Int = 0
+        var point : Int = 0,
+        @Json(name = "type")
+        var type : String = ""
 
 ) : Parcelable

@@ -350,6 +350,22 @@ class TravelMindMapFragment :
         textView.gravity = Gravity.CENTER
         textView.text = mindMapObject.text
         textView.setTextColor(Color.WHITE)
+        Log.d("MindMapType",mindMapObject.type)
+        when (mindMapObject.type){
+            "destination" -> {
+                textView.setBackgroundColor(Color.parseColor("#ffb6c1"))
+            }
+            "budget" -> {
+                textView.setBackgroundColor(Color.parseColor("#32cd32"))
+            }
+            "food" -> {
+                textView.setBackgroundColor(Color.parseColor("#ff8c00"))
+            }
+            "hotel" -> {
+                textView.setBackgroundColor(Color.parseColor("#ffe4b5"))
+            }
+
+        }
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
                 textView,
                 10,
