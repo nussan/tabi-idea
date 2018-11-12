@@ -93,6 +93,7 @@ class TravelMindMapFragment :
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 Log.d("TravelMindMapFragment", "onChildChanged")
+
             }
 
             override fun onChildAdded(dataSnapshot: DataSnapshot, p1: String?) {
@@ -103,7 +104,6 @@ class TravelMindMapFragment :
 
                 val view = mindMapObjectToTextView(context, mmo)
                 view.tag = key
-
                 view.setOnLongClickListener { v ->
                     behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
 
@@ -131,6 +131,7 @@ class TravelMindMapFragment :
                             Log.d("TravelMindMapFragment", v.matrix.toShortString())
                             lastRaw.set(event.rawX, event.rawY)
                             mindMapConstraintLayout.invalidate()
+                            v.cancelLongPress()
                         }
 
                         MotionEvent.ACTION_UP -> {
