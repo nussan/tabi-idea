@@ -3,8 +3,6 @@ package checkers.tabi_idea.provider
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
-import com.squareup.moshi.FromJson
-import com.squareup.moshi.Json
 import io.reactivex.Single
 import retrofit2.Call
 import retrofit2.http.*
@@ -19,8 +17,8 @@ interface RequestService {
     fun getUser(@Path("uuid") uuid:String) : Single<User>
 
     //user情報の編集
-    @POST("home/create/{editName}")
-    fun editUser(@Path("editName") editName:String)
+    @POST("home/edit/{id}")
+    fun editUser(@Path("id") id:Int,@Body editName:Map<String,String>) : Single<User>
 
     //Eventへの追加
     @POST("event/create/{id}")
