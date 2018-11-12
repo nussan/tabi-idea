@@ -306,7 +306,7 @@ class TravelMindMapFragment :
 
         map.forEach {
             val child = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(it.key)
-            val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(it.value.first.parent)
+            val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView?>(it.value.first.parent) ?: return@forEach
             Log.d("TravelMindMapFragment", it.value.first.parent)
             val ca = FloatArray(9)
             child.matrix.getValues(ca)
