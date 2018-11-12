@@ -24,7 +24,7 @@ import java.util.*
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
     private var eventId = 0
-    private var eventPassword: String? = null
+    private var eventPass: String? = null
     private var mindMapObjectList: MutableList<MindMapObject> = mutableListOf(
             MindMapObject(1, "行先", 200f, 200f, 0,0,"destination"),
             MindMapObject(2, "予算", 200f, -200f, 0,0,"budget"),
@@ -103,12 +103,12 @@ class EventListFragment : Fragment() {
                             "title" to "${inputText.text}"
                     )
                     repository.addEvent(userId, title) {
-                        event_id = it.id
-                        event_password = it.password
+                        eventId = it.id
+                        eventPass = it.password
                         Log.d("tubasa", it.id.toString())
-                        repository.addEventtoFb(event_id.toString())//event.id
+                        repository.addEventtoFb(eventId.toString())//event.id
                         mindMapObjectList.forEach {
-                            repository.addMmo(event_id.toString(), it)
+                            repository.addMmo(eventId.toString(), it)
                         }
                         eventManager.add(it)
                         eventListView.adapter.notifyDataSetChanged()
