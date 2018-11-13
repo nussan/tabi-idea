@@ -35,6 +35,11 @@ class EventListAdapter(context: Context?, eL: MutableList<Event>) : RecyclerView
         listener = onClickListener
     }
 
+    fun removeAt(position: Int) {
+        eventList.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
     // Viewへの参照を持っておくViewHolder
     class EventListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val event = view.findViewById<TextView>(R.id.eventView)

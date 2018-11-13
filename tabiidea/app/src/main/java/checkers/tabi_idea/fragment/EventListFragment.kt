@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
 import android.view.*
 import android.widget.EditText
@@ -61,8 +63,22 @@ class EventListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         //RecyclerViewを設定
         eventListView.adapter = EventListAdapter(context,eventManager.eventList)
-        eventListView.layoutManager = GridLayoutManager(context,2)
+        eventListView.layoutManager = GridLayoutManager(context,1) as RecyclerView.LayoutManager?
 
+        //個々から変更を加えた
+        val swipHandler = object : SwipeToDeleteCallback(context!!){
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
+                val adapter = eventListView.adapter as EventListAdapter
+                viewHolder?.let{
+                    adapter.removeAt(it.adapterPosition)
+                }
+                //TODO　データベースから削除機能
+
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(swipHandler)
+        itemTouchHelper.attachToRecyclerView(eventListView)
+        //ここまで変更を加えた
         (eventListView.adapter as EventListAdapter).setOnClickListener (object: View.OnClickListener {
             override fun onClick(view: View?) {
                 Log.d(javaClass.simpleName, "onTouch!!")
@@ -122,7 +138,7 @@ class EventListFragment : Fragment() {
 
 
         fab.setOnClickListener {
-            if(mButtonState == ButtonState.CLOSE) fabOpen(dpToPx(66))
+            if(mButtonState == ButtonState.CLOSE) fabOpen(dpToPx(70))
             else fabClose()
         }
 
@@ -188,6 +204,11 @@ class EventListFragment : Fragment() {
         anim.setDuration(200)
         anim.start()
 
+        edit_name_button_layout.setVisibility(View.GONE)
+        anim = ObjectAnimator.ofFloat(edit_name_button_layout, "translationY", 0f)
+        anim.setDuration(200)
+        anim.start()
+
         mButtonState = ButtonState.CLOSE
     }
 
@@ -201,6 +222,12 @@ class EventListFragment : Fragment() {
         anim = ObjectAnimator.ofFloat(create_button_layout,"translationY",-size*2)
         anim.duration = 200
         anim.start()
+
+        edit_name_button_layout.setVisibility(View.VISIBLE)
+        anim = ObjectAnimator.ofFloat(edit_name_button_layout,"translationY",-size*3)
+        anim.duration = 200
+        anim.start()
+
 
         mButtonState = ButtonState.OPEN
     }
