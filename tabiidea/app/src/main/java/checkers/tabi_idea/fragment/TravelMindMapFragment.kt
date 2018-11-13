@@ -5,9 +5,11 @@ import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.TextViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -23,6 +25,8 @@ import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.provider.FirebaseApiClient
+import com.commit451.quickactionview.Action
+import com.commit451.quickactionview.QuickActionView
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -106,14 +110,17 @@ class TravelMindMapFragment :
                 val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
 
                 val view = mindMapObjectToTextView(context, mmo)
-                view.tag = key
-                view.setOnLongClickListener { v ->
-                    behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
 
-                    val item = ClipData.Item(v.tag as? CharSequence)
-                    val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
-                    v.startDrag(data, View.DragShadowBuilder(v), v, 0)
-                }
+                rrvToQucikActionView(context,view)
+
+                view.tag = key
+//                view.setOnLongClickListener { v ->
+//                    behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+//
+//                    val item = ClipData.Item(v.tag as? CharSequence)
+//                    val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
+//                    v.startDrag(data, View.DragShadowBuilder(v), v, 0)
+//                }
 
                 val lastRaw = PointF(0f, 0f)
                 view.setOnTouchListener { v, event ->
@@ -364,6 +371,25 @@ class TravelMindMapFragment :
         return textView
     }
 
+    private fun rrvToQucikActionView(context: Context?,view: View){
+        val quickActionView = view
+        QuickActionView.make(context)
+                .addActions(R.menu.actions)
+                .register(quickActionView)
+        val pareIconTitle = listOf<Pair<Drawable,String>>(
+                ContextCompat.getDrawable(context!!,R.drawable.ic_add_black_24dp)!! to getString(R.string.add),
+                ContextCompat.getDrawable(context!!,R.drawable.ic_edit_black_24dp)!! to getString(R.string.edit),
+                ContextCompat.getDrawable(context!!,R.drawable.ic_favorite_black_24dp)!! to getString(R.string.good)
+        )
+        val actionList = mutableListOf<Action>()
+        pareIconTitle.forEach{
+            actionList.add(Action(1337,it.first,it.second))
+        }
+        QuickActionView.make(context)
+                .addActions(actionList)
+                .register(quickActionView)
+    }
+
     companion object {
         @JvmStatic
         fun newInstance(event: Event) = TravelMindMapFragment().apply {
@@ -372,4 +398,6 @@ class TravelMindMapFragment :
             }
         }
     }
+
+
 }
