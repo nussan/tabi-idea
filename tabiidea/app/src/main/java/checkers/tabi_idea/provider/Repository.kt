@@ -4,7 +4,10 @@ import android.util.Log
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -39,13 +42,13 @@ class Repository {
     }
 
     //userをedit
-    fun editUser(id:Int,editName: Map<String,String>,callback: (User) -> Unit) {
-        requestService.editUser(id,editName)
+    fun editUser(id: Int, editName: Map<String, String>, callback: (User) -> Unit) {
+        requestService.editUser(id, editName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        {res -> callback(res)},
-                        {err -> Log.d("errEditUser",err.toString())}
+                        { res -> callback(res) },
+                        { err -> Log.d("errEditUser", err.toString()) }
                 )
     }
 
@@ -123,44 +126,33 @@ class Repository {
                 })
     }
 
-    fun mmoListener(event_id: String, callback: (Pair<String, MindMapObject>) -> Unit) {
+    //eventをfbにadd
+    fun addEventToFb(event_id: String) {
+        val mmo = MindMapObject(0, "旅行", 0f, 0f, "", 0, "root")
         val ref = FirebaseDatabase.getInstance().getReference(event_id)
-        val listener = object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                Log.d("onChildAdded", previousChildName)
-                Log.d("onchildAdded", dataSnapshot.toString())
-                callback(dataSnapshot.key!! to dataSnapshot.getValue(MindMapObject::class.java)!!)
-            }
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot.children.mapNotNull {
+                    val rootKey = it.key!!
+                    Log.d("Repository", rootKey)
+                    updateMmo(event_id, rootKey to MindMapObject(0, "旅行", 0f, 0f, rootKey, 0, "root"))
+                    val ml = mutableListOf(
+                            MindMapObject(1, "行先", 200f, 200f, rootKey, 0, "destination"),
+                            MindMapObject(2, "予算", 200f, -200f, rootKey, 0, "budget"),
+                            MindMapObject(3, "食事", -200f, 200f, rootKey, 0, "food"),
+                            MindMapObject(4, "宿泊", -200f, -200f, rootKey, 0, "hotel"))
 
-            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                Log.d("onChildChaged", previousChildName)
-                callback(dataSnapshot.key!! to dataSnapshot.getValue(MindMapObject::class.java)!!)
-            }
-
-            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                Log.d("onChildMoved", previousChildName)
-                callback(dataSnapshot.key!! to dataSnapshot.getValue(MindMapObject::class.java)!!)
-            }
-
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                Log.d("onChildRemoved", dataSnapshot.toString())
+                    ml.forEach {child ->
+                        addMmo(event_id, child)
+                    }
+                }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 Log.d("errGetMmo", databaseError.toString())
             }
-        }
-
-        ref.addChildEventListener(listener)
-    }
-
-    //eventをfbにadd
-    fun addEventtoFb(event_id: String) {
-        val mmo = MindMapObject(0, "旅行", 0f, 0f, 0)
-        FirebaseDatabase.getInstance()
-                .getReference(event_id)
-                .push()
-                .setValue(mmo)
+        })
+        ref.push().setValue(mmo)
     }
 
     //mmoをfbにadd

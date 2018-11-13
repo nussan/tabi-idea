@@ -18,7 +18,7 @@ data class MindMapObject(
         @Json(name = "positionY")
         var positionY: Float = 0f,
         @Json(name = "parent")
-        var parent : Int =0,
+        var parent : String ="",
         @Json(name = "point")
         var point : Int = 0,
         @Json(name = "type")

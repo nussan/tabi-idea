@@ -8,13 +8,11 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
 import android.widget.EditText
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
-import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.manager.EventManager
 import checkers.tabi_idea.provider.Repository
@@ -23,14 +21,9 @@ import java.util.*
 
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
-    private var event_id = 0
-    private var event_password: String? = null
-    private var mindMapObjectList: MutableList<MindMapObject> = mutableListOf(
-            MindMapObject(1, "行先", 200f, 200f, 0,0,"destination"),
-            MindMapObject(2, "予算", 200f, -200f, 0,0,"budget"),
-            MindMapObject(3, "食事", -200f, 200f, 0,0,"food"),
-            MindMapObject(4, "宿泊", -200f, -200f, 0,0,"hotel")
-    )
+    private var eventId = 0
+    private var eventPass: String? = null
+    private val repository = Repository()
     private var userId = 0
     private lateinit var myuser : User
 
@@ -66,10 +59,9 @@ class EventListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val repository = Repository()
         //RecyclerViewを設定
         eventListView.adapter = EventListAdapter(context,eventManager.eventList)
-        eventListView.layoutManager = GridLayoutManager(context,2) as RecyclerView.LayoutManager?
+        eventListView.layoutManager = GridLayoutManager(context,2)
 
         (eventListView.adapter as EventListAdapter).setOnClickListener (object: View.OnClickListener {
             override fun onClick(view: View?) {
@@ -102,15 +94,13 @@ class EventListFragment : Fragment() {
                     val title = mapOf(
                             "title" to "${inputText.text}"
                     )
-                    repository.addEvent(userId, title) {
-                        event_id = it.id
-                        event_password = it.password
-                        Log.d("tubasa", it.id.toString())
-                        repository.addEventtoFb(event_id.toString())//event.id
-                        mindMapObjectList.forEach {
-                            repository.addMmo(event_id.toString(), it)
-                        }
-                        eventManager.add(it)
+
+                    repository.addEvent(userId, title) {event ->
+                        eventId = event.id
+                        eventPass = event.password
+                        Log.d("tubasa", event.id.toString())
+                        repository.addEventToFb(eventId.toString())//event.id
+                        eventManager.add(event)
                         eventListView.adapter.notifyDataSetChanged()
                     }
 
