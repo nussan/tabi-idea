@@ -63,8 +63,7 @@ class EventListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         //RecyclerViewを設定
         eventListView.adapter = EventListAdapter(context,eventManager.eventList)
-        eventListView.layoutManager = GridLayoutManager(context,1) as RecyclerView.LayoutManager?
-
+        eventListView.layoutManager = GridLayoutManager(context,1)
         //個々から変更を加えた
         val swipHandler = object : SwipeToDeleteCallback(context!!){
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
