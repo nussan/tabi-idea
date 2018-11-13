@@ -13,14 +13,11 @@ import android.util.Log
 import android.view.*
 import android.widget.EditText
 import checkers.tabi_idea.R
+import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
+import checkers.tabi_idea.data.User
 import checkers.tabi_idea.manager.EventManager
 import checkers.tabi_idea.provider.Repository
-import android.support.v7.widget.LinearLayoutManager
-import android.text.Layout
-import android.view.*
-import checkers.tabi_idea.data.Event
-import checkers.tabi_idea.data.User
 import kotlinx.android.synthetic.main.fragment_event_list.*
 import java.util.*
 
