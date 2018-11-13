@@ -23,8 +23,8 @@ import java.util.*
 
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
-    private var eventId = 0
-    private var eventPassword: String? = null
+    private var event_id = 0
+    private var event_password: String? = null
     private var mindMapObjectList: MutableList<MindMapObject> = mutableListOf(
             MindMapObject(1, "行先", 200f, 200f, 0,0,"destination"),
             MindMapObject(2, "予算", 200f, -200f, 0,0,"budget"),
@@ -123,11 +123,42 @@ class EventListFragment : Fragment() {
             inputForm.show()
 
             it.isEnabled = true
-
         }
 
         join_fab.setOnClickListener{
-
+//            it.isEnabled = false
+//            // レイアウトを取得
+//            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
+//
+//            // ダイアログ内のテキストエリア
+//            val inputText: EditText = inflater.findViewById(R.id.inputText)
+//            inputText.requestFocus()
+//
+//            // ダイアログの設定
+//            val inputForm = AlertDialog.Builder(context!!).apply {
+//                setTitle("ルームIDの入力")
+//                setView(inflater)
+//                setPositiveButton("OK") { _, _ ->
+//                    // OKボタンを押したときの処理
+//                    val password = mapOf(
+//                            "password" to "${inputText.text}"
+//                    )
+//                    repository.joinEvent(userId,password){
+//                        event_id = it.id
+//                        event_password = it.password
+//                        Log.d("tubasa", it.id.toString())
+//                        eventManager.add(it)
+//                        eventListView.adapter.notifyDataSetChanged()
+//                    }
+//                }
+//                setNegativeButton("Cancel", null)
+//            }.create()
+//
+//            //ダイアログ表示と同時にキーボードを表示
+//            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+//            inputForm.show()
+//
+//            it.isEnabled = true
         }
 
 
@@ -158,6 +189,7 @@ class EventListFragment : Fragment() {
                     repository.editUser(userId, name){
                         // コールバックの操作
                         (activity as AppCompatActivity).supportActionBar?.title = it.name
+                        myuser = it
                     }
 
                 }

@@ -94,6 +94,17 @@ class Repository {
                 )
     }
 
+    //eventへの参加
+    fun joinEvent(userid : Int,password:Map<String,String>,callback:(Event)->Unit){
+        requestService.joinEvent(userid,password)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {res -> callback(res)},
+                        {err -> Log.d("errJoinEventList",err.toString()) }
+                )
+    }
+
     /*---firebase---*/
     //firebaseからeidのmmoをゲット
     fun getMmo(event_id: String, callback: (Collection<Pair<String, MindMapObject>>) -> Unit) {
