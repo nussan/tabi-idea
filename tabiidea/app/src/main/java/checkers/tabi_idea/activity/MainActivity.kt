@@ -26,12 +26,12 @@ class MainActivity : AppCompatActivity() {
 
         if( savedInstanceState == null) {
             Log.d("editprob", uuid)
-            repository.getUser("tsubasa") {
+            repository.getUser(uuid) {
                 if (it.id == -1) {
                     Log.d("editprob","X")
                     val newUser = mapOf(
                             "uuid" to uuid,
-                            "name" to "新しいユーザー"
+                            "name" to "TAKIKAWA"
                     )
                     repository.addUser(newUser) {user: User ->
                         repository.getEventList(user!!.id) {

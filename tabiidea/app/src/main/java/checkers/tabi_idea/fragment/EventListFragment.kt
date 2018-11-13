@@ -23,8 +23,8 @@ import java.util.*
 
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
-    private var event_id = 0
-    private var event_password: String? = null
+    private var eventId = 0
+    private var eventPass: String? = null
     private var mindMapObjectList: MutableList<MindMapObject> = mutableListOf(
             MindMapObject(1, "行先", 200f, 200f, 0,0,"destination"),
             MindMapObject(2, "予算", 200f, -200f, 0,0,"budget"),
@@ -32,12 +32,13 @@ class EventListFragment : Fragment() {
             MindMapObject(4, "宿泊", -200f, -200f, 0,0,"hotel")
     )
     private var userId = 0
-    private lateinit var myuser :User
+    private lateinit var myuser : User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             userId = it.getInt("userId")
+            myuser = it.getParcelable("user")
             eventManager.eventList = it.getParcelableArrayList<Event>("eventListKey") as MutableList<Event>
         }
     }
@@ -68,7 +69,7 @@ class EventListFragment : Fragment() {
         val repository = Repository()
         //RecyclerViewを設定
         eventListView.adapter = EventListAdapter(context,eventManager.eventList)
-        eventListView.layoutManager = GridLayoutManager(context,2) as RecyclerView.LayoutManager?
+        eventListView.layoutManager = GridLayoutManager(context,1) as RecyclerView.LayoutManager?
 
         (eventListView.adapter as EventListAdapter).setOnClickListener (object: View.OnClickListener {
             override fun onClick(view: View?) {
@@ -83,47 +84,56 @@ class EventListFragment : Fragment() {
             }
         })
 
-        fab.setOnClickListener {
-            if(mButtonState == ButtonState.CLOSE) fabOpen(dpToPx(66))
-            else fabClose()
-//            it.isEnabled = false
-//            // レイアウトを取得
-//            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
-//
-//            // ダイアログ内のテキストエリア
-//            val inputText: EditText = inflater.findViewById(R.id.inputText)
-//            inputText.requestFocus()
-//
-//            // ダイアログの設定
-//            val inputForm = AlertDialog.Builder(context!!).apply {
-//                setTitle("新しいイベント")
-//                setView(inflater)
-//                setPositiveButton("OK") { _, _ ->
-//                    // OKボタンを押したときの処理
-//                    val title = mapOf(
-//                            "title" to "${inputText.text}"
-//                    )
-//                    repository.addEvent(userId, title) {
-//                        event_id = it.id
-//                        event_password = it.password
-//                        Log.d("tubasa", it.id.toString())
-//                        repository.addEventtoFb(event_id.toString())//event.id
-//                        mindMapObjectList.forEach {
-//                            repository.addMmo(event_id.toString(), it)
-//                        }
-//                        eventManager.add(it)
-//                        eventListView.adapter.notifyDataSetChanged()
-//                    }
-//
-//                }
-//                setNegativeButton("Cancel", null)
-//            }.create()
+        create_fab.setOnClickListener{
+            it.isEnabled = false
+            // レイアウトを取得
+            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
 
-            // ダイアログ表示と同時にキーボードを表示
-//            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-//            inputForm.show()
-//
-//            it.isEnabled = true
+            // ダイアログ内のテキストエリア
+            val inputText: EditText = inflater.findViewById(R.id.inputText)
+            inputText.requestFocus()
+
+            // ダイアログの設定
+            val inputForm = AlertDialog.Builder(context!!).apply {
+                setTitle("新しいイベント")
+                setView(inflater)
+                setPositiveButton("OK") { _, _ ->
+                    // OKボタンを押したときの処理
+                    val title = mapOf(
+                            "title" to "${inputText.text}"
+                    )
+                    repository.addEvent(userId, title) {
+                        eventId = it.id
+                        eventPass = it.password
+                        Log.d("tubasa", it.id.toString())
+                        repository.addEventtoFb(eventId.toString())//event.id
+                        mindMapObjectList.forEach {
+                            repository.addMmo(eventId.toString(), it)
+                        }
+                        eventManager.add(it)
+                        eventListView.adapter.notifyDataSetChanged()
+                    }
+
+                }
+                setNegativeButton("Cancel", null)
+            }.create()
+
+            //ダイアログ表示と同時にキーボードを表示
+            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            inputForm.show()
+
+            it.isEnabled = true
+
+        }
+
+        join_fab.setOnClickListener{
+
+        }
+
+
+        fab.setOnClickListener {
+            if(mButtonState == ButtonState.CLOSE) fabOpen(dpToPx(70))
+            else fabClose()
         }
 
         nameEdit.setOnClickListener {
@@ -141,11 +151,14 @@ class EventListFragment : Fragment() {
                 setView(inflater)
                 setPositiveButton("OK") { _, _ ->
                     // OKボタンを押したときの処理
-                    val title = mapOf(
-                            "title" to "${inputText.text}"
+                    val name = mapOf(
+                            "name" to "${inputText.text}"
                     )
-                    repository.editUser(userId, title){
-
+                    Log.d("EventListFragment", "")
+                    repository.editUser(userId, name){
+                        // コールバックの操作
+                        (activity as AppCompatActivity).supportActionBar?.title = it.name
+                        myuser = it
                     }
 
                 }
@@ -165,7 +178,7 @@ class EventListFragment : Fragment() {
         fun newInstance(user: User, eventList: MutableList<Event>) = EventListFragment().apply {
             arguments = Bundle().apply {
                 putInt("userId", user.id)
-                myuser = user
+                putParcelable("user", user)
                 putParcelableArrayList("eventListKey", ArrayList(eventList))
             }
         }
@@ -185,6 +198,11 @@ class EventListFragment : Fragment() {
         anim.setDuration(200)
         anim.start()
 
+        edit_name_button_layout.setVisibility(View.GONE)
+        anim = ObjectAnimator.ofFloat(edit_name_button_layout, "translationY", 0f)
+        anim.setDuration(200)
+        anim.start()
+
         mButtonState = ButtonState.CLOSE
     }
 
@@ -198,6 +216,12 @@ class EventListFragment : Fragment() {
         anim = ObjectAnimator.ofFloat(create_button_layout,"translationY",-size*2)
         anim.duration = 200
         anim.start()
+
+        edit_name_button_layout.setVisibility(View.VISIBLE)
+        anim = ObjectAnimator.ofFloat(edit_name_button_layout,"translationY",-size*3)
+        anim.duration = 200
+        anim.start()
+
 
         mButtonState = ButtonState.OPEN
     }
