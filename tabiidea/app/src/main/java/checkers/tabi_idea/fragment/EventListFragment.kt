@@ -71,6 +71,15 @@ class EventListFragment : Fragment() {
         eventListView.adapter = EventListAdapter(context,eventManager.eventList)
         eventListView.layoutManager = GridLayoutManager(context,1) as RecyclerView.LayoutManager?
 
+        //個々から変更を加えた
+        val swipHandler = object : SwipeToDeleteCallback(context!!){
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
+                val adapter = eventListView.adapter as EventListAdapter
+
+            }
+        }
+        //ここまで変更を加えた
+
         (eventListView.adapter as EventListAdapter).setOnClickListener (object: View.OnClickListener {
             override fun onClick(view: View?) {
                 Log.d(javaClass.simpleName, "onTouch!!")
