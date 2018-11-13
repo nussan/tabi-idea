@@ -161,10 +161,10 @@ class EventListFragment : Fragment() {
                             "name" to "${inputText.text}"
                     )
                     Log.d("EventListFragment", "")
-                    repository.editUser(userId, name){
+                    repository.editUser(userId, name){user ->
                         // コールバックの操作
-                        (activity as AppCompatActivity).supportActionBar?.title = it.name
-                        myuser = it
+                        (activity as AppCompatActivity).supportActionBar?.title = user.name
+                        myuser = user
                     }
 
                 }
