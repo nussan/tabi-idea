@@ -32,5 +32,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/fui_ic_googleg_color_24dp" />
+        app:srcCompat="@drawable/fui_idp_button_background_twitter" />
 </android.support.constraint.ConstraintLayout>

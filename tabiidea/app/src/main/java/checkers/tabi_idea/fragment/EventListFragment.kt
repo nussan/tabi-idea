@@ -69,7 +69,7 @@ class EventListFragment : Fragment() {
         val repository = Repository()
         //RecyclerViewを設定
         eventListView.adapter = EventListAdapter(context,eventManager.eventList)
-        eventListView.layoutManager = GridLayoutManager(context,2) as RecyclerView.LayoutManager?
+        eventListView.layoutManager = GridLayoutManager(context,1) as RecyclerView.LayoutManager?
 
         (eventListView.adapter as EventListAdapter).setOnClickListener (object: View.OnClickListener {
             override fun onClick(view: View?) {
