@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
 import android.view.*
 import android.widget.EditText
@@ -75,9 +76,15 @@ class EventListFragment : Fragment() {
         val swipHandler = object : SwipeToDeleteCallback(context!!){
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
                 val adapter = eventListView.adapter as EventListAdapter
+                viewHolder?.let{
+                    adapter.removeAt(it.adapterPosition)
+                }
+                //TODO　データベースから削除機能
 
             }
         }
+        val itemTouchHelper = ItemTouchHelper(swipHandler)
+        itemTouchHelper.attachToRecyclerView(eventListView)
         //ここまで変更を加えた
 
         (eventListView.adapter as EventListAdapter).setOnClickListener (object: View.OnClickListener {
