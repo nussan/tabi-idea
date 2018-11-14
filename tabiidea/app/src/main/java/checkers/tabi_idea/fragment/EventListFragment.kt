@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
 import android.view.*
+import android.view.animation.RotateAnimation
 import android.widget.EditText
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
@@ -28,6 +29,12 @@ class EventListFragment : Fragment() {
     private val repository = Repository()
     private var userId = 0
     private lateinit var myuser : User
+    private var mButtonState: ButtonState = ButtonState.CLOSE
+
+    enum class ButtonState{
+        OPEN,
+        CLOSE
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,9 +70,8 @@ class EventListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         //RecyclerViewを設定
         eventListView.adapter = EventListAdapter(context,eventManager.eventList)
-        eventListView.layoutManager = GridLayoutManager(context,1) as RecyclerView.LayoutManager?
+        eventListView.layoutManager = GridLayoutManager(context,1)
 
-        //個々から変更を加えた
         val swipHandler = object : SwipeToDeleteCallback(context!!){
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
                 val adapter = eventListView.adapter as EventListAdapter
@@ -73,12 +79,11 @@ class EventListFragment : Fragment() {
                     adapter.removeAt(it.adapterPosition)
                 }
                 //TODO　データベースから削除機能
-
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipHandler)
         itemTouchHelper.attachToRecyclerView(eventListView)
-        //ここまで変更を加えた
+
         (eventListView.adapter as EventListAdapter).setOnClickListener (object: View.OnClickListener {
             override fun onClick(view: View?) {
                 Log.d(javaClass.simpleName, "onTouch!!")
@@ -133,13 +138,22 @@ class EventListFragment : Fragment() {
         }
 
         join_fab.setOnClickListener{
-
+            // TODO 参加処理
+        }
+        shareEvent.setOnClickListener{
+            // TODO 招待処理（仮）
         }
 
 
         fab.setOnClickListener {
-            if(mButtonState == ButtonState.CLOSE) fabOpen(dpToPx(70))
-            else fabClose()
+            if(mButtonState == ButtonState.CLOSE) {
+                startRotateAnim(0F,180f,fab.pivotX,fab.pivotY,true)
+                fabOpen(dpToPx(70))
+            }
+            else {
+                startRotateAnim(180f,360f,fab.pivotX,fab.pivotY,false)
+                fabClose()
+            }
         }
 
         nameEdit.setOnClickListener {
@@ -209,10 +223,18 @@ class EventListFragment : Fragment() {
         anim.setDuration(200)
         anim.start()
 
+        share_event_button_layout.setVisibility(View.GONE)
+        anim = ObjectAnimator.ofFloat(share_event_button_layout, "translationY", 0f)
+        anim.setDuration(200)
+        anim.start()
+
+        fab_background.setVisibility(View.GONE)
+
         mButtonState = ButtonState.CLOSE
     }
 
     private fun fabOpen(size:Float) {
+
         join_button_layout.setVisibility(View.VISIBLE)
         var anim = ObjectAnimator.ofFloat(join_button_layout, "translationY", -size)
         anim.duration = 200
@@ -228,14 +250,22 @@ class EventListFragment : Fragment() {
         anim.duration = 200
         anim.start()
 
+        share_event_button_layout.setVisibility(View.VISIBLE)
+        anim = ObjectAnimator.ofFloat(share_event_button_layout,"translationY",-size*4)
+        anim.duration = 200
+        anim.start()
+
+        fab_background.setVisibility(View.VISIBLE)
+
 
         mButtonState = ButtonState.OPEN
     }
 
-    enum class ButtonState{
-        OPEN,
-        CLOSE
+    private fun startRotateAnim(fromDegree : Float,toDegree : Float,pivotX : Float, pivotY : Float,fill:Boolean){
+        Log.d("rotate","rottate")
+        var rotate = RotateAnimation(fromDegree, toDegree, pivotX, pivotY)
+        rotate.duration = 200
+        rotate.setFillAfter(fill)
+        fab.startAnimation(rotate)
     }
-
-    var mButtonState: ButtonState = ButtonState.CLOSE
 }

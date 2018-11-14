@@ -20,6 +20,44 @@
 
     </android.support.v7.widget.RecyclerView>
 
+    <View
+        android:id="@+id/fab_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/common_google_signin_btn_text_light_disabled"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/share_event_button_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="#00000000"
+        android:clipToPadding="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/shareEvent"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:layout_marginBottom = "8dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="8dp"
+            app:backgroundTint="@color/henk"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_share_black_24dp" />
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/edit_name_button_layout"
         android:layout_width="wrap_content"
@@ -28,21 +66,24 @@
         android:layout_alignParentTop="true"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:background="#00000000"
+        android:clipToPadding="true"
         android:orientation="vertical"
         android:visibility="gone"
-        android:background="#00000000"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:clipToPadding="true">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/nameEdit"
-            android:layout_width="66dp"
-            android:layout_height="66dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_weight="1"
             android:clickable="true"
+            android:layout_marginBottom = "8dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="8dp"
             app:backgroundTint="@color/henk"
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_person_black_24dp" />
@@ -65,12 +106,15 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/create_fab"
-            android:layout_width="66dp"
-            android:layout_height="66dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_weight="1"
             android:clickable="true"
+            android:layout_marginBottom = "8dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="8dp"
             app:backgroundTint="@color/henk"
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_add_black_24dp" />
@@ -85,34 +129,25 @@
         android:layout_alignParentTop="true"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:clipToPadding="true"
         android:orientation="vertical"
         android:visibility="gone"
-        android:background="#00000000"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:clipToPadding="true">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/join_fab"
-            android:layout_width="66dp"
-            android:layout_height="66dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:layout_weight="1"
             android:clickable="true"
+            android:layout_marginBottom = "8dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="8dp"
             app:backgroundTint="@color/henk"
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_group_add_black_24dp" />
     </LinearLayout>
-
-    <View
-        android:id="@+id/fab_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -122,7 +157,7 @@
         android:layout_marginBottom="8dp"
         android:clickable="true"
         android:focusable="true"
-        android:src="@drawable/ic_edit_black_24dp"
+        android:src="@drawable/ic_publish_black_24dp"
         app:backgroundTint="@color/henk"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
