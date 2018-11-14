@@ -155,7 +155,7 @@ class TravelMindMapFragment :
                 QuickAction.setDefaultTextColor(Color.BLACK)
                 val quickAction = QuickAction(context!!, QuickAction.HORIZONTAL)
                 val quickIntent = QuickIntentAction(context!!)
-                rrvQA(context!!, view, quickAction, quickIntent)
+                rrvQA(view, quickAction, quickIntent)
                 view.setOnClickListener {
                     quickAction.show(it)
                 }
@@ -400,7 +400,7 @@ class TravelMindMapFragment :
                 .register(quickActionView)
     }
 
-    private fun rrvQA(context: Context, view: View, quickAction: QuickAction, quickIntent: QuickIntentAction) {
+    private fun rrvQA(view: View, quickAction: QuickAction, quickIntent: QuickIntentAction) {
         val ID_ADD = 0
         val ID_DELETE = 1
         val ID_EDIT = 2
@@ -412,15 +412,9 @@ class TravelMindMapFragment :
         val deleteItem = ActionItem(ID_DELETE, "Delete", R.drawable.ic_delete_black_24dp)
         val editItem = ActionItem(ID_EDIT, "Edit", R.drawable.ic_edit_black_24dp)
 
-        addItem.isSticky
-        deleteItem.isSticky
-
         quickAction.setColorRes(R.color.colorPrimary)
         quickAction.setTextColorRes(R.color.colorAccent)
-
-        quickAction.addActionItem(addItem, editItem)
-        quickAction.setTextColor(Color.YELLOW)
-        quickAction.addActionItem(deleteItem)
+        quickAction.addActionItem(addItem, editItem, deleteItem)
 
         quickAction.setOnActionItemClickListener { item ->
             when (item.actionId) {
