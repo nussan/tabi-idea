@@ -46,10 +46,6 @@ class TravelMindMapFragment :
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
 
-    private var quickAction: QuickAction? = null
-    private var quickIntent: QuickAction? = null
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -119,12 +115,12 @@ class TravelMindMapFragment :
 
                 view.tag = key
 
+                // 画面のタッチポイントの差分をビュー毎に分けるためにここで宣言
                 val lastRaw = PointF(0f, 0f)
 
                 view.setOnTouchListener { v, event ->
                     Log.d("TravelMindMapFragment", "${event.pointerCount}")
 
-                    rrvQA(context!!,v)
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
@@ -154,8 +150,14 @@ class TravelMindMapFragment :
                     false
                 }
 
-                view.setOnClickListener{
-                    quickAction!!.show(it)
+
+                QuickAction.setDefaultColor(ResourcesCompat.getColor(resources, R.color.colorAccent, null))
+                QuickAction.setDefaultTextColor(Color.BLACK)
+                val quickAction = QuickAction(context!!, QuickAction.HORIZONTAL)
+                val quickIntent = QuickIntentAction(context!!)
+                rrvQA(context!!, view, quickAction, quickIntent)
+                view.setOnClickListener {
+                    quickAction.show(it)
                 }
 
                 map = map.plus(key to mmo)
@@ -398,13 +400,13 @@ class TravelMindMapFragment :
                 .register(quickActionView)
     }
 
-    private fun rrvQA(context: Context,view: View){
+    private fun rrvQA(context: Context, view: View, quickAction: QuickAction, quickIntent: QuickIntentAction) {
         val ID_ADD = 0
         val ID_DELETE = 1
         val ID_EDIT = 2
 
-        QuickAction.setDefaultColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
-        QuickAction.setDefaultTextColor(Color.BLACK);
+        QuickAction.setDefaultColor(ResourcesCompat.getColor(resources, R.color.colorAccent, null))
+        QuickAction.setDefaultTextColor(Color.BLACK)
 
         val addItem = ActionItem(ID_ADD, "Add", R.drawable.ic_add_black_24dp)
         val deleteItem = ActionItem(ID_DELETE, "Delete", R.drawable.ic_delete_black_24dp)
@@ -413,36 +415,32 @@ class TravelMindMapFragment :
         addItem.isSticky
         deleteItem.isSticky
 
-        quickAction = QuickAction(context, QuickAction.HORIZONTAL)
-        quickAction!!.setColorRes(R.color.colorPrimary)
-        quickAction!!.setTextColorRes(R.color.colorAccent)
+        quickAction.setColorRes(R.color.colorPrimary)
+        quickAction.setTextColorRes(R.color.colorAccent)
 
-        quickAction!!.addActionItem(addItem, editItem)
-        quickAction!!.setTextColor(Color.YELLOW)
-        quickAction!!.addActionItem(deleteItem)
+        quickAction.addActionItem(addItem, editItem)
+        quickAction.setTextColor(Color.YELLOW)
+        quickAction.addActionItem(deleteItem)
 
-        quickAction!!.setOnActionItemClickListener(QuickAction.OnActionItemClickListener { item ->
-            //here we can filter which action item was clicked with pos or actionId parameter
+        quickAction.setOnActionItemClickListener { item ->
             when (item.actionId) {
-                0 -> onAddSelected(view.tag as String)
-                1 -> onDeleteSelected(view.tag as String)
-                2 -> onEditSelected(view.tag as String)
+                ID_ADD -> onAddSelected(view.tag as String)
+                ID_DELETE-> onDeleteSelected(view.tag as String)
+                ID_EDIT -> onEditSelected(view.tag as String)
             }
-        })
+        }
 
-        quickAction!!.setOnDismissListener(QuickAction.OnDismissListener {})
+        quickAction.setOnDismissListener {}
 
         val sendIntent = Intent()
         sendIntent.action = Intent.ACTION_SEND
         sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.")
         sendIntent.type = "text/plain"
 
-        quickIntent = QuickIntentAction(context)
-                .setActivityIntent(sendIntent)
+        quickIntent.setActivityIntent(sendIntent)
                 .create()
-        quickIntent!!.setAnimStyle(QuickAction.Animation.REFLECT)
+                .setAnimStyle(QuickAction.Animation.REFLECT)
     }
-
 
 
     companion object {
