@@ -24,6 +24,10 @@ interface RequestService {
     @POST("event/create/{id}")
     fun addEvent(@Path("id") id :Int, @Body title:Map<String,String>) : Single<Event>
 
+    //Eventへの参加
+    @POST("event/join/{id}")
+    fun joinEvent(@Path("id") id:Int,@Body password:Map<String,String>) : Single<Event>
+
     //eventListの取得
     @GET("event/show/{id}")
     fun getEvent(@Path("id") id:Int):Single<MutableList<Event>>

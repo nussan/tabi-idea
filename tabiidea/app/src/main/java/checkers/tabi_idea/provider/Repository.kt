@@ -97,6 +97,35 @@ class Repository {
                 )
     }
 
+    //eventへの参加
+    fun joinEvent(userid : Int,password:Map<String,String>,callback:(Event)->Unit){
+        requestService.joinEvent(userid,password)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {res -> callback(res)},
+                        {err -> Log.d("errJoinEventList",err.toString()) }
+                )
+    }
+
+    /*---firebase---*/
+    //firebaseからeidのmmoをゲット
+    fun getMmo(event_id: String, callback: (Collection<Pair<String, MindMapObject>>) -> Unit) {
+        FirebaseDatabase.getInstance()
+                .getReference(event_id)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        callback(dataSnapshot.children.mapNotNull {
+                            it.key!! to it.getValue(MindMapObject::class.java)!!
+                        })
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Log.d("errGetMmo", databaseError.toString())
+                    }
+                })
+    }
+
     //eventをfbにadd
     fun addEventToFb(event_id: String) {
         val mmo = MindMapObject(0, "旅行", 0f, 0f, "", 0, "root")
