@@ -31,7 +31,7 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
     override fun onBindViewHolder(holder: EventListViewHolder, position: Int) {
         val event = eventList[position]
         holder.event.text = event.title
-        var capital = event.title.substring(0,1)
+        var capital = if(event.title.isNotEmpty()) event.title.substring(0,1) else "a"
         val objBitmap = createBitmap(capital)
         holder.image.setImageBitmap(objBitmap)
 
@@ -55,17 +55,19 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
         var textWidth = textSize * capital.length
         var textHeight = textSize
 
-        objPaint.setAntiAlias(true)
-        objPaint.setColor(Color.BLACK)
-        objPaint.setTextSize(20f)
-        val fm :Paint.FontMetrics  = objPaint.getFontMetrics()
+        objPaint.isAntiAlias = true
+        objPaint.color = Color.BLACK
+        objPaint.textSize = 20f
+        val fm :Paint.FontMetrics  = objPaint.fontMetrics
         objPaint.getTextBounds(capital,0,capital.length, Rect(0,0,textWidth,textHeight))
 
         textWidth = objPaint.measureText(capital) .toInt()
-        textHeight = (Math.abs(fm.top) + fm.bottom) .toInt()
+        textHeight = (Math.abs(fm.top) + Math.abs(fm.bottom)) .toInt()
         objBitmap = Bitmap.createBitmap(textWidth, textHeight, Bitmap.Config.ARGB_8888)
 
         objCanvas = Canvas(objBitmap)
+        objCanvas.drawColor(Color.CYAN)
+
         objCanvas.drawText(capital,0f,Math.abs(fm.top), objPaint)
 
         return objBitmap
