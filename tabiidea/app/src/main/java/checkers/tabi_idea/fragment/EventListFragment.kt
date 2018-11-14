@@ -97,7 +97,7 @@ class EventListFragment : Fragment() {
 
                     repository.addEvent(userId, title) {event ->
                         eventId = event.id
-                        eventPass = event.password
+//                        eventPass = event.password
                         Log.d("tubasa", event.id.toString())
                         repository.addEventToFb(eventId.toString())//event.id
                         eventManager.add(event)

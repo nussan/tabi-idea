@@ -12,8 +12,6 @@ data class Event(
         var id :Int,
         @Json(name = "title")
         var title: String,
-        @Json(name = "password")
-        var password : String,
         @Json(name = "member")
         var member: MutableList<Int> = mutableListOf()
 ): Parcelable {

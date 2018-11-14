@@ -116,7 +116,7 @@ class TravelMindMapFragment :
 
                 val view = mindMapObjectToTextView(context, mmo)
 
-                rrvQA(context!!)
+
                 view.tag = key
 
                 val lastRaw = PointF(0f, 0f)
@@ -124,6 +124,7 @@ class TravelMindMapFragment :
                 view.setOnTouchListener { v, event ->
                     Log.d("TravelMindMapFragment", "${event.pointerCount}")
 
+                    rrvQA(context!!,v)
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
@@ -397,7 +398,7 @@ class TravelMindMapFragment :
                 .register(quickActionView)
     }
 
-    private fun rrvQA(context: Context){
+    private fun rrvQA(context: Context,view: View){
         val ID_ADD = 0
         val ID_DELETE = 1
         val ID_EDIT = 2
@@ -422,12 +423,14 @@ class TravelMindMapFragment :
 
         quickAction!!.setOnActionItemClickListener(QuickAction.OnActionItemClickListener { item ->
             //here we can filter which action item was clicked with pos or actionId parameter
-            val title = item.title
-            Toast.makeText(context, "$title selected", Toast.LENGTH_SHORT).show()
-            if (!item.isSticky) quickAction!!.remove(item)
+            when (item.actionId) {
+                0 -> onAddSelected(view.tag as String)
+                1 -> onDeleteSelected(view.tag as String)
+                2 -> onEditSelected(view.tag as String)
+            }
         })
 
-        quickAction!!.setOnDismissListener(QuickAction.OnDismissListener { Toast.makeText(context, "Dismissed", Toast.LENGTH_SHORT).show() })
+        quickAction!!.setOnDismissListener(QuickAction.OnDismissListener {})
 
         val sendIntent = Intent()
         sendIntent.action = Intent.ACTION_SEND
