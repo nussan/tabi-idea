@@ -79,12 +79,11 @@ class EventListFragment : Fragment() {
                     adapter.removeAt(it.adapterPosition)
                 }
                 //TODO　データベースから削除機能
-
             }
         }
-
         val itemTouchHelper = ItemTouchHelper(swipHandler)
         itemTouchHelper.attachToRecyclerView(eventListView)
+
         (eventListView.adapter as EventListAdapter).setOnClickListener (object: View.OnClickListener {
             override fun onClick(view: View?) {
                 Log.d(javaClass.simpleName, "onTouch!!")
