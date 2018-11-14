@@ -33,18 +33,6 @@ class RoundRectTextView : AppCompatTextView {
         setMeasuredDimension(r, r)
     }
 
-    override fun draw(canvas: Canvas?) {
-        val paint = Paint()
-        paint.color = Color.parseColor("#FF00CED1")
-        paint.flags = Paint.ANTI_ALIAS_FLAG
-        canvas?.drawRoundRect(
-                RectF(x, y, width.toFloat(), height.toFloat()),
-                30f,
-                30f,
-                paint)
-        super.draw(canvas)
-    }
-
     override fun performClick(): Boolean {
         return super.performClick()
     }
