@@ -155,7 +155,7 @@ class TravelMindMapFragment :
                 QuickAction.setDefaultTextColor(Color.BLACK)
                 val quickAction = QuickAction(context!!, QuickAction.HORIZONTAL)
                 val quickIntent = QuickIntentAction(context!!)
-                rrvQA(context!!, view, quickAction, quickIntent)
+                rrvQA(view, quickAction, quickIntent)
                 view.setOnClickListener {
                     quickAction.show(it)
                 }
@@ -400,33 +400,23 @@ class TravelMindMapFragment :
                 .register(quickActionView)
     }
 
-    private fun rrvQA(context: Context, view: View, quickAction: QuickAction, quickIntent: QuickIntentAction) {
-        val ID_ADD = 0
-        val ID_DELETE = 1
-        val ID_EDIT = 2
-
+    private fun rrvQA(view: View, quickAction: QuickAction, quickIntent: QuickIntentAction) {
         QuickAction.setDefaultColor(ResourcesCompat.getColor(resources, R.color.colorAccent, null))
         QuickAction.setDefaultTextColor(Color.BLACK)
 
-        val addItem = ActionItem(ID_ADD, "Add", R.drawable.ic_add_black_24dp)
-        val deleteItem = ActionItem(ID_DELETE, "Delete", R.drawable.ic_delete_black_24dp)
-        val editItem = ActionItem(ID_EDIT, "Edit", R.drawable.ic_edit_black_24dp)
-
-        addItem.isSticky
-        deleteItem.isSticky
+        val addItem = ActionItem(0, "Add", R.drawable.ic_add_black_24dp)
+        val deleteItem = ActionItem(1, "Delete", R.drawable.ic_delete_black_24dp)
+        val editItem = ActionItem(2, "Edit", R.drawable.ic_edit_black_24dp)
 
         quickAction.setColorRes(R.color.colorPrimary)
         quickAction.setTextColorRes(R.color.colorAccent)
-
-        quickAction.addActionItem(addItem, editItem)
-        quickAction.setTextColor(Color.YELLOW)
-        quickAction.addActionItem(deleteItem)
+        quickAction.addActionItem(addItem, editItem, deleteItem)
 
         quickAction.setOnActionItemClickListener { item ->
             when (item.actionId) {
-                ID_ADD -> onAddSelected(view.tag as String)
-                ID_DELETE-> onDeleteSelected(view.tag as String)
-                ID_EDIT -> onEditSelected(view.tag as String)
+                addItem.actionId -> onAddSelected(view.tag as String)
+                deleteItem.actionId -> onDeleteSelected(view.tag as String)
+                editItem.actionId -> onEditSelected(view.tag as String)
             }
         }
 
