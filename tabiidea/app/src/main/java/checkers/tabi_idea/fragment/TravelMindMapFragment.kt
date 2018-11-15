@@ -406,7 +406,7 @@ class TravelMindMapFragment :
 //    private var mRoot: ViewGroup? = null
     private val mQuickActionListener = QuickActionView.OnActionSelectedListener {action, quickActionView->
         Log.d("aaa","aaa")
-        val view = quickActionView.getLongPressedView();
+        val view = quickActionView.longPressedView
         if (view != null) {
             Snackbar.make(view, "Clicked on " + action.id, Snackbar.LENGTH_SHORT).show()
             when(action.title){
@@ -416,12 +416,8 @@ class TravelMindMapFragment :
             }
         }
     }
-    val popAnimator = PopAnimator(true)
-    val actionTitleAnimator = CustomActionsTitleAnimator()
-        QuickActionView.make(context)
-                .addActions(actionList)
-                .register(quickActionView)
-    }
+    private val popAnimator = PopAnimator(true)
+    private val actionTitleAnimator = CustomActionsTitleAnimator()
 
     companion object {
         @JvmStatic
