@@ -5,6 +5,7 @@ import android.graphics.*
 import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 
 
@@ -18,31 +19,20 @@ class RoundRectTextView : AppCompatTextView {
         elevation = 10f
         outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(view: View, outline: Outline) {
-                outline.setRoundRect(0, 0, width, height, 30f )
+                outline.setRoundRect(0, 0, width, height, 30f)
             }
         }
+        layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         clipToOutline = true
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
-        val h = Math.max(this.measuredHeight, 150)
-        val w = Math.max(this.measuredWidth, 150)
-        val r = Math.min(Math.max(w, h), 300)
+        val h = Math.max(this.measuredHeight, 200)
+        val w = Math.max(this.measuredWidth, 200)
+        val r = Math.min(Math.max(w, h), 200)
         setMeasuredDimension(r, r)
-    }
-
-    override fun draw(canvas: Canvas?) {
-        val paint = Paint()
-        paint.color = Color.parseColor("#FF00CED1")
-        paint.flags = Paint.ANTI_ALIAS_FLAG
-        canvas?.drawRoundRect(
-                RectF(x, y, width.toFloat(), height.toFloat()),
-                30f,
-                30f,
-                paint)
-        super.draw(canvas)
     }
 
     override fun performClick(): Boolean {

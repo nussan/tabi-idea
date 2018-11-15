@@ -147,7 +147,7 @@ class ZoomableLayout :
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             val matrix = child.matrix
-            matrix.setScale(scaleFactor, scaleFactor, width.toFloat() / 2 - child.x, height.toFloat() / 2 - child.y)
+            matrix.setScale(scaleFactor, scaleFactor, width.toFloat() / 2 - child.x - child.width / 2, height.toFloat() / 2 - child.y - child.height / 2)
 //            Log.d(TAG, "${child.id} : ${matrix.toShortString()}")
             val m = FloatArray(9)
             matrix.getValues(m)

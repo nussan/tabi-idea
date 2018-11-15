@@ -9,10 +9,9 @@ import android.widget.TextView
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 
-class EventListAdapter(context: Context?, eL: MutableList<Event>) : RecyclerView.Adapter<EventListAdapter.EventListViewHolder>() {
+class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : RecyclerView.Adapter<EventListAdapter.EventListViewHolder>() {
 
     private val inflater = LayoutInflater.from(context)
-    private val eventList = eL
     private var listener: View.OnClickListener? = null
 
 
@@ -33,6 +32,11 @@ class EventListAdapter(context: Context?, eL: MutableList<Event>) : RecyclerView
 
     fun setOnClickListener(onClickListener: View.OnClickListener) {
         listener = onClickListener
+    }
+
+    fun removeAt(position: Int) {
+        eventList.removeAt(position)
+        notifyItemRemoved(position)
     }
 
     // Viewへの参照を持っておくViewHolder

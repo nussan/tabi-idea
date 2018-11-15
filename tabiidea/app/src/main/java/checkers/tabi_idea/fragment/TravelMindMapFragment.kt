@@ -52,10 +52,6 @@ class TravelMindMapFragment :
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
 
-    private var quickAction: QuickAction? = null
-    private var quickIntent: QuickAction? = null
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -127,6 +123,7 @@ class TravelMindMapFragment :
 
                 view.tag = key
 
+                // 画面のタッチポイントの差分をビュー毎に分けるためにここで宣言
                 val lastRaw = PointF(0f, 0f)
 
                 view.setOnTouchListener { v, event ->
@@ -160,7 +157,6 @@ class TravelMindMapFragment :
 
                     false
                 }
-
                 rrvToQAV(context,view)
 
                 map = map.plus(key to mmo)
@@ -396,7 +392,6 @@ class TravelMindMapFragment :
         pareIconTitle.forEach {
             actionList.add(Action(1337, it.first, it.second))
         }
-
         qav.addActions(actionList)
                 .setActionsTitleInAnimator(actionTitleAnimator)
                 .setActionsTitleOutAnimator(actionTitleAnimator)
@@ -423,6 +418,10 @@ class TravelMindMapFragment :
     }
     val popAnimator = PopAnimator(true)
     val actionTitleAnimator = CustomActionsTitleAnimator()
+        QuickActionView.make(context)
+                .addActions(actionList)
+                .register(quickActionView)
+    }
 
     companion object {
         @JvmStatic
