@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_favorite"
+        android:id="@+id/action_add"
         android:icon="@drawable/ic_add_black_24dp"
         android:title="@string/add"
         app:showAsAction="always"/>
     <item
-        android:id="@+id/action_add_to_cart"
+        android:id="@+id/action_edit"
         android:icon="@drawable/ic_edit_black_24dp"
         android:title="@string/edit"
         app:showAsAction="always"/>

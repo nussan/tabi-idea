@@ -1,12 +1,14 @@
 package checkers.tabi_idea.fragment
 
 
+import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
 import android.content.Intent
 import android.graphics.*
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.res.ResourcesCompat
@@ -20,6 +22,8 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import checkers.tabi_idea.R
+import checkers.tabi_idea.custom.view.CustomActionsInAnimator
+import checkers.tabi_idea.custom.view.CustomActionsTitleAnimator
 import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Event
@@ -27,10 +31,12 @@ import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.provider.FirebaseApiClient
 import com.commit451.quickactionview.Action
 import com.commit451.quickactionview.QuickActionView
+import com.commit451.quickactionview.animator.PopAnimator
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
+import kotlinx.android.synthetic.main.notification_template_custom_big.*
 import me.piruin.quickaction.ActionItem
 import me.piruin.quickaction.QuickAction
 import me.piruin.quickaction.QuickIntentAction
@@ -55,10 +61,6 @@ class TravelMindMapFragment :
         arguments?.let {
             event = it.getParcelable("eventKey")
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -115,7 +117,13 @@ class TravelMindMapFragment :
                 val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
 
                 val view = mindMapObjectToTextView(context, mmo)
-
+                view.tag = key
+                view.setOnLongClickListener { v ->
+                    behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+                    val item = ClipData.Item(v.tag as? CharSequence)
+                    val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
+                    v.startDrag(data, View.DragShadowBuilder(v), v, 0)
+                }
 
                 view.tag = key
 
@@ -124,7 +132,6 @@ class TravelMindMapFragment :
                 view.setOnTouchListener { v, event ->
                     Log.d("TravelMindMapFragment", "${event.pointerCount}")
 
-                    rrvQA(context!!,v)
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
@@ -154,9 +161,7 @@ class TravelMindMapFragment :
                     false
                 }
 
-                view.setOnClickListener{
-                    quickAction!!.show(it)
-                }
+                rrvToQAV(context,view)
 
                 map = map.plus(key to mmo)
                 mindMapConstraintLayout.addView(view, mmo)
@@ -377,13 +382,11 @@ class TravelMindMapFragment :
         return textView
     }
 
-    private fun rrvToQAV(context: Context?, view: View) {
+    private fun rrvToQAV(context: Context?, view: View){
         val quickActionView = view
 
-        val v = QuickActionView.make(context)
+        val qav = QuickActionView.make(context)
 
-        v.addActions(R.menu.actions)
-                .register(quickActionView)
         val pareIconTitle = listOf(
                 ContextCompat.getDrawable(context!!, R.drawable.ic_add_black_24dp)!! to getString(R.string.add),
                 ContextCompat.getDrawable(context!!, R.drawable.ic_edit_black_24dp)!! to getString(R.string.edit),
@@ -393,57 +396,33 @@ class TravelMindMapFragment :
         pareIconTitle.forEach {
             actionList.add(Action(1337, it.first, it.second))
         }
-        QuickActionView.make(context)
-                .addActions(actionList)
+
+        qav.addActions(actionList)
+                .setActionsTitleInAnimator(actionTitleAnimator)
+                .setActionsTitleOutAnimator(actionTitleAnimator)
+                .setOnActionSelectedListener(mQuickActionListener)
+                .setActionsOutAnimator(popAnimator)
                 .register(quickActionView)
+
+        val customActionsInAnimator = CustomActionsInAnimator(qav)
+        qav.setActionsInAnimator(customActionsInAnimator)
     }
 
-    private fun rrvQA(context: Context,view: View){
-        val ID_ADD = 0
-        val ID_DELETE = 1
-        val ID_EDIT = 2
-
-        QuickAction.setDefaultColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
-        QuickAction.setDefaultTextColor(Color.BLACK);
-
-        val addItem = ActionItem(ID_ADD, "Add", R.drawable.ic_add_black_24dp)
-        val deleteItem = ActionItem(ID_DELETE, "Delete", R.drawable.ic_delete_black_24dp)
-        val editItem = ActionItem(ID_EDIT, "Edit", R.drawable.ic_edit_black_24dp)
-
-        addItem.isSticky
-        deleteItem.isSticky
-
-        quickAction = QuickAction(context, QuickAction.HORIZONTAL)
-        quickAction!!.setColorRes(R.color.colorPrimary)
-        quickAction!!.setTextColorRes(R.color.colorAccent)
-
-        quickAction!!.addActionItem(addItem, editItem)
-        quickAction!!.setTextColor(Color.YELLOW)
-        quickAction!!.addActionItem(deleteItem)
-
-        quickAction!!.setOnActionItemClickListener(QuickAction.OnActionItemClickListener { item ->
-            //here we can filter which action item was clicked with pos or actionId parameter
-            when (item.actionId) {
-                0 -> onAddSelected(view.tag as String)
-                1 -> onDeleteSelected(view.tag as String)
-                2 -> onEditSelected(view.tag as String)
+//    private var mRoot: ViewGroup? = null
+    private val mQuickActionListener = QuickActionView.OnActionSelectedListener {action, quickActionView->
+        Log.d("aaa","aaa")
+        val view = quickActionView.getLongPressedView();
+        if (view != null) {
+            Snackbar.make(view, "Clicked on " + action.id, Snackbar.LENGTH_SHORT).show()
+            when(action.title){
+                "追加" -> onAddSelected(view.tag as String)
+                "編集" -> onEditSelected(view.tag as String)
+//                "いいね" -> onLikeSelected(view.tag as String)
             }
-        })
-
-        quickAction!!.setOnDismissListener(QuickAction.OnDismissListener {})
-
-        val sendIntent = Intent()
-        sendIntent.action = Intent.ACTION_SEND
-        sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.")
-        sendIntent.type = "text/plain"
-
-        quickIntent = QuickIntentAction(context)
-                .setActivityIntent(sendIntent)
-                .create()
-        quickIntent!!.setAnimStyle(QuickAction.Animation.REFLECT)
+        }
     }
-
-
+    val popAnimator = PopAnimator(true)
+    val actionTitleAnimator = CustomActionsTitleAnimator()
 
     companion object {
         @JvmStatic
