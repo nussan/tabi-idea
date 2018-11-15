@@ -69,8 +69,8 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:3.3.1'
     implementation 'com.github.bumptech.glide:glide:4.4.0'
 
-    implementation 'com.github.s24005ir:QuickActionView:2.0.0'
     implementation 'me.piruin:quickaction:2.4.2'
+    implementation project(':quickactionview')
 }
 
 apply plugin: 'com.google.gms.google-services'
