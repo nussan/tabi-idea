@@ -3,16 +3,13 @@ package checkers.tabi_idea.fragment
 import android.content.Context
 import android.graphics.*
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
-import kotlinx.android.synthetic.main.list_event_row.view.*
 
 class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : RecyclerView.Adapter<EventListAdapter.EventListViewHolder>() {
 
@@ -47,36 +44,55 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
         notifyItemRemoved(position)
     }
 
+    //ビットマップを作成する関数
     fun createBitmap(capital:String,holder: EventListViewHolder) : Bitmap{
-        var objPaint = Paint()
+        val objPaint = Paint()
         var objBitmap : Bitmap
         val objCanvas : Canvas
+        val fm : Paint.FontMetrics
+
         val base = "無"
         val textSize = 10
-        var textWidth = textSize * base.length //ここを全角に仕様図
-        var textHeight = textSize
-        var textWidthCap: Int
+        val width = textSize * base.length
+        val height = textSize
+        val baseWidth : Int
+        val baseHeight : Int
+        val capitalWidth: Int
+        val centerX : Int
+        val modPow = 1.8f // 倍率調整
+        val modAdd = 100 // 調整
 
         objPaint.isAntiAlias = true
         objPaint.color = Color.WHITE
         objPaint.textSize = 1000f
-        val fm :Paint.FontMetrics  = objPaint.fontMetrics
-        objPaint.getTextBounds(capital,0,0, Rect(0,0,textWidth,textHeight))
+        fm = objPaint.fontMetrics
+        // これがなんの役割を果たしているのか不明
+        objPaint.getTextBounds(capital,0,0, Rect(0,0,width,height))
 
+        baseWidth = (objPaint.measureText(base) .toInt())*2
+        baseHeight = ((Math.abs(fm.top) - Math.abs(fm.bottom)+modAdd) .toInt())*2
+        objBitmap = Bitmap.createBitmap(baseWidth, baseHeight, Bitmap.Config.ARGB_8888)
 
-        textWidth = (objPaint.measureText(base) .toInt())*2
-        textHeight = ((Math.abs(fm.top) - Math.abs(fm.bottom)+100) .toInt())*2
-        objBitmap = Bitmap.createBitmap(textWidth, textHeight, Bitmap.Config.ARGB_8888)
-
-        textWidthCap = objPaint.measureText(capital) .toInt()
-        val bitmapWidth = (textWidth/2) - (textWidthCap/2)
+        capitalWidth = objPaint.measureText(capital) .toInt()
+        centerX = (baseWidth/2) - (capitalWidth/2)
 
         objCanvas = Canvas(objBitmap)
-        objCanvas.drawARGB(100,134,177,190)
-        objCanvas.drawText(capital,bitmapWidth.toFloat(),-(fm.ascent+fm.descent)*1.8f,objPaint)
+        val wordCode = capital.codePointAt(0)
+        var r = Math.random()*256
+        var g = Math.random()*256
+        var b = Math.random()*256
+        if (r>90 && b>90 && g>90 ) {
+            r = 90.0
+            b = 90.0
+            g = 90.0
+        }
+
+        objCanvas.drawRGB(r.toInt(),g.toInt(),b.toInt())
+        objCanvas.drawText(capital,centerX.toFloat(),-(fm.ascent+fm.descent)*modPow,objPaint)
 
         return objBitmap
     }
+
 
     // Viewへの参照を持っておくViewHolder
     class EventListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
