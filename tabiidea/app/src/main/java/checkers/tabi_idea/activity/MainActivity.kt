@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
-    val repository = Repository()
+    private val repository = Repository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
                     Log.d("editprob","X")
                     val newUser = mapOf(
                             "uuid" to uuid,
-                            "name" to "TAKIKAWA"
+                            "name" to "新しいユーザー"
                     )
                     repository.addUser(newUser) {user: User ->
                         repository.getEventList(user!!.id) {

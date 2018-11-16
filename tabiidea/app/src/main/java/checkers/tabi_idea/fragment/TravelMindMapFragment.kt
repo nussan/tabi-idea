@@ -138,6 +138,10 @@ class TravelMindMapFragment :
                         MotionEvent.ACTION_MOVE -> {
                             Log.d("TravelMindMapFragment", "ACTION_MOVE")
                             val trans = PointF((event.rawX - lastRaw.x), (event.rawY - lastRaw.y))
+                            if (trans.x * trans.x + trans.y * trans.y > 5) {
+                                // 移動量が一定以上のときロングプレスをキャンセル
+                                v.cancelLongPress()
+                            }
                             val matrix = v.matrix
                             matrix?.postTranslate(trans.x, trans.y)
                             val f = FloatArray(9)
@@ -147,7 +151,6 @@ class TravelMindMapFragment :
 //                            Log.d("TravelMindMapFragment", v.matrix.toShortString())
                             lastRaw.set(event.rawX, event.rawY)
                             mindMapConstraintLayout.invalidate()
-                            v.cancelLongPress()
                         }
 
                         MotionEvent.ACTION_UP -> {
@@ -157,7 +160,7 @@ class TravelMindMapFragment :
 
                     false
                 }
-                rrvToQAV(context,view)
+                rrvToQAV(context, view)
 
                 map = map.plus(key to mmo)
                 mindMapConstraintLayout.addView(view, mmo)
@@ -378,7 +381,7 @@ class TravelMindMapFragment :
         return textView
     }
 
-    private fun rrvToQAV(context: Context?, view: View){
+    private fun rrvToQAV(context: Context?, view: View) {
         val quickActionView = view
 
         val qav = QuickActionView.make(context)
@@ -403,13 +406,13 @@ class TravelMindMapFragment :
         qav.setActionsInAnimator(customActionsInAnimator)
     }
 
-//    private var mRoot: ViewGroup? = null
-    private val mQuickActionListener = QuickActionView.OnActionSelectedListener {action, quickActionView->
-        Log.d("aaa","aaa")
+    //    private var mRoot: ViewGroup? = null
+    private val mQuickActionListener = QuickActionView.OnActionSelectedListener { action, quickActionView ->
+        Log.d("aaa", "aaa")
         val view = quickActionView.longPressedView
         if (view != null) {
             Snackbar.make(view, "Clicked on " + action.id, Snackbar.LENGTH_SHORT).show()
-            when(action.title){
+            when (action.title) {
                 "追加" -> onAddSelected(view.tag as String)
                 "編集" -> onEditSelected(view.tag as String)
 //                "いいね" -> onLikeSelected(view.tag as String)
