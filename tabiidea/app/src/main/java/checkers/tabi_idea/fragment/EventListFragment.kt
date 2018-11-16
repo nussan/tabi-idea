@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.*
 import android.view.animation.RotateAnimation
 import android.widget.EditText
+import android.widget.Toast
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.User
@@ -25,7 +26,6 @@ import java.util.*
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
     private var eventId = 0
-    private var eventPass: String? = null
     private val repository = Repository()
     private var userId = 0
     private lateinit var myuser : User
@@ -76,9 +76,12 @@ class EventListFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
                 val adapter = eventListView.adapter as EventListAdapter
                 viewHolder?.let{
+                    eventId = eventManager.eventList[it.adapterPosition].id
                     adapter.removeAt(it.adapterPosition)
                 }
-                //TODO　データベースから削除機能
+                repository.deleteEvent(userId,eventId){
+                    Toast.makeText(context,it.get("title")+"が削除されました",Toast.LENGTH_SHORT).show()
+                }
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipHandler)
@@ -118,7 +121,6 @@ class EventListFragment : Fragment() {
 
                     repository.addEvent(userId, title) {event ->
                         eventId = event.id
-//                        eventPass = event.password
                         Log.d("tubasa", event.id.toString())
                         repository.addEventToFb(eventId.toString())//event.id
                         eventManager.add(event)
@@ -137,39 +139,34 @@ class EventListFragment : Fragment() {
         }
 
         join_fab.setOnClickListener{
-//            it.isEnabled = false
-//            // レイアウトを取得
-//            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
-//
-//            // ダイアログ内のテキストエリア
-//            val inputText: EditText = inflater.findViewById(R.id.inputText)
-//            inputText.requestFocus()
-//
-//            // ダイアログの設定
-//            val inputForm = AlertDialog.Builder(context!!).apply {
-//                setTitle("ルームIDの入力")
-//                setView(inflater)
-//                setPositiveButton("OK") { _, _ ->
-//                    // OKボタンを押したときの処理
-//                    val password = mapOf(
-//                            "password" to "${inputText.text}"
-//                    )
-//                    repository.joinEvent(userId,password){
-//                        event_id = it.id
-//                        event_password = it.password
-//                        Log.d("tubasa", it.id.toString())
-//                        eventManager.add(it)
-//                        eventListView.adapter.notifyDataSetChanged()
-//                    }
-//                }
-//                setNegativeButton("Cancel", null)
-//            }.create()
-//
-//            //ダイアログ表示と同時にキーボードを表示
-//            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-//            inputForm.show()
-//
-//            it.isEnabled = true
+            it.isEnabled = false
+            // レイアウトを取得
+            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
+
+            // ダイアログ内のテキストエリア
+            val inputText: EditText = inflater.findViewById(R.id.inputText)
+            inputText.requestFocus()
+
+            // ダイアログの設定
+            val inputForm = AlertDialog.Builder(context!!).apply {
+                setTitle("urlの入力")
+                setView(inflater)
+                setPositiveButton("OK") { _, _ ->
+                    // OKボタンを押したときの処理
+                    val url:String = inputText.text.toString()
+                    repository.joinEvent(userId,url){
+                        eventManager.add(it)
+                        eventListView.adapter.notifyDataSetChanged()
+                    }
+                }
+                setNegativeButton("Cancel", null)
+            }.create()
+
+            //ダイアログ表示と同時にキーボードを表示
+            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            inputForm.show()
+
+            it.isEnabled = true
         }
         shareEvent.setOnClickListener{
             // TODO 招待処理（仮）

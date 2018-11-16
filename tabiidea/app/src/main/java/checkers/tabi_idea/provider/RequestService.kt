@@ -25,31 +25,17 @@ interface RequestService {
     fun addEvent(@Path("id") id :Int, @Body title:Map<String,String>) : Single<Event>
 
     //Eventへの参加
-    @POST("event/join/{id}")
-    fun joinEvent(@Path("id") id:Int,@Body password:Map<String,String>) : Single<Event>
+    @POST("event/join/{url}/{id}")
+    fun joinEvent(@Path("id") id:Int,@Path("url") url:String) : Single<Event>
+
+    //Eventの削除
+    @GET("event/withdrawal/{uid}/{eid}")
+    fun deleteEvent(@Path("uid") id:Int,@Path("eid") eid:Int) : Single<Map<String,String>>
 
     //eventListの取得
     @GET("event/show/{id}")
     fun getEvent(@Path("id") id:Int):Single<MutableList<Event>>
 
-    //MindMapObjectを追加
-    @POST("mindmap/{id}")
-    fun addMmo(@Path("id") id:Int, mmo:Map<String,String>):Call<MindMapObject>
-
-    //viewIndexのMindMapObject削除
-    @DELETE("event/{id}")
-    fun deleteMmo(@Path("id") id : Int){}
-
-    //mmoのtext変更
-    fun changeMmoText(){}
-
-    //メンバーを追加
-    fun addMember(){}
-
-    //mmoの座標変更 <- これいる？
-    fun changeMmoPosition(){}
-    //カットアンドペースト <- これいる？
-    fun cutAndPaste(){}
-    //いいね機能 <- これいる？
-    fun addGood(){}
+    @POST("event/invitation/{uid}/{eid}")
+    fun createUrl(@Path("uid") uid: Int, @Path("eid") eid: String): Single<Map<String,String>>
 }
