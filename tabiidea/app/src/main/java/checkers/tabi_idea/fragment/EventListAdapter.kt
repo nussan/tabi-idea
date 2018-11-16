@@ -7,10 +7,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
+import kotlinx.android.synthetic.main.list_event_row.view.*
 
 class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : RecyclerView.Adapter<EventListAdapter.EventListViewHolder>() {
 
@@ -32,10 +34,8 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
         val event = eventList[position]
         holder.event.text = event.title
         var capital = if(event.title.isNotEmpty()) event.title.substring(0,1) else "a"
-        val objBitmap = createBitmap(capital)
+        val objBitmap = createBitmap(capital,holder)
         holder.image.setImageBitmap(objBitmap)
-
-        Log.d("eventcapital",capital)
     }
 
     fun setOnClickListener(onClickListener: View.OnClickListener) {
@@ -47,28 +47,33 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
         notifyItemRemoved(position)
     }
 
-    fun createBitmap(capital:String) : Bitmap{
+    fun createBitmap(capital:String,holder: EventListViewHolder) : Bitmap{
         var objPaint = Paint()
-        val objBitmap : Bitmap
+        var objBitmap : Bitmap
         val objCanvas : Canvas
-        val textSize = 20
-        var textWidth = textSize * capital.length
+        val base = "無"
+        val textSize = 10
+        var textWidth = textSize * base.length //ここを全角に仕様図
         var textHeight = textSize
+        var textWidthCap: Int
 
         objPaint.isAntiAlias = true
-        objPaint.color = Color.BLACK
-        objPaint.textSize = 20f
+        objPaint.color = Color.WHITE
+        objPaint.textSize = 1000f
         val fm :Paint.FontMetrics  = objPaint.fontMetrics
-        objPaint.getTextBounds(capital,0,capital.length, Rect(0,0,textWidth,textHeight))
+        objPaint.getTextBounds(capital,0,0, Rect(0,0,textWidth,textHeight))
 
-        textWidth = objPaint.measureText(capital) .toInt()
-        textHeight = (Math.abs(fm.top) + Math.abs(fm.bottom)) .toInt()
+
+        textWidth = (objPaint.measureText(base) .toInt())*2
+        textHeight = ((Math.abs(fm.top) - Math.abs(fm.bottom)+100) .toInt())*2
         objBitmap = Bitmap.createBitmap(textWidth, textHeight, Bitmap.Config.ARGB_8888)
 
-        objCanvas = Canvas(objBitmap)
-        objCanvas.drawColor(Color.CYAN)
+        textWidthCap = objPaint.measureText(capital) .toInt()
+        val bitmapWidth = (textWidth/2) - (textWidthCap/2)
 
-        objCanvas.drawText(capital,0f,Math.abs(fm.top), objPaint)
+        objCanvas = Canvas(objBitmap)
+        objCanvas.drawARGB(100,134,177,190)
+        objCanvas.drawText(capital,bitmapWidth.toFloat(),-(fm.ascent+fm.descent)*1.8f,objPaint)
 
         return objBitmap
     }
