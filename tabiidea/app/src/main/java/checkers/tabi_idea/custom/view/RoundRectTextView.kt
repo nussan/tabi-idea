@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.Outline
 import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.View
 import android.view.ViewOutlineProvider
 
@@ -23,6 +24,7 @@ class RoundRectTextView : AppCompatTextView {
             }
         }
         maxLines = 1
+        gravity = Gravity.CENTER
         clipToOutline = true
     }
 
