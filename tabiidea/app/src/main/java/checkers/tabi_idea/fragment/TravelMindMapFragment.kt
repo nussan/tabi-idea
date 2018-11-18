@@ -4,17 +4,16 @@ package checkers.tabi_idea.fragment
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
-import android.content.Intent
 import android.graphics.*
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.res.ResourcesCompat
 import android.support.v4.widget.TextViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
@@ -36,10 +35,6 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
-import kotlinx.android.synthetic.main.notification_template_custom_big.*
-import me.piruin.quickaction.ActionItem
-import me.piruin.quickaction.QuickAction
-import me.piruin.quickaction.QuickIntentAction
 
 
 class TravelMindMapFragment :
@@ -102,7 +97,8 @@ class TravelMindMapFragment :
                 val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
                 map = map.minus(key)
                 map = map.plus(key to mmo)
-                mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(key).text = mmo.text
+                val target = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(key)
+                target.text = TextUtils.ellipsize(mmo.text, target.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
                 mindMapConstraintLayout.invalidate()
             }
 
@@ -121,14 +117,11 @@ class TravelMindMapFragment :
                     v.startDrag(data, View.DragShadowBuilder(v), v, 0)
                 }
 
-                view.tag = key
-
                 // 画面のタッチポイントの差分をビュー毎に分けるためにここで宣言
                 val lastRaw = PointF(0f, 0f)
 
                 view.setOnTouchListener { v, event ->
                     Log.d("TravelMindMapFragment", "${event.pointerCount}")
-
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
@@ -268,8 +261,6 @@ class TravelMindMapFragment :
         // ダイアログ表示と同時にキーボードを表示
         inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         inputForm.show()
-
-
     }
 
     override fun onDrag(v: View?, event: DragEvent?): Boolean {
@@ -328,7 +319,7 @@ class TravelMindMapFragment :
     override fun drawLines(canvas: Canvas?, scale: Float) {
         val paint = Paint()
         paint.setARGB(255, 0, 0, 0)
-        paint.strokeWidth = 5f * scale
+        paint.strokeWidth = scale
 
         map.forEach {
             val child = mindMapConstraintLayout.findViewWithTag<RoundRectTextView?>(it.key)
@@ -352,11 +343,16 @@ class TravelMindMapFragment :
 
     private fun mindMapObjectToTextView(context: Context?, mindMapObject: MindMapObject): RoundRectTextView {
         val textView = RoundRectTextView(context)
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                textView,
+                10,
+                30,
+                2,
+                TypedValue.COMPLEX_UNIT_SP)
         textView.id = mindMapObject.viewIndex
         textView.gravity = Gravity.CENTER
-        textView.text = mindMapObject.text
+        textView.text = TextUtils.ellipsize(mindMapObject.text, textView.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
         textView.setTextColor(Color.WHITE)
-        Log.d("MindMapType", mindMapObject.type)
         when (mindMapObject.type) {
             "destination" -> {
                 textView.setBackgroundColor(Color.parseColor("#ffb6c1"))
@@ -372,12 +368,6 @@ class TravelMindMapFragment :
             }
 
         }
-        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
-                textView,
-                10,
-                30,
-                2,
-                TypedValue.COMPLEX_UNIT_SP)
         return textView
     }
 

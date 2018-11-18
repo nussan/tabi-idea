@@ -1,11 +1,11 @@
 package checkers.tabi_idea.custom.view
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Color
+import android.graphics.Outline
 import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 
 
@@ -22,20 +22,26 @@ class RoundRectTextView : AppCompatTextView {
                 outline.setRoundRect(0, 0, width, height, 30f)
             }
         }
-        layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        maxLines = 1
         clipToOutline = true
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
-        val h = Math.max(this.measuredHeight, 200)
-        val w = Math.max(this.measuredWidth, 200)
-        val r = Math.min(Math.max(w, h), 200)
-        setMeasuredDimension(r, r)
+        val h = Math.max(this.measuredHeight, MIN_SIZE)
+        val w = Math.max(this.measuredWidth, MIN_SIZE)
+//        val r = Math.min(Math.max(w, h), MAX_SIZE)
+        setMeasuredDimension(w, h)
+
     }
 
     override fun performClick(): Boolean {
         return super.performClick()
+    }
+
+    companion object {
+        const val MAX_SIZE = 400
+        const val MIN_SIZE = 200
     }
 }
