@@ -93,7 +93,7 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
         objCanvas = Canvas(objBitmap)
         var g = holder.creator.text.toString().codePointAt(0)/100//187
         var r =capital.codePointAt(0)/100//200
-        var b =187//190
+        var b =170//190
         Log.d("masaka",g.toString() + "|" +b.toString() + "|" + r.toString())
         if (r>244 && b>244 && g>244 ) {
             r = 240
