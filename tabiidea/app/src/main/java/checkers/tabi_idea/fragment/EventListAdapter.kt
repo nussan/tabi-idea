@@ -2,7 +2,10 @@ package checkers.tabi_idea.fragment
 
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +13,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
+import java.io.ByteArrayOutputStream
+import java.nio.ByteBuffer
 
 class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : RecyclerView.Adapter<EventListAdapter.EventListViewHolder>() {
 
     private val inflater = LayoutInflater.from(context)
     private var listener: View.OnClickListener? = null
+    private val cont = context
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventListViewHolder {
@@ -30,9 +36,17 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
     override fun onBindViewHolder(holder: EventListViewHolder, position: Int) {
         val event = eventList[position]
         holder.event.text = event.title
+        holder.creator.text = "作成者：" + event.creator
         var capital = if(event.title.isNotEmpty()) event.title.substring(0,1) else "a"
         val objBitmap = createBitmap(capital,holder)
-        holder.image.setImageBitmap(objBitmap)
+
+        val  baos = ByteArrayOutputStream()
+        objBitmap.compress(Bitmap.CompressFormat.JPEG,1,baos)
+        val jpgarr  = baos.toByteArray()
+        val options : BitmapFactory.Options = BitmapFactory.Options()
+        options.inSampleSize = 10
+        val bitmap = BitmapFactory.decodeByteArray(jpgarr,0,jpgarr.size,options)
+        holder.image.setImageBitmap(bitmap)
     }
 
     fun setOnClickListener(onClickListener: View.OnClickListener) {
@@ -52,7 +66,7 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
         val fm : Paint.FontMetrics
 
         val base = "無"
-        val textSize = 10
+        val textSize = 20
         val width = textSize * base.length
         val height = textSize
         val baseWidth : Int
@@ -77,14 +91,14 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
         centerX = (baseWidth/2) - (capitalWidth/2)
 
         objCanvas = Canvas(objBitmap)
-        val wordCode = capital.codePointAt(0)
-        var r = Math.random()*256
-        var g = Math.random()*256
-        var b = Math.random()*256
-        if (r>90 && b>90 && g>90 ) {
-            r = 90.0
-            b = 90.0
-            g = 90.0
+        var g = holder.creator.text.toString().codePointAt(0)/100//187
+        var r =capital.codePointAt(0)/100//200
+        var b =187//190
+        Log.d("masaka",g.toString() + "|" +b.toString() + "|" + r.toString())
+        if (r>244 && b>244 && g>244 ) {
+            r = 240
+            b = 240
+            g = 240
         }
 
         objCanvas.drawRGB(r.toInt(),g.toInt(),b.toInt())
@@ -98,5 +112,6 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
     class EventListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val event = view.findViewById<TextView>(R.id.eventView)
         val image = view.findViewById<ImageView>(R.id.imageView)
+        val creator = view.findViewById<TextView>(R.id.creatorView)
     }
 }
