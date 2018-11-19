@@ -91,7 +91,6 @@ class EventListFragment : Fragment() {
             override fun onClick(view: View?) {
                 Log.d(javaClass.simpleName, "onTouch!!")
                 val position = eventListView.getChildAdapterPosition(view)
-                val eid = eventListView.adapter.getItemId(position)
                 activity?.supportFragmentManager
                         ?.beginTransaction()
                         ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[position]))
