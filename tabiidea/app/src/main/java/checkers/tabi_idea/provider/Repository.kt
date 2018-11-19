@@ -1,6 +1,7 @@
 package checkers.tabi_idea.provider
 
 import android.util.Log
+import android.widget.Toast
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
@@ -15,6 +16,7 @@ import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
+import kotlin.reflect.jvm.internal.impl.serialization.deserialization.FlexibleTypeDeserializer
 
 class Repository {
     private var requestService: RequestService
@@ -37,7 +39,7 @@ class Repository {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { res -> callback(res) },
-                        { err -> Log.d("errAddUser", err.toString()) }
+                        { err -> Log.d("errAddUser", err.toString())}
                 )
     }
 
@@ -69,8 +71,8 @@ class Repository {
     }
 
     //eventlistをadd,rxjava2
-    fun addEvent(userid: Int, title: Map<String, String>, callback: (Event) -> Unit) {
-        requestService.addEvent(userid, title)
+    fun addEvent(user_id: Int, title: Map<String, String>, callback: (Event) -> Unit) {
+        requestService.addEvent(user_id, title)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -82,9 +84,9 @@ class Repository {
     }
 
     //eventListをget,rxjava2
-    fun getEventList(userid: Int, callback: (MutableList<Event>) -> Unit) {
+    fun getEventList(user_id: Int, callback: (MutableList<Event>) -> Unit) {
         val eventList: MutableList<Event> = mutableListOf()
-        requestService.getEvent(userid)
+        requestService.getEvent(user_id)
                 .retry(3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -98,8 +100,8 @@ class Repository {
     }
 
     //eventへの参加
-    fun joinEvent(userid : Int,password:Map<String,String>,callback:(Event)->Unit){
-        requestService.joinEvent(userid,password)
+    fun joinEvent(user_id : Int,url:String,callback:(Event)->Unit){
+        requestService.joinEvent(user_id,url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -108,23 +110,28 @@ class Repository {
                 )
     }
 
-    /*---firebase---*/
-    //firebaseからeidのmmoをゲット
-    fun getMmo(event_id: String, callback: (Collection<Pair<String, MindMapObject>>) -> Unit) {
-        FirebaseDatabase.getInstance()
-                .getReference(event_id)
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        callback(dataSnapshot.children.mapNotNull {
-                            it.key!! to it.getValue(MindMapObject::class.java)!!
-                        })
-                    }
-
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        Log.d("errGetMmo", databaseError.toString())
-                    }
-                })
+    //eventの削除
+    fun deleteEvent(user_id:Int,event_id: Int,callback: (Map<String,String>) -> Unit){
+        requestService.deleteEvent(user_id,event_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {res -> callback(res)},
+                        {err -> Log.d("errDeleteEvent",err.toString())}
+                )
     }
+
+    //urlの発行
+    fun createUrl(user_id:Int,event_id: String,callback: (Map<String,String>) -> Unit){
+        requestService.createUrl(user_id,event_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {res -> callback(res)},
+                        {err -> Log.d("errCreateUrl",err.toString())}
+                )
+    }
+
 
     //eventをfbにadd
     fun addEventToFb(event_id: String) {
