@@ -1,8 +1,8 @@
 package checkers.tabi_idea.provider
 
+import android.util.Log
 import checkers.tabi_idea.data.MindMapObject
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 
 class FirebaseApiClient(event_id: String) {
     private val ref = FirebaseDatabase.getInstance().getReference(event_id)

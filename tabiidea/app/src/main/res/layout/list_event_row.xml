@@ -13,9 +13,9 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="3dp"
         android:layout_marginBottom="8dp"
-        android:autoSizeTextType="uniform"
-        android:gravity="left|center"
+        android:gravity="left"
         android:text="TextView"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.571"
@@ -23,15 +23,31 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.567" />
 
-    <ImageView
+    <checkers.tabi_idea.custom.view.CircleImageView
         android:id="@+id/imageView"
         android:layout_width="66dp"
         android:layout_height="66dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/fui_idp_button_background_twitter" />
+
+    <TextView
+        android:id="@+id/creatorView"
+        android:layout_width="0dp"
+        android:layout_height="17dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:text="TextView"
+        android:gravity="left"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/eventView" />
 </android.support.constraint.ConstraintLayout>
