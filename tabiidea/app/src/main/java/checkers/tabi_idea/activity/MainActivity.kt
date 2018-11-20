@@ -1,6 +1,5 @@
 package checkers.tabi_idea.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -15,15 +14,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     private val repository = Repository()
+    private var user: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (intent.action != null && intent.action == Intent.ACTION_VIEW) {
-            if (intent.data != null) {
-                val url = intent.data!!.buildUpon().scheme("http").build().toString()
-                Log.d("MainActivity", "$url")
-            }
-        }
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
@@ -40,6 +34,7 @@ class MainActivity : AppCompatActivity() {
                             "name" to "新しいユーザー"
                     )
                     repository.addUser(newUser) { user: User ->
+                        this.user = user
                         repository.getEventList(user!!.id) {
                             toEventListFragment(user, it)
                         }

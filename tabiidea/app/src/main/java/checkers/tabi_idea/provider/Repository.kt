@@ -98,12 +98,12 @@ class Repository {
     }
 
     //eventへの参加
-    fun joinEvent(userid : Int,password:Map<String,String>,callback:(Event)->Unit){
-        requestService.joinEvent(userid,password)
+    fun joinEvent(userid: Int, eventId: String) {
+        requestService.joinEvent(userid, eventId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        {res -> callback(res)},
+                        { res -> },
                         {err -> Log.d("errJoinEventList",err.toString()) }
                 )
     }
