@@ -1,5 +1,6 @@
 package checkers.tabi_idea.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -17,35 +18,42 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (intent.action != null && intent.action == Intent.ACTION_VIEW) {
+            if (intent.data != null) {
+                val url = intent.data!!.buildUpon().scheme("http").build().toString()
+                Log.d("MainActivity", "$url")
+            }
+        }
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
         //sIdを取得
         val uuid = Installation.id(this)
 
-        if( savedInstanceState == null) {
+        if (savedInstanceState == null) {
             Log.d("editprob", uuid)
             repository.getUser(uuid) {
                 if (it.id == -1) {
-                    Log.d("editprob","X")
+                    Log.d("editprob", "X")
                     val newUser = mapOf(
                             "uuid" to uuid,
                             "name" to "新しいユーザー"
                     )
-                    repository.addUser(newUser) {user: User ->
+                    repository.addUser(newUser) { user: User ->
                         repository.getEventList(user!!.id) {
                             toEventListFragment(user, it)
                         }
                     }
                 } else {
-                    Log.d("editprob","O")
-                    repository.getEventList(it.id) { evel : MutableList<Event> ->
+                    Log.d("editprob", "O")
+                    repository.getEventList(it.id) { evel: MutableList<Event> ->
                         toEventListFragment(it, evel)
                     }
                 }
             }
         }
     }
+
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
@@ -55,7 +63,7 @@ class MainActivity : AppCompatActivity() {
     private fun toEventListFragment(user: User, eventList: MutableList<Event>) {
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.container, EventListFragment.newInstance(user,eventList))
+                .replace(R.id.container, EventListFragment.newInstance(user, eventList))
                 .commit()
     }
 }
