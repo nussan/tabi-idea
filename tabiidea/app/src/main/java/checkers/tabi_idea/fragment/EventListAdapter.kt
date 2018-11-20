@@ -1,11 +1,9 @@
 package checkers.tabi_idea.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,14 +12,11 @@ import android.widget.TextView
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 import java.io.ByteArrayOutputStream
-import java.nio.ByteBuffer
 
 class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : RecyclerView.Adapter<EventListAdapter.EventListViewHolder>() {
 
     private val inflater = LayoutInflater.from(context)
     private var listener: View.OnClickListener? = null
-    private val cont = context
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventListViewHolder {
         val view = inflater.inflate(R.layout.list_event_row, parent, false)
@@ -33,11 +28,12 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
 
     override fun getItemCount() = eventList.size
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: EventListViewHolder, position: Int) {
         val event = eventList[position]
         holder.event.text = event.title
         holder.creator.text = "作成者：" + event.creator
-        var capital = if(event.title.isNotEmpty()) event.title.substring(0,1) else "a"
+        val capital = if(event.title.isNotEmpty()) event.title.substring(0,1) else "a"
         val objBitmap = createBitmap(capital,holder)
 
         val  baos = ByteArrayOutputStream()
@@ -59,7 +55,7 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
     }
 
     //ビットマップを作成する関数
-    fun createBitmap(capital:String,holder: EventListViewHolder) : Bitmap{
+    private fun createBitmap(capital:String,holder: EventListViewHolder) : Bitmap{
         val objPaint = Paint()
         var objBitmap : Bitmap
         val objCanvas : Canvas
@@ -93,15 +89,14 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
         objCanvas = Canvas(objBitmap)
         var g = holder.creator.text.toString().codePointAt(0)/100//187
         var r =capital.codePointAt(0)/100//200
-        var b =170//190
-        Log.d("masaka",g.toString() + "|" +b.toString() + "|" + r.toString())
+        var b =170// 190
         if (r>244 && b>244 && g>244 ) {
             r = 240
             b = 240
             g = 240
         }
 
-        objCanvas.drawRGB(r.toInt(),g.toInt(),b.toInt())
+        objCanvas.drawRGB(r,g,b)
         objCanvas.drawText(capital,centerX.toFloat(),-(fm.ascent+fm.descent)*modPow,objPaint)
 
         return objBitmap
@@ -110,8 +105,8 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
 
     // Viewへの参照を持っておくViewHolder
     class EventListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val event = view.findViewById<TextView>(R.id.eventView)
-        val image = view.findViewById<ImageView>(R.id.imageView)
-        val creator = view.findViewById<TextView>(R.id.creatorView)
+        val event = view.findViewById<TextView>(R.id.eventView)!!
+        val image = view.findViewById<ImageView>(R.id.imageView)!!
+        val creator = view.findViewById<TextView>(R.id.creatorView)!!
     }
 }
