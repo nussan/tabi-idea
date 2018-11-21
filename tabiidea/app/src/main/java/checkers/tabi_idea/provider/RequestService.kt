@@ -25,9 +25,12 @@ interface RequestService {
     fun addEvent(@Header("token") token:String,@Path("id") id :Int, @Body title:Map<String,String>) : Single<Event>
 
     //Eventへの参加
-    @POST("event/join/{url}/{id}")
-    fun joinEvent(@Header("token") token:String,@Path("id") id:Int,@Path("url") url:String) : Single<Event>
+    @GET("event/join/{id}/{eid}")
+    fun joinEvent(@Header("token") token:String,@Path("id") id: Int, @Path("eid") eid: String): Single<Event>
 
+    @GET("{url}")
+    fun getEvent(@Path("url") url: String): Single<Event>
+  
     //Eventの削除
     @GET("event/withdrawal/{uid}/{eid}")
     fun deleteEvent(@Header("token") token:String,@Path("uid") id:Int,@Path("eid") eid:Int) : Single<Map<String,String>>
