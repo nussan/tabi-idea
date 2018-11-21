@@ -1,7 +1,7 @@
 package checkers.tabi_idea.fragment
 
 
-
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -35,7 +35,7 @@ class EventListFragment : Fragment() {
     private var eventId = 0
     private val repository = Repository()
     private var userId = 0
-    private lateinit var myuser : User
+    private lateinit var myuser: User
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,25 +77,25 @@ class EventListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //RecyclerViewを設定
-        eventListView.adapter = EventListAdapter(context,eventManager.eventList)
-        eventListView.layoutManager = GridLayoutManager(context,1)
+        eventListView.adapter = EventListAdapter(context, eventManager.eventList)
+        eventListView.layoutManager = GridLayoutManager(context, 1)
 
-        val swipHandler = object : SwipeToDeleteCallback(context!!){
+        val swipHandler = object : SwipeToDeleteCallback(context!!) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
                 val adapter = eventListView.adapter as EventListAdapter
-                viewHolder?.let{
+                viewHolder?.let {
                     eventId = eventManager.eventList[it.adapterPosition].id
                     adapter.removeAt(it.adapterPosition)
                 }
-                repository.deleteEvent(userId,eventId){
-                    Toast.makeText(context,it.get("title")+"が削除されました",Toast.LENGTH_SHORT).show()
+                repository.deleteEvent(userId, eventId) {
+                    Toast.makeText(context, it.get("title") + "が削除されました", Toast.LENGTH_SHORT).show()
                 }
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipHandler)
         itemTouchHelper.attachToRecyclerView(eventListView)
 
-        (eventListView.adapter as EventListAdapter).setOnClickListener (object: View.OnClickListener {
+        (eventListView.adapter as EventListAdapter).setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View?) {
                 Log.d(javaClass.simpleName, "onTouch!!")
                 val position = eventListView.getChildAdapterPosition(view)
@@ -126,7 +126,7 @@ class EventListFragment : Fragment() {
                             "title" to "${inputText.text}"
                     )
 
-                    repository.addEvent(userId, title) {event ->
+                    repository.addEvent(userId, title) { event ->
                         eventId = event.id
                         Log.d("tubasa", event.id.toString())
                         repository.addEventToFb(eventId.toString())//event.id
@@ -148,24 +148,14 @@ class EventListFragment : Fragment() {
 
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(user: User, eventList: MutableList<Event>) = EventListFragment().apply {
-            arguments = Bundle().apply {
-                putInt("userId", user.id)
-                putParcelable("user", user)
-                putParcelableArrayList("eventListKey", ArrayList(eventList))
-            }
-        }
-    }
 
     //EventListFragmentでツールバーにメニュー機能を追加する
-    override fun onCreateOptionsMenu(menu : Menu,inflater : MenuInflater){
-        super.onCreateOptionsMenu(menu,inflater)
-        inflater.inflate(R.menu.actions,menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.actions, menu)
 
-        val item : MenuItem = menu.findItem(R.id.action_name_edit)
-        item.setOnMenuItemClickListener{
+        val item: MenuItem = menu.findItem(R.id.action_name_edit)
+        item.setOnMenuItemClickListener {
             // レイアウトを取得
             val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
 
@@ -183,7 +173,7 @@ class EventListFragment : Fragment() {
                             "name" to "${inputText.text}"
                     )
                     Log.d("EventListFragment", "")
-                    repository.editUser(userId, name){user ->
+                    repository.editUser(userId, name) { user ->
                         (activity as AppCompatActivity).supportActionBar?.title = user.name
                         myuser = user
                     }
@@ -197,6 +187,37 @@ class EventListFragment : Fragment() {
             inputForm.show()
 
             true
+        }
+    }
+
+    fun getEvent(url: String) {
+        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        val retrofit = Retrofit.Builder()
+                .baseUrl("http://bit.ly/")
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .build()
+        val requestService = retrofit.create(RequestService::class.java)
+        val url = url.replace("http://bit.ly/", "")
+        Log.d("EventListFragment", url)
+        requestService.getEvent(url)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { res -> repository.joinEvent(myuser!!.id, res.id.toString()) },
+                        { err -> Log.d("EventListFragment", err.toString()) }
+                )
+    }
+
+
+    companion object {
+        @JvmStatic
+        fun newInstance(user: User, eventList: MutableList<Event>) = EventListFragment().apply {
+            arguments = Bundle().apply {
+                putInt("userId", user.id)
+                putParcelable("user", user)
+                putParcelableArrayList("eventListKey", ArrayList(eventList))
+            }
         }
     }
 
