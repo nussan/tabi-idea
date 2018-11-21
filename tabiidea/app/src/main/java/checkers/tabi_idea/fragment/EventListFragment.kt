@@ -94,7 +94,7 @@ class EventListFragment : Fragment() {
                     eventId = eventManager.eventList[it.adapterPosition].id
                     adapter.removeAt(it.adapterPosition)
                 }
-                repository.deleteEvent(userId,eventId){
+                repository.deleteEvent(myuser.token,userId,eventId){
                     Toast.makeText(context,it.get("title")+"が削除されました",Toast.LENGTH_SHORT).show()
                 }
             }
@@ -133,7 +133,7 @@ class EventListFragment : Fragment() {
                             "title" to "${inputText.text}"
                     )
 
-                    repository.addEvent(userId, title) {event ->
+                    repository.addEvent(myuser.token,userId, title) {event ->
                         eventId = event.id
                         Log.d("tubasa", event.id.toString())
                         repository.addEventToFb(eventId.toString())//event.id
@@ -152,36 +152,6 @@ class EventListFragment : Fragment() {
             it.isEnabled = true
         }
 
-        join_fab.setOnClickListener{
-            it.isEnabled = false
-            // レイアウトを取得
-            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
-
-            // ダイアログ内のテキストエリア
-            val inputText: EditText = inflater.findViewById(R.id.inputText)
-            inputText.requestFocus()
-
-            // ダイアログの設定
-            val inputForm = AlertDialog.Builder(context!!).apply {
-                setTitle("urlの入力")
-                setView(inflater)
-                setPositiveButton("OK") { _, _ ->
-                    // OKボタンを押したときの処理
-                    val url:String = inputText.text.toString()
-                    repository.joinEvent(userId,url){
-                        eventManager.add(it)
-                        eventListView.adapter.notifyDataSetChanged()
-                    }
-                }
-                setNegativeButton("Cancel", null)
-            }.create()
-
-            //ダイアログ表示と同時にキーボードを表示
-            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-            inputForm.show()
-
-            it.isEnabled = true
-        }
         shareEvent.setOnClickListener{
             // TODO 招待処理（仮）
         }
@@ -217,7 +187,8 @@ class EventListFragment : Fragment() {
                             "name" to "${inputText.text}"
                     )
                     Log.d("EventListFragment", "")
-                    repository.editUser(userId, name){user ->
+                    Log.d("usertoken",myuser.token)
+                    repository.editUser(myuser.token,userId, name){user ->
                         // コールバックの操作
                         (activity as AppCompatActivity).supportActionBar?.title = user.name
                         myuser = user
@@ -325,7 +296,7 @@ class EventListFragment : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { res -> repository.joinEvent(myuser!!.id, res.id.toString()) },
+                        { res -> repository.joinEvent(myuser.token,myuser!!.id, res.id.toString()) },
                         { err -> Log.d("EventListFragment", err.toString()) }
                 )
     }

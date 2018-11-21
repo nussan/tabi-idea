@@ -9,6 +9,7 @@ import checkers.tabi_idea.data.Installation
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.fragment.EventListFragment
 import checkers.tabi_idea.provider.Repository
+import checkers.tabi_idea.provider.RequestService
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             Log.d("editprob", uuid)
             repository.getUser(uuid) {
+                Log.d("usertoken",it.token)
                 if (it.id == -1) {
                     Log.d("editprob", "X")
                     val newUser = mapOf(
@@ -34,15 +36,17 @@ class MainActivity : AppCompatActivity() {
                             "name" to "新しいユーザー"
                     )
                     repository.addUser(newUser) {user: User ->
-                        user.token = "Authorization: Token " + user.token
+                        user.token = "Token " + user.token
 
-                        repository.getEventList(user!!.id) {
+                        repository.getEventList(user.token,user!!.id) {
                             toEventListFragment(user, it)
                         }
                     }
                 } else {
                     Log.d("editprob", "O")
-                    repository.getEventList(it.id) { evel: MutableList<Event> ->
+                    it.token = "Token " + it.token
+                    Log.d("usertoken",it.token)
+                    repository.getEventList(it.token,it.id) { evel: MutableList<Event> ->
                         toEventListFragment(it, evel)
                     }
                 }

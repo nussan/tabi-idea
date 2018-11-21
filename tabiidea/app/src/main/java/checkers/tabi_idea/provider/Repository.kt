@@ -43,8 +43,8 @@ class Repository {
     }
 
     //userをedit
-    fun editUser(id: Int, editName: Map<String, String>, callback: (User) -> Unit) {
-        requestService.editUser(id, editName)
+    fun editUser(token:String, id: Int, editName: Map<String, String>, callback: (User) -> Unit) {
+        requestService.editUser(token,id, editName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -70,8 +70,8 @@ class Repository {
     }
 
     //eventlistをadd,rxjava2
-    fun addEvent(user_id: Int, title: Map<String, String>, callback: (Event) -> Unit) {
-        requestService.addEvent(user_id, title)
+    fun addEvent(token:String,user_id: Int, title: Map<String, String>, callback: (Event) -> Unit) {
+        requestService.addEvent(token,user_id, title)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -83,9 +83,9 @@ class Repository {
     }
 
     //eventListをget,rxjava2
-    fun getEventList(user_id: Int, callback: (MutableList<Event>) -> Unit) {
+    fun getEventList(token:String,user_id: Int, callback: (MutableList<Event>) -> Unit) {
         val eventList: MutableList<Event> = mutableListOf()
-        requestService.getEvent(user_id)
+        requestService.getEvent(token,user_id)
                 .retry(3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -99,8 +99,8 @@ class Repository {
     }
 
     //eventへの参加
-    fun joinEvent(userid: Int, eventId: String) {
-        requestService.joinEvent(userid, eventId)
+    fun joinEvent(token:String,userid: Int, eventId: String) {
+        requestService.joinEvent(token,userid, eventId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -110,8 +110,8 @@ class Repository {
     }
 
     //eventの削除
-    fun deleteEvent(user_id:Int,event_id: Int,callback: (Map<String,String>) -> Unit){
-        requestService.deleteEvent(user_id,event_id)
+    fun deleteEvent(token:String,user_id:Int,event_id: Int,callback: (Map<String,String>) -> Unit){
+        requestService.deleteEvent(token,user_id,event_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -121,8 +121,8 @@ class Repository {
     }
 
     //urlの発行
-    fun createUrl(user_id:Int,event_id: String,callback: (Map<String,String>) -> Unit){
-        requestService.createUrl(user_id,event_id)
+    fun createUrl(token:String,user_id:Int,event_id: String,callback: (Map<String,String>) -> Unit){
+        requestService.createUrl(token,user_id,event_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
