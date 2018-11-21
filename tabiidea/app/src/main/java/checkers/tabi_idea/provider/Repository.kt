@@ -16,7 +16,6 @@ import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
-import kotlin.reflect.jvm.internal.impl.serialization.deserialization.FlexibleTypeDeserializer
 
 class Repository {
     private var requestService: RequestService
@@ -56,7 +55,7 @@ class Repository {
 
     //user情報をget,rxjava2
     fun getUser(uuid: String, callback: (User) -> Unit) {
-        val user: User = User(-1, "")
+        val user: User = User(-1, "","")
         requestService.getUser(uuid)
                 .retry(3)
                 .subscribeOn(Schedulers.io())

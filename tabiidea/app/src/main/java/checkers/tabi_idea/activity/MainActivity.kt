@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
                             "name" to "TAKIKAWA"
                     )
                     repository.addUser(newUser) {user: User ->
+                        user.token = "Authorization: Token " + user.token
                         repository.getEventList(user!!.id) {
                             toEventListFragment(user, it)
                         }

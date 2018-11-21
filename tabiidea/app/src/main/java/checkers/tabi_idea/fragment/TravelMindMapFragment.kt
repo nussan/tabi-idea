@@ -4,14 +4,12 @@ package checkers.tabi_idea.fragment
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
-import android.content.Intent
 import android.graphics.*
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.res.ResourcesCompat
 import android.support.v4.widget.TextViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -36,10 +34,6 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
-import kotlinx.android.synthetic.main.notification_template_custom_big.*
-import me.piruin.quickaction.ActionItem
-import me.piruin.quickaction.QuickAction
-import me.piruin.quickaction.QuickIntentAction
 
 
 class TravelMindMapFragment :
@@ -109,11 +103,13 @@ class TravelMindMapFragment :
             override fun onChildAdded(dataSnapshot: DataSnapshot, p1: String?) {
                 Log.d("TravelMindMapFragment", "onChildAdded")
                 Log.d("TravelMindMapFragment", "$dataSnapshot")
+
                 val key = dataSnapshot.key!!
                 val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
 
                 val view = mindMapObjectToTextView(context, mmo)
                 view.tag = key
+
                 view.setOnLongClickListener { v ->
                     behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
                     val item = ClipData.Item(v.tag as? CharSequence)
@@ -128,11 +124,11 @@ class TravelMindMapFragment :
 
                 view.setOnTouchListener { v, event ->
                     Log.d("TravelMindMapFragment", "${event.pointerCount}")
-
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
                             lastRaw.set(event.rawX, event.rawY)
+                            QuickActionView.make(context).setPoint(event.rawX,event.rawY)
                         }
 
                         MotionEvent.ACTION_MOVE -> {
@@ -157,6 +153,7 @@ class TravelMindMapFragment :
 
                     false
                 }
+
                 rrvToQAV(context,view)
 
                 map = map.plus(key to mmo)
@@ -379,8 +376,6 @@ class TravelMindMapFragment :
     }
 
     private fun rrvToQAV(context: Context?, view: View){
-        val quickActionView = view
-
         val qav = QuickActionView.make(context)
 
         val pareIconTitle = listOf(
@@ -397,7 +392,7 @@ class TravelMindMapFragment :
                 .setActionsTitleOutAnimator(actionTitleAnimator)
                 .setOnActionSelectedListener(mQuickActionListener)
                 .setActionsOutAnimator(popAnimator)
-                .register(quickActionView)
+                .register(view)
 
         val customActionsInAnimator = CustomActionsInAnimator(qav)
         qav.setActionsInAnimator(customActionsInAnimator)
