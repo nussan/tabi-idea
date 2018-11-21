@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_setting"
         android:icon="@drawable/ic_edit_black_24dp"
-        android:title="@string/good"
+        android:title="アイコンの変更"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_name_edit"

@@ -1,8 +1,6 @@
 package checkers.tabi_idea.fragment
 
 
-import android.animation.ObjectAnimator
-import android.content.res.Resources
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -14,7 +12,6 @@ import android.util.Log
 import android.view.*
 import android.view.animation.RotateAnimation
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
@@ -30,12 +27,7 @@ class EventListFragment : Fragment() {
     private val repository = Repository()
     private var userId = 0
     private lateinit var myuser : User
-    private var mButtonState: ButtonState = ButtonState.CLOSE
 
-    enum class ButtonState{
-        OPEN,
-        CLOSE
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,7 +92,7 @@ class EventListFragment : Fragment() {
             }
         })
 
-        create_fab.setOnClickListener{
+        fab.setOnClickListener {
             it.isEnabled = false
             // レイアウトを取得
             val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
@@ -136,88 +128,9 @@ class EventListFragment : Fragment() {
             inputForm.show()
 
             it.isEnabled = true
+
         }
 
-        join_fab.setOnClickListener{
-            it.isEnabled = false
-            // レイアウトを取得
-            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
-
-            // ダイアログ内のテキストエリア
-            val inputText: EditText = inflater.findViewById(R.id.inputText)
-            inputText.requestFocus()
-
-            // ダイアログの設定
-            val inputForm = AlertDialog.Builder(context!!).apply {
-                setTitle("urlの入力")
-                setView(inflater)
-                setPositiveButton("OK") { _, _ ->
-                    // OKボタンを押したときの処理
-                    val url:String = inputText.text.toString()
-                    repository.joinEvent(userId,url){
-                        eventManager.add(it)
-                        eventListView.adapter.notifyDataSetChanged()
-                    }
-                }
-                setNegativeButton("Cancel", null)
-            }.create()
-
-            //ダイアログ表示と同時にキーボードを表示
-            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-            inputForm.show()
-
-            it.isEnabled = true
-        }
-        shareEvent.setOnClickListener{
-            // TODO 招待処理（仮）
-        }
-
-
-        fab.setOnClickListener {
-            if(mButtonState == ButtonState.CLOSE) {
-                startRotateAnim(0F,180f,fab.pivotX,fab.pivotY,true)
-                fabOpen(dpToPx(70))
-            }
-            else {
-                startRotateAnim(180f,360f,fab.pivotX,fab.pivotY,false)
-                fabClose()
-            }
-        }
-
-        nameEdit.setOnClickListener {
-            it.isEnabled = false
-            // レイアウトを取得
-            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
-
-            // ダイアログ内のテキストエリア
-            val inputText: EditText = inflater.findViewById(R.id.inputText)
-            inputText.requestFocus()
-
-            // ダイアログの設定
-            val inputForm = AlertDialog.Builder(context!!).apply {
-                setTitle("名前の編集")
-                setView(inflater)
-                setPositiveButton("OK") { _, _ ->
-                    // OKボタンを押したときの処理
-                    val name = mapOf(
-                            "name" to "${inputText.text}"
-                    )
-                    Log.d("EventListFragment", "")
-                    repository.editUser(userId, name){user ->
-                        (activity as AppCompatActivity).supportActionBar?.title = user.name
-                        myuser = user
-                    }
-
-                }
-                setNegativeButton("Cancel", null)
-            }.create()
-
-            // ダイアログ表示と同時にキーボードを表示
-            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-            inputForm.show()
-
-            it.isEnabled = true
-        }
     }
 
     companion object {
@@ -230,72 +143,8 @@ class EventListFragment : Fragment() {
             }
         }
     }
-    private fun dpToPx(dp: Int): Float {
-        return (dp * Resources.getSystem().getDisplayMetrics().density)
-    }
 
-    private fun fabClose() {
-        join_button_layout.setVisibility(View.GONE)
-        var anim = ObjectAnimator.ofFloat(join_button_layout, "translationY", 0f)
-        anim.setDuration(200)
-        anim.start()
-
-        create_button_layout.setVisibility(View.GONE)
-        anim = ObjectAnimator.ofFloat(create_button_layout, "translationY", 0f)
-        anim.setDuration(200)
-        anim.start()
-
-        edit_name_button_layout.setVisibility(View.GONE)
-        anim = ObjectAnimator.ofFloat(edit_name_button_layout, "translationY", 0f)
-        anim.setDuration(200)
-        anim.start()
-
-        share_event_button_layout.setVisibility(View.GONE)
-        anim = ObjectAnimator.ofFloat(share_event_button_layout, "translationY", 0f)
-        anim.setDuration(200)
-        anim.start()
-
-        fab_background.setVisibility(View.GONE)
-
-        mButtonState = ButtonState.CLOSE
-    }
-
-    private fun fabOpen(size:Float) {
-
-        join_button_layout.setVisibility(View.VISIBLE)
-        var anim = ObjectAnimator.ofFloat(join_button_layout, "translationY", -size)
-        anim.duration = 200
-        anim.start()
-
-        create_button_layout.setVisibility(View.VISIBLE)
-        anim = ObjectAnimator.ofFloat(create_button_layout,"translationY",-size*2)
-        anim.duration = 200
-        anim.start()
-
-        edit_name_button_layout.setVisibility(View.VISIBLE)
-        anim = ObjectAnimator.ofFloat(edit_name_button_layout,"translationY",-size*3)
-        anim.duration = 200
-        anim.start()
-
-        share_event_button_layout.setVisibility(View.VISIBLE)
-        anim = ObjectAnimator.ofFloat(share_event_button_layout,"translationY",-size*4)
-        anim.duration = 200
-        anim.start()
-
-        fab_background.setVisibility(View.VISIBLE)
-
-
-        mButtonState = ButtonState.OPEN
-    }
-
-    private fun startRotateAnim(fromDegree : Float,toDegree : Float,pivotX : Float, pivotY : Float,fill:Boolean){
-        Log.d("rotate","rottate")
-        var rotate = RotateAnimation(fromDegree, toDegree, pivotX, pivotY)
-        rotate.duration = 200
-        rotate.setFillAfter(fill)
-        fab.startAnimation(rotate)
-    }
-
+    //EventListFragmentでツールバーにメニュー機能を追加する
     override fun onCreateOptionsMenu(menu : Menu,inflater : MenuInflater){
         super.onCreateOptionsMenu(menu,inflater)
         inflater.inflate(R.menu.actions,menu)

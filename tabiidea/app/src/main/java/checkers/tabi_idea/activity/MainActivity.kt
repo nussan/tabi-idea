@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
                 .commit()
     }
 
+    //mainactibityにメニュー追加する
     /*override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.actions, menu)
         return true
