@@ -16,7 +16,8 @@ import kotlinx.android.synthetic.main.fragment_event_list.*
 
 
 class MainActivity : AppCompatActivity() {
-    val repository = Repository()
+    private val repository = Repository()
+    private var user: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,29 +28,31 @@ class MainActivity : AppCompatActivity() {
         //sIdを取得
         val uuid = Installation.id(this)
 
-        if( savedInstanceState == null) {
+        if (savedInstanceState == null) {
             Log.d("editprob", uuid)
             repository.getUser(uuid) {
                 if (it.id == -1) {
-                    Log.d("editprob","X")
+                    Log.d("editprob", "X")
                     val newUser = mapOf(
                             "uuid" to uuid,
-                            "name" to "TAKIKAWA"
+                            "name" to "新しいユーザー"
                     )
-                    repository.addUser(newUser) {user: User ->
+                    repository.addUser(newUser) { user: User ->
+                        this.user = user
                         repository.getEventList(user!!.id) {
                             toEventListFragment(user, it)
                         }
                     }
                 } else {
-                    Log.d("editprob","O")
-                    repository.getEventList(it.id) { evel : MutableList<Event> ->
+                    Log.d("editprob", "O")
+                    repository.getEventList(it.id) { evel: MutableList<Event> ->
                         toEventListFragment(it, evel)
                     }
                 }
             }
         }
     }
+
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
@@ -59,7 +62,7 @@ class MainActivity : AppCompatActivity() {
     private fun toEventListFragment(user: User, eventList: MutableList<Event>) {
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.container, EventListFragment.newInstance(user,eventList))
+                .replace(R.id.container, EventListFragment.newInstance(user, eventList))
                 .commit()
     }
 

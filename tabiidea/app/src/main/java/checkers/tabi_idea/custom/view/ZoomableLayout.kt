@@ -97,7 +97,7 @@ class ZoomableLayout :
         if (lastScaleFactor == 0f || Math.signum(scaleFactor) == Math.signum(lastScaleFactor)) {
             scale *= scaleFactor
             lastScaleFactor = scaleFactor
-            applyScale()
+            applyScale(scaleDetector.focusX, scaleDetector.focusY)
             invalidate()
         } else {
             lastScaleFactor = 0f
@@ -143,11 +143,11 @@ class ZoomableLayout :
         invalidate()
     }
 
-    private fun applyScale() {
+    private fun applyScale(pivotX: Float, pivotY: Float) {
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             val matrix = child.matrix
-            matrix.setScale(scaleFactor, scaleFactor, width.toFloat() / 2 - child.x - child.width / 2, height.toFloat() / 2 - child.y - child.height / 2)
+            matrix.setScale(scaleFactor, scaleFactor, pivotX - child.x - child.width / 2, pivotY - child.y - child.height / 2)
 //            Log.d(TAG, "${child.id} : ${matrix.toShortString()}")
             val m = FloatArray(9)
             matrix.getValues(m)

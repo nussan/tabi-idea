@@ -1,6 +1,7 @@
 package checkers.tabi_idea.fragment
 
 
+
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -18,7 +19,15 @@ import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.manager.EventManager
 import checkers.tabi_idea.provider.Repository
+import checkers.tabi_idea.provider.RequestService
+import com.squareup.moshi.KotlinJsonAdapterFactory
+import com.squareup.moshi.Moshi
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_event_list.*
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.*
 
 class EventListFragment : Fragment() {
@@ -35,6 +44,12 @@ class EventListFragment : Fragment() {
             userId = it.getInt("userId")
             myuser = it.getParcelable("user")
             eventManager.eventList = it.getParcelableArrayList<Event>("eventListKey") as MutableList<Event>
+        }
+        if (activity?.intent?.action != null && activity?.intent?.action == Intent.ACTION_VIEW) {
+            if (activity?.intent?.data != null) {
+                val url = activity?.intent?.data!!.buildUpon().scheme("http").build().toString()
+                getEvent(url)
+            }
         }
     }
 
@@ -184,4 +199,5 @@ class EventListFragment : Fragment() {
             true
         }
     }
+
 }
