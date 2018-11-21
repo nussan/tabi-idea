@@ -2,18 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_add"
-        android:icon="@drawable/ic_add_black_24dp"
-        android:title="@string/add"
-        app:showAsAction="always"/>
-    <item
-        android:id="@+id/action_edit"
+        android:id="@+id/action_setting"
         android:icon="@drawable/ic_edit_black_24dp"
-        android:title="@string/edit"
-        app:showAsAction="always"/>
-    <item
-        android:id="@+id/action_like"
-        android:icon="@drawable/ic_favorite_black_24dp"
         android:title="@string/good"
-        app:showAsAction="always"/>
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_name_edit"
+        android:icon="@drawable/ic_edit_black_24dp"
+        android:title="名前の編集"
+        app:showAsAction="never" />
 </menu>

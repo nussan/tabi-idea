@@ -21,9 +21,7 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventListViewHolder {
         val view = inflater.inflate(R.layout.list_event_row, parent, false)
         view.setOnClickListener(listener)
-        val viewHolder = EventListViewHolder(view)
-
-        return viewHolder
+        return EventListViewHolder(view)
     }
 
     override fun getItemCount() = eventList.size
@@ -102,6 +100,9 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
         return objBitmap
     }
 
+    fun refreshEventList(newEventList: MutableList<Event>){
+        eventList = newEventList
+    }
 
     // Viewへの参照を持っておくViewHolder
     class EventListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
