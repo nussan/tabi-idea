@@ -128,7 +128,6 @@ class TravelMindMapFragment :
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
                             lastRaw.set(event.rawX, event.rawY)
-                            QuickActionView.make(context).setPoint(event.rawX,event.rawY)
                         }
 
                         MotionEvent.ACTION_MOVE -> {
@@ -378,9 +377,21 @@ class TravelMindMapFragment :
     }
 
     private fun rrvToQAV(context: Context?, view: View){
-
         val qav = QuickActionView.make(context)
-
+        val mQuickActionListener = QuickActionView.OnActionSelectedListener { action, quickActionView ->
+            Log.d("aaa", "aaa")
+            val view = quickActionView.longPressedView
+            if (view != null) {
+                Snackbar.make(view, "Clicked on " + action.id, Snackbar.LENGTH_SHORT).show()
+                when (action.title) {
+                    "追加" -> onAddSelected(view.tag as String)
+                    "編集" -> onEditSelected(view.tag as String)
+//                "いいね" -> onLikeSelected(view.tag as String)
+                }
+            }
+        }
+        val popAnimator = PopAnimator(true)
+        val actionTitleAnimator = CustomActionsTitleAnimator()
         val pareIconTitle = listOf(
                 ContextCompat.getDrawable(context!!, R.drawable.ic_add_black_24dp)!! to getString(R.string.add),
                 ContextCompat.getDrawable(context!!, R.drawable.ic_edit_black_24dp)!! to getString(R.string.edit),
