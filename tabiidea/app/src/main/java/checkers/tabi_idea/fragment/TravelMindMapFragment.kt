@@ -191,6 +191,9 @@ class TravelMindMapFragment :
         }
         return super.onOptionsItemSelected(item)
     }
+    private fun onLikeSelected(tag: String){
+
+    }
 
     private fun onAddSelected(tag: String) {
         Log.d(javaClass.simpleName, "onAddSelected")
@@ -407,7 +410,7 @@ class TravelMindMapFragment :
             when (action.title) {
                 "追加" -> onAddSelected(view.tag as String)
                 "編集" -> onEditSelected(view.tag as String)
-//                "いいね" -> onLikeSelected(view.tag as String)
+                "いいね" -> onLikeSelected(view.tag as String)
             }
         }
     }
