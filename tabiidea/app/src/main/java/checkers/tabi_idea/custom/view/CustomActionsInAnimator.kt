@@ -27,12 +27,12 @@ class CustomActionsInAnimator(private val mQuickActionView: QuickActionView) : A
 
     override fun animateScrimIn(scrim: View) {
         val center = mQuickActionView.centerPoint
-        if (Build.VERSION.SDK_INT >= 21 && center != null) {
-            ViewAnimationUtils.createCircularReveal(scrim, center.x, center.y, 0f, Math.max(scrim.height, scrim.width).toFloat())
-                    .start()
-        } else {
+//        if (Build.VERSION.SDK_INT >= 21 && center != null) {
+//            ViewAnimationUtils.createCircularReveal(scrim, center.x, center.y, 0f, Math.max(scrim.height, scrim.width).toFloat())
+//                    .start()
+//        } else {
             scrim.alpha = 0f
             scrim.animate().alpha(1f).duration = 200
-        }
+//        }
     }
 }

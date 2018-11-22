@@ -23,7 +23,7 @@ class Repository {
     init {
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val retrofit = Retrofit.Builder()
-                .baseUrl("https://fast-peak-71769.herokuapp.com/")
+                .baseUrl("https://fast-peak-71769.herokuapp.com/") //https://fast-peak-71769.herokuapp.com/
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .build()
@@ -55,7 +55,6 @@ class Repository {
 
     //user情報をget,rxjava2
     fun getUser(uuid: String, callback: (User) -> Unit) {
-        val user: User = User(-1, "","")
         requestService.getUser(uuid)
                 .retry(3)
                 .subscribeOn(Schedulers.io())
@@ -64,7 +63,7 @@ class Repository {
                         { res -> callback(res) },
                         { err ->
                             Log.d("errGetUser", err.toString())
-                            callback(user)
+                            callback(User(-1,"",""))
                         }
                 )
     }
@@ -84,7 +83,6 @@ class Repository {
 
     //eventListをget,rxjava2
     fun getEventList(token:String,user_id: Int, callback: (MutableList<Event>) -> Unit) {
-        val eventList: MutableList<Event> = mutableListOf()
         requestService.getEvent(token,user_id)
                 .retry(3)
                 .subscribeOn(Schedulers.io())
@@ -93,7 +91,7 @@ class Repository {
                         { res -> callback(res) },
                         { err ->
                             Log.d("errGetEventList", err.toString())
-                            callback(eventList)
+                            callback(mutableListOf())
                         }
                 )
     }
@@ -133,47 +131,47 @@ class Repository {
 
 
     //eventをfbにadd
-    fun addEventToFb(event_id: String) {
-        val mmo = MindMapObject(0, "旅行", 0f, 0f, "", 0, "root")
-        val ref = FirebaseDatabase.getInstance().getReference(event_id)
-        ref.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                dataSnapshot.children.mapNotNull {
-                    val rootKey = it.key!!
-                    Log.d("Repository", rootKey)
-                    updateMmo(event_id, rootKey to MindMapObject(0, "旅行", 0f, 0f, rootKey, 0, "root"))
-                    val ml = mutableListOf(
-                            MindMapObject(1, "行先", 200f, 200f, rootKey, 0, "destination"),
-                            MindMapObject(2, "予算", 200f, -200f, rootKey, 0, "budget"),
-                            MindMapObject(3, "食事", -200f, 200f, rootKey, 0, "food"),
-                            MindMapObject(4, "宿泊", -200f, -200f, rootKey, 0, "hotel"))
-
-                    ml.forEach {child ->
-                        addMmo(event_id, child)
-                    }
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.d("errGetMmo", databaseError.toString())
-            }
-        })
-        ref.push().setValue(mmo)
-    }
-
-    //mmoをfbにadd
-    fun addMmo(event_id: String, mmo: MindMapObject) {
-        FirebaseDatabase.getInstance()
-                .getReference(event_id)
-                .push()
-                .setValue(mmo)
-    }
-
-    //mmoのtextをアップデート
-    fun updateMmo(event_id: String, pair: Pair<String, MindMapObject>) {
-        FirebaseDatabase.getInstance()
-                .getReference(event_id)
-                .child(pair.first)
-                .setValue(pair.second)
-    }
+//    fun addEventToFb(event_id: String) {
+//        val mmo = MindMapObject(0, "旅行", 0f, 0f, "", 0, "root")
+//        val ref = FirebaseDatabase.getInstance().getReference(event_id)
+//        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+//            override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                dataSnapshot.children.mapNotNull {
+//                    val rootKey = it.key!!
+//                    Log.d("Repository", rootKey)
+//                    updateMmo(event_id, rootKey to MindMapObject(0, "旅行", 0f, 0f, rootKey, 0, "root"))
+//                    val ml = mutableListOf(
+//                            MindMapObject(1, "行先", 200f, 200f, rootKey, 0, "destination"),
+//                            MindMapObject(2, "予算", 200f, -200f, rootKey, 0, "budget"),
+//                            MindMapObject(3, "食事", -200f, 200f, rootKey, 0, "food"),
+//                            MindMapObject(4, "宿泊", -200f, -200f, rootKey, 0, "hotel"))
+//
+//                    ml.forEach {child ->
+//                        addMmo(event_id, child)
+//                    }
+//                }
+//            }
+//
+//            override fun onCancelled(databaseError: DatabaseError) {
+//                Log.d("errGetMmo", databaseError.toString())
+//            }
+//        })
+//        ref.push().setValue(mmo)
+//    }
+//
+//    //mmoをfbにadd
+//    fun addMmo(event_id: String, mmo: MindMapObject) {
+//        FirebaseDatabase.getInstance()
+//                .getReference(event_id)
+//                .push()
+//                .setValue(mmo)
+//    }
+//
+//    //mmoのtextをアップデート
+//    fun updateMmo(event_id: String, pair: Pair<String, MindMapObject>) {
+//        FirebaseDatabase.getInstance()
+//                .getReference(event_id)
+//                .child(pair.first)
+//                .setValue(pair.second)
+//    }
 }

@@ -84,7 +84,6 @@ public class QuickActionView {
         mActionsOutAnimator = defaultAnimator;
         mActionsTitleInAnimator = defaultTitleAnimator;
         mActionsTitleOutAnimator = defaultTitleAnimator;
-        mTouchPoint = new Point(0,0);
     }
 
     /**
@@ -977,12 +976,7 @@ public class QuickActionView {
 
         @Override
         public void onClick(View v) {
-            show(v,mTouchPoint);
+            show(v, mTouchPoint);
         }
-    }
-
-    public void setPoint(float mTouchX, float mTouchY){
-        System.out.println(mTouchX);
-        mTouchPoint = new Point((int)mTouchX,(int) mTouchY);
     }
 }

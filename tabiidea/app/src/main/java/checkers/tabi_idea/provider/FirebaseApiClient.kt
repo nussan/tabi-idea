@@ -28,4 +28,30 @@ class FirebaseApiClient(event_id: String) {
     fun removeListener(listener: ChildEventListener) {
         ref.removeEventListener(listener)
     }
+
+    //eventをfbにadd
+    fun addEventToFb() {
+        val mmo = MindMapObject(0, "旅行", 0f, 0f, "", 0, "root")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot.children.mapNotNull {
+                    val rootKey = it.key!!
+                    Log.d("Repository", rootKey)
+                    updateMmo(rootKey to MindMapObject(0, "旅行", 0f, 0f, rootKey, 0, "root"))
+                    val ml = mutableListOf(
+                            MindMapObject(1, "行先", 200f, 200f, rootKey, 0, "destination"),
+                            MindMapObject(2, "予算", 200f, -200f, rootKey, 0, "budget"),
+                            MindMapObject(3, "食事", -200f, 200f, rootKey, 0, "food"),
+                            MindMapObject(4, "宿泊", -200f, -200f, rootKey, 0, "hotel"))
+                    ml.forEach {child ->
+                        addMmo(child)
+                    }
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.d("errGetMmo", databaseError.toString())
+            }
+        })
+        ref.push().setValue(mmo)
+    }
 }
