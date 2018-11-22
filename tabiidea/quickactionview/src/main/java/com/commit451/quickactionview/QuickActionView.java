@@ -35,6 +35,7 @@ import com.commit451.quickactionview.animator.SlideFromCenterAnimator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.FormatFlagsConversionMismatchException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -69,6 +70,7 @@ public class QuickActionView {
     private HashMap<View, RegisteredListener> mRegisteredListeners = new HashMap<>();
 
     private View mClickedView;
+    private Point mTouchPoint;
 
     private QuickActionView(Context context) {
         mContext = context;
@@ -974,7 +976,7 @@ public class QuickActionView {
 
         @Override
         public void onClick(View v) {
-            show(v,new Point((int) mTouchX,(int) mTouchY));
+            show(v, mTouchPoint);
         }
     }
 }

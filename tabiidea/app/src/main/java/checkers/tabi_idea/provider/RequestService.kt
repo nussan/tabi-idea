@@ -18,27 +18,27 @@ interface RequestService {
 
     //user情報の編集
     @POST("home/edit/{id}")
-    fun editUser(@Path("id") id:Int,@Body editName:Map<String,String>) : Single<User>
+    fun editUser(@Header("Authorization") token:String,@Path("id") id:Int,@Body editName:Map<String,String>) : Single<User>
 
     //Eventへの追加
     @POST("event/create/{id}")
-    fun addEvent(@Path("id") id :Int, @Body title:Map<String,String>) : Single<Event>
+    fun addEvent(@Header("Authorization") token:String,@Path("id") id :Int, @Body title:Map<String,String>) : Single<Event>
 
     //Eventへの参加
     @GET("event/join/{id}/{eid}")
-    fun joinEvent(@Path("id") id: Int, @Path("eid") eid: String): Single<Event>
+    fun joinEvent(@Header("Authorization") token:String,@Path("id") id: Int, @Path("eid") eid: String): Single<Event>
 
     @GET("{url}")
     fun getEvent(@Path("url") url: String): Single<Event>
   
     //Eventの削除
     @GET("event/withdrawal/{uid}/{eid}")
-    fun deleteEvent(@Path("uid") id:Int,@Path("eid") eid:Int) : Single<Map<String,String>>
+    fun deleteEvent(@Header("Authorization") token:String,@Path("uid") id:Int,@Path("eid") eid:Int) : Single<Map<String,String>>
 
     //eventListの取得
     @GET("event/show/{id}")
-    fun getEvent(@Path("id") id:Int):Single<MutableList<Event>>
+    fun getEvent(@Header("Authorization") token:String,@Path("id") id:Int):Single<MutableList<Event>>
 
     @POST("event/invitation/{uid}/{eid}")
-    fun createUrl(@Path("uid") uid: Int, @Path("eid") eid: String): Single<Map<String,String>>
+    fun createUrl(@Header("Authorization") token:String,@Path("uid") uid: Int, @Path("eid") eid: String): Single<Map<String,String>>
 }

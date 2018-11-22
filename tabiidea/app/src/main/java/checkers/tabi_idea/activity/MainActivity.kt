@@ -11,6 +11,7 @@ import checkers.tabi_idea.data.Installation
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.fragment.EventListFragment
 import checkers.tabi_idea.provider.Repository
+import checkers.tabi_idea.provider.RequestService
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_event_list.*
 
@@ -31,21 +32,25 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             Log.d("editprob", uuid)
             repository.getUser(uuid) {
+                Log.d("usertoken",it.token)
                 if (it.id == -1) {
                     Log.d("editprob", "X")
                     val newUser = mapOf(
                             "uuid" to uuid,
                             "name" to "新しいユーザー"
                     )
-                    repository.addUser(newUser) { user: User ->
-                        this.user = user
-                        repository.getEventList(user!!.id) {
+                    repository.addUser(newUser) {user: User ->
+                        user.token = "Token " + user.token
+
+                        repository.getEventList(user.token,user!!.id) {
                             toEventListFragment(user, it)
                         }
                     }
                 } else {
                     Log.d("editprob", "O")
-                    repository.getEventList(it.id) { evel: MutableList<Event> ->
+                    it.token = "Token " + it.token
+                    Log.d("usertoken",it.token)
+                    repository.getEventList(it.token,it.id) { evel: MutableList<Event> ->
                         toEventListFragment(it, evel)
                     }
                 }

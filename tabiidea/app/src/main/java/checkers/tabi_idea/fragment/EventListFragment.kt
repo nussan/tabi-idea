@@ -18,6 +18,7 @@ import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.manager.EventManager
+import checkers.tabi_idea.provider.FirebaseApiClient
 import checkers.tabi_idea.provider.Repository
 import checkers.tabi_idea.provider.RequestService
 import com.squareup.moshi.KotlinJsonAdapterFactory
@@ -32,16 +33,15 @@ import java.util.*
 
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
-    private var eventId = 0
+    private var eventId:Int? = null
     private val repository = Repository()
-    private var userId = 0
-    private lateinit var myuser: User
-
+    private var fireBaseApiClient:FirebaseApiClient? = null
+    private lateinit var myuser : User
+    private var mButtonState: ButtonState = ButtonState.CLOSE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            userId = it.getInt("userId")
             myuser = it.getParcelable("user")
             eventManager.eventList = it.getParcelableArrayList<Event>("eventListKey") as MutableList<Event>
         }
@@ -87,8 +87,8 @@ class EventListFragment : Fragment() {
                     eventId = eventManager.eventList[it.adapterPosition].id
                     adapter.removeAt(it.adapterPosition)
                 }
-                repository.deleteEvent(userId, eventId) {
-                    Toast.makeText(context, it.get("title") + "が削除されました", Toast.LENGTH_SHORT).show()
+                repository.deleteEvent(myuser.token,myuser.id,eventId!!){
+                    Toast.makeText(context,it.get("title")+"が削除されました",Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -126,10 +126,12 @@ class EventListFragment : Fragment() {
                             "title" to "${inputText.text}"
                     )
 
-                    repository.addEvent(userId, title) { event ->
+                    repository.addEvent(myuser.token,myuser.id, title) {event ->
+
                         eventId = event.id
                         Log.d("tubasa", event.id.toString())
-                        repository.addEventToFb(eventId.toString())//event.id
+                        fireBaseApiClient = FirebaseApiClient(eventId.toString())
+                        fireBaseApiClient!!.addEventToFb()
                         eventManager.add(event)
                         eventListView.adapter.notifyDataSetChanged()
                     }
@@ -143,7 +145,6 @@ class EventListFragment : Fragment() {
             inputForm.show()
 
             it.isEnabled = true
-
         }
 
     }
@@ -173,7 +174,8 @@ class EventListFragment : Fragment() {
                             "name" to "${inputText.text}"
                     )
                     Log.d("EventListFragment", "")
-                    repository.editUser(userId, name) { user ->
+                    repository.editUser(myuser.token,myuser.id, name){user ->
+                        // コールバックの操作
                         (activity as AppCompatActivity).supportActionBar?.title = user.name
                         myuser = user
                     }
@@ -204,7 +206,7 @@ class EventListFragment : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { res -> repository.joinEvent(myuser!!.id, res.id.toString()) },
+                        { res -> repository.joinEvent(myuser.token,myuser!!.id, res.id.toString()) },
                         { err -> Log.d("EventListFragment", err.toString()) }
                 )
     }

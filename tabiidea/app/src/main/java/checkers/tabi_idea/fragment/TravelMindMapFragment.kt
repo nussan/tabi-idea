@@ -105,11 +105,13 @@ class TravelMindMapFragment :
             override fun onChildAdded(dataSnapshot: DataSnapshot, p1: String?) {
                 Log.d("TravelMindMapFragment", "onChildAdded")
                 Log.d("TravelMindMapFragment", "$dataSnapshot")
+
                 val key = dataSnapshot.key!!
                 val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
 
                 val view = mindMapObjectToTextView(context, mmo)
                 view.tag = key
+
                 view.setOnLongClickListener { v ->
                     behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
                     val item = ClipData.Item(v.tag as? CharSequence)
@@ -153,7 +155,7 @@ class TravelMindMapFragment :
 
                     false
                 }
-                rrvToQAV(context, view)
+                rrvToQAV(context,view)
 
                 map = map.plus(key to mmo)
                 mindMapConstraintLayout.addView(view, mmo)
@@ -371,11 +373,22 @@ class TravelMindMapFragment :
         return textView
     }
 
-    private fun rrvToQAV(context: Context?, view: View) {
-        val quickActionView = view
-
+    private fun rrvToQAV(context: Context?, view: View){
         val qav = QuickActionView.make(context)
-
+        val mQuickActionListener = QuickActionView.OnActionSelectedListener { action, quickActionView ->
+            Log.d("aaa", "aaa")
+            val view = quickActionView.longPressedView
+            if (view != null) {
+                Snackbar.make(view, "Clicked on " + action.id, Snackbar.LENGTH_SHORT).show()
+                when (action.title) {
+                    "追加" -> onAddSelected(view.tag as String)
+                    "編集" -> onEditSelected(view.tag as String)
+//                "いいね" -> onLikeSelected(view.tag as String)
+                }
+            }
+        }
+        val popAnimator = PopAnimator(true)
+        val actionTitleAnimator = CustomActionsTitleAnimator()
         val pareIconTitle = listOf(
                 ContextCompat.getDrawable(context!!, R.drawable.ic_add_black_24dp)!! to getString(R.string.add),
                 ContextCompat.getDrawable(context!!, R.drawable.ic_edit_black_24dp)!! to getString(R.string.edit),
@@ -390,27 +403,11 @@ class TravelMindMapFragment :
                 .setActionsTitleOutAnimator(actionTitleAnimator)
                 .setOnActionSelectedListener(mQuickActionListener)
                 .setActionsOutAnimator(popAnimator)
-                .register(quickActionView)
+                .register(view)
 
         val customActionsInAnimator = CustomActionsInAnimator(qav)
         qav.setActionsInAnimator(customActionsInAnimator)
     }
-
-    //    private var mRoot: ViewGroup? = null
-    private val mQuickActionListener = QuickActionView.OnActionSelectedListener { action, quickActionView ->
-        Log.d("aaa", "aaa")
-        val view = quickActionView.longPressedView
-        if (view != null) {
-            Snackbar.make(view, "Clicked on " + action.id, Snackbar.LENGTH_SHORT).show()
-            when (action.title) {
-                "追加" -> onAddSelected(view.tag as String)
-                "編集" -> onEditSelected(view.tag as String)
-//                "いいね" -> onLikeSelected(view.tag as String)
-            }
-        }
-    }
-    private val popAnimator = PopAnimator(true)
-    private val actionTitleAnimator = CustomActionsTitleAnimator()
 
     companion object {
         @JvmStatic
