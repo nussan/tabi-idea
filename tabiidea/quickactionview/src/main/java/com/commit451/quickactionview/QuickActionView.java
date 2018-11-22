@@ -70,7 +70,7 @@ public class QuickActionView {
     private HashMap<View, RegisteredListener> mRegisteredListeners = new HashMap<>();
 
     private View mClickedView;
-    private Point mTouchPoint;
+    private Point mTouchPoint=new Point(0,0);
 
     private QuickActionView(Context context) {
         mContext = context;

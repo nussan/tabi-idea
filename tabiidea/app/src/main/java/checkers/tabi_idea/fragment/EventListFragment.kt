@@ -37,7 +37,6 @@ class EventListFragment : Fragment() {
     private val repository = Repository()
     private var fireBaseApiClient:FirebaseApiClient? = null
     private lateinit var myuser : User
-    private var mButtonState: ButtonState = ButtonState.CLOSE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

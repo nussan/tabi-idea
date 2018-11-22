@@ -190,6 +190,9 @@ class TravelMindMapFragment :
         }
         return super.onOptionsItemSelected(item)
     }
+    private fun onLikeSelected(tag: String){
+
+    }
 
     private fun onAddSelected(tag: String) {
         Log.d(javaClass.simpleName, "onAddSelected")
@@ -408,6 +411,22 @@ class TravelMindMapFragment :
         val customActionsInAnimator = CustomActionsInAnimator(qav)
         qav.setActionsInAnimator(customActionsInAnimator)
     }
+
+    //    private var mRoot: ViewGroup? = null
+    private val mQuickActionListener = QuickActionView.OnActionSelectedListener { action, quickActionView ->
+        Log.d("aaa", "aaa")
+        val view = quickActionView.longPressedView
+        if (view != null) {
+            Snackbar.make(view, "Clicked on " + action.id, Snackbar.LENGTH_SHORT).show()
+            when (action.title) {
+                "追加" -> onAddSelected(view.tag as String)
+                "編集" -> onEditSelected(view.tag as String)
+                "いいね" -> onLikeSelected(view.tag as String)
+            }
+        }
+    }
+    private val popAnimator = PopAnimator(true)
+    private val actionTitleAnimator = CustomActionsTitleAnimator()
 
     companion object {
         @JvmStatic
