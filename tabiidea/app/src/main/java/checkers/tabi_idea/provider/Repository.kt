@@ -43,7 +43,8 @@ class Repository {
     }
 
     //userをedit
-    fun editUser(token:String, id: Int, editName: Map<String, String>, callback: (User) -> Unit) {
+    fun editUser(token:String, id: Int, editName: Map<String, String>, callback: (Map<String,String>) -> Unit) {
+        Log.d("tokentoken",token)
         requestService.editUser(token,id, editName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -70,6 +71,7 @@ class Repository {
 
     //eventlistをadd,rxjava2
     fun addEvent(token:String,user_id: Int, title: Map<String, String>, callback: (Event) -> Unit) {
+        Log.d("tokentoken",token)
         requestService.addEvent(token,user_id, title)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

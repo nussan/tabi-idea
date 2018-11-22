@@ -40,15 +40,12 @@ class MainActivity : AppCompatActivity() {
                             "name" to "新しいユーザー"
                     )
                     repository.addUser(newUser) {user: User ->
-                        user.token = "Token " + user.token
-
                         repository.getEventList(user.token,user!!.id) {
                             toEventListFragment(user, it)
                         }
                     }
                 } else {
                     Log.d("editprob", "O")
-                    it.token = "Token " + it.token
                     Log.d("usertoken",it.token)
                     repository.getEventList(it.token,it.id) { evel: MutableList<Event> ->
                         toEventListFragment(it, evel)

@@ -18,7 +18,7 @@ interface RequestService {
 
     //user情報の編集
     @POST("home/edit/{id}")
-    fun editUser(@Header("Authorization") token:String,@Path("id") id:Int,@Body editName:Map<String,String>) : Single<User>
+    fun editUser(@Header("Authorization") token:String,@Path("id") id:Int,@Body editName:Map<String,String>) : Single<Map<String,String>>
 
     //Eventへの追加
     @POST("event/create/{id}")
