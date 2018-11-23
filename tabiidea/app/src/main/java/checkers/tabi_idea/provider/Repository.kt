@@ -1,14 +1,8 @@
 package checkers.tabi_idea.provider
 
 import android.util.Log
-import android.widget.Toast
 import checkers.tabi_idea.data.Event
-import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import io.reactivex.android.schedulers.AndroidSchedulers
