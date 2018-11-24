@@ -1,46 +1,62 @@
 package checkers.tabi_idea.fragment
 
 
-import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
+import android.util.Log
 import android.view.*
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import android.view.animation.RotateAnimation
 import android.widget.EditText
 import android.widget.Toast
-import checkers.tabi_idea.*
+import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
-import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
-import checkers.tabi_idea.extention.ViewExtention
 import checkers.tabi_idea.manager.EventManager
+import checkers.tabi_idea.provider.FirebaseApiClient
 import checkers.tabi_idea.provider.Repository
-import com.squareup.moshi.JsonAdapter
+import checkers.tabi_idea.provider.RequestService
+import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_event_list.*
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.*
 
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
-
-    private var userId = 0
+    private var eventId:Int? = null
+    private val repository = Repository()
+    private var fireBaseApiClient:FirebaseApiClient? = null
+    private lateinit var myuser : User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            userId = it.getInt("userId")
+            myuser = it.getParcelable("user")
             eventManager.eventList = it.getParcelableArrayList<Event>("eventListKey") as MutableList<Event>
+        }
+        if (activity?.intent?.action != null && activity?.intent?.action == Intent.ACTION_VIEW) {
+            if (activity?.intent?.data != null) {
+                val url = activity?.intent?.data!!.buildUpon().scheme("http").build().toString()
+                getEvent(url)
+            }
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        (activity as AppCompatActivity).supportActionBar?.title = "イベント"
+        (activity as AppCompatActivity).supportActionBar?.title = myuser.name
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
         setHasOptionsMenu(true)
 
@@ -59,20 +75,36 @@ class EventListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val repository = Repository()
-        eventListView.adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_1, eventManager.eventList)
+        //RecyclerViewを設定
+        eventListView.adapter = EventListAdapter(context, eventManager.eventList)
+        eventListView.layoutManager = GridLayoutManager(context, 1)
 
-        eventListView.setOnItemClickListener { parent: AdapterView<*>, view: View?, position: Int, id: Long ->
-            repository.updateMmoCallback { it ->
-                activity
-                        ?.supportFragmentManager
-                        ?.beginTransaction()
-                        ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[id.toInt()]))
-                        ?.addToBackStack(null)
-                        ?.commit()
-                eventManager.eventList[id.toInt()].mindMapObjectList = it as MutableList<MindMapObject>
+        val swipHandler = object : SwipeToDeleteCallback(context!!) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
+                val adapter = eventListView.adapter as EventListAdapter
+                viewHolder?.let {
+                    eventId = eventManager.eventList[it.adapterPosition].id
+                    adapter.removeAt(it.adapterPosition)
+                }
+                repository.deleteEvent(myuser.token,myuser.id,eventId!!){
+                    Toast.makeText(context,it.get("title")+"が削除されました",Toast.LENGTH_SHORT).show()
+                }
             }
         }
+        val itemTouchHelper = ItemTouchHelper(swipHandler)
+        itemTouchHelper.attachToRecyclerView(eventListView)
+
+        (eventListView.adapter as EventListAdapter).setOnClickListener(object : View.OnClickListener {
+            override fun onClick(view: View?) {
+                Log.d(javaClass.simpleName, "onTouch!!")
+                val position = eventListView.getChildAdapterPosition(view)
+                activity?.supportFragmentManager
+                        ?.beginTransaction()
+                        ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[position]))
+                        ?.addToBackStack(null)
+                        ?.commit()
+            }
+        })
 
         fab.setOnClickListener {
             it.isEnabled = false
@@ -80,35 +112,34 @@ class EventListFragment : Fragment() {
             val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
 
             // ダイアログ内のテキストエリア
-            val inputText : EditText = inflater.findViewById(R.id.inputText)
+            val inputText: EditText = inflater.findViewById(R.id.inputText)
             inputText.requestFocus()
 
             // ダイアログの設定
             val inputForm = AlertDialog.Builder(context!!).apply {
                 setTitle("新しいイベント")
                 setView(inflater)
-                setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
-                    val mindmapobject: MutableList<MindMapObject> = mutableListOf(
-                            MindMapObject(0, "旅行", 1f / 2, 1f / 2, 0),
-                            MindMapObject(1, "行先", 1f / 2, 1f / 4, 0),
-                            MindMapObject(2, "予算", 1f / 4, 1f / 2, 0),
-                            MindMapObject(3, "食事", 1f / 2, 3f / 4, 0),
-                            MindMapObject(4, "宿泊", 3f / 4, 1f / 2, 0)
-                    )
+                setPositiveButton("OK") { _, _ ->
                     // OKボタンを押したときの処理
-                    eventManager.add(Event(0,"${inputText.text}", mutableListOf(), mindmapobject))
                     val title = mapOf(
                             "title" to "${inputText.text}"
                     )
-                    repository.addEventList(userId,title){
-                        eventListView.adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_1, it)
+
+                    repository.addEvent(myuser.token,myuser.id, title) {event ->
+
+                        eventId = event.id
+                        Log.d("tubasa", event.id.toString())
+                        fireBaseApiClient = FirebaseApiClient(eventId.toString())
+                        fireBaseApiClient!!.addEventToFb()
+                        eventManager.add(event)
+                        eventListView.adapter.notifyDataSetChanged()
                     }
-                    (eventListView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
-                })
+
+                }
                 setNegativeButton("Cancel", null)
             }.create()
 
-            // ダイアログ表示と同時にキーボードを表示
+            //ダイアログ表示と同時にキーボードを表示
             inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
             inputForm.show()
 
@@ -117,13 +148,78 @@ class EventListFragment : Fragment() {
 
     }
 
+
+    //EventListFragmentでツールバーにメニュー機能を追加する
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.actions, menu)
+
+        val item: MenuItem = menu.findItem(R.id.action_name_edit)
+        item.setOnMenuItemClickListener {
+            // レイアウトを取得
+            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
+
+            // ダイアログ内のテキストエリア
+            val inputText: EditText = inflater.findViewById(R.id.inputText)
+            inputText.requestFocus()
+
+            // ダイアログの設定
+            val inputForm = AlertDialog.Builder(context!!).apply {
+                setTitle("名前の編集")
+                setView(inflater)
+                setPositiveButton("OK") { _, _ ->
+                    // OKボタンを押したときの処理
+                    val name = mapOf(
+                            "name" to "${inputText.text}"
+                    )
+                    Log.d("EventListFragment", "")
+                    repository.editUser(myuser.token,myuser.id, name){name ->
+                        // コールバックの操作
+                        (activity as AppCompatActivity).supportActionBar?.title = name.get("name")
+                        myuser.name = name.get("name")!!
+                    }
+
+                }
+                setNegativeButton("Cancel", null)
+            }.create()
+
+            // ダイアログ表示と同時にキーボードを表示
+            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            inputForm.show()
+
+            true
+        }
+    }
+
+    fun getEvent(url: String) {
+        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        val retrofit = Retrofit.Builder()
+                .baseUrl("http://bit.ly/")
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .build()
+        val requestService = retrofit.create(RequestService::class.java)
+        val url = url.replace("http://bit.ly/", "")
+        Log.d("EventListFragment", url)
+        requestService.getEvent(url)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { res -> repository.joinEvent(myuser.token,myuser!!.id, res.id.toString()) },
+                        { err -> Log.d("EventListFragment", err.toString()) }
+                )
+    }
+
+
     companion object {
         @JvmStatic
-        fun newInstance(user_id:Int,eventList: MutableList<Event>) = EventListFragment().apply {
+        fun newInstance(user: User, eventList: MutableList<Event>) = EventListFragment().apply {
             arguments = Bundle().apply {
-                putInt("userId",user_id)
+                putInt("userId", user.id)
+                putParcelable("user", user)
                 putParcelableArrayList("eventListKey", ArrayList(eventList))
             }
         }
     }
+
 }

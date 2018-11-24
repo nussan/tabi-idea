@@ -10,6 +10,6 @@ data class User(
         var id: Int,
         @Json(name = "name")
         var name: String,
-        @Json(name = "eventList")
-        var eventList: MutableList<Event>
+        @Json(name = "token")
+        var token: String
 ) : Parcelable

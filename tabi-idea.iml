@@ -17,8 +17,14 @@
     <output url="file://$MODULE_DIR$/out/production/classes" />
     <output-test url="file://$MODULE_DIR$/out/test/classes" />
     <exclude-output />
+<<<<<<< HEAD
     <content url="file://$MODULE_DIR$/out">
       <excludeFolder url="file://$MODULE_DIR$/out" />
+=======
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/build" />
+>>>>>>> 16f0f22be2bc8337bf9f538fe8e97dab9e5ed719
     </content>
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />

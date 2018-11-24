@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quickactionview/quickactionview.iml" filepath="$PROJECT_DIR$/quickactionview/quickactionview.iml" />
       <module fileurl="file://$PROJECT_DIR$/tabiidea.iml" filepath="$PROJECT_DIR$/tabiidea.iml" />
     </modules>
   </component>

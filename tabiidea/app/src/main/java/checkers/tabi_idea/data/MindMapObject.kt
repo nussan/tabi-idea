@@ -10,13 +10,18 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class MindMapObject(
         @Json(name = "viewIndex")
-        var viewIndex: Int,
+        var viewIndex: Int = 0,
         @Json(name = "text")
-        var text: String,
+        var text: String = "",
         @Json(name = "positionX")
-        var positionX: Float,
+        var positionX: Float = 0f,
         @Json(name = "positionY")
-        var positionY: Float,
+        var positionY: Float = 0f,
         @Json(name = "parent")
-        var parent : Int
+        var parent : String ="",
+        @Json(name = "point")
+        var point : Int = 0,
+        @Json(name = "type")
+        var type : String = ""
+
 ) : Parcelable
