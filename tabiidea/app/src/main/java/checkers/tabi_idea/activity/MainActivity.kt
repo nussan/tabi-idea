@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        toolbar.setNavigationIcon(R.mipmap.ic_launcher)//TODO
 
         //sIdを取得
         val uuid = Installation.id(this)
@@ -39,7 +38,7 @@ class MainActivity : AppCompatActivity() {
                             "uuid" to uuid,
                             "name" to "新しいユーザー"
                     )
-                    repository.addUser(newUser) {user: User ->
+                    repository.addUserMock(newUser) {user: User -> //要変更
                         repository.getEventList(user.token,user!!.id) {
                             toEventListFragment(user, it)
                         }

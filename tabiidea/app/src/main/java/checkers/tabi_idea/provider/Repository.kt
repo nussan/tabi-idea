@@ -41,6 +41,10 @@ class Repository {
                         { err -> Log.d("errAddUser", err.toString())}
                 )
     }
+    fun addUserMock(newUser: Map<String, String>,callback: (User) -> Unit) {
+        val user : User = User(1,"MOCK","MOCK")
+        callback(user)
+    }
 
     //userをedit
     fun editUser(token:String, id: Int, editName: Map<String, String>, callback: (Map<String,String>) -> Unit) {
@@ -81,6 +85,9 @@ class Repository {
                             Log.d("errAddEvent", err.toString())
                         }
                 )
+    }
+    fun addEventMock(token:String,user_id: Int, title: Map<String, String>, callback: (Event) -> Unit){
+        callback(Event(1,"mock",mutableListOf(),"mock"))
     }
 
     //eventListをget,rxjava2
