@@ -135,11 +135,11 @@ class EventListFragment : Fragment() {
                             "title" to "${inputText.text}"
                     )
 
-                    repository.addEventMock(myuser.token,myuser.id, title) {event -> //要変更
+                    repository.addEventMock(myuser.token,myuser.id, title) {event -> //TODO 要変更
                         eventId = event.id
                         Log.d("tubasa", event.id.toString())
                         fireBaseApiClient = FirebaseApiClient(eventId.toString())
-                        fireBaseApiClient!!.addEventToFb()
+                        fireBaseApiClient!!.addEventToFbMock() // TODO 用変更
                         eventManager.add(event)
                         eventListView.adapter.notifyDataSetChanged()
                     }

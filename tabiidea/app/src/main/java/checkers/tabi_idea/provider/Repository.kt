@@ -87,7 +87,7 @@ class Repository {
                 )
     }
     fun addEventMock(token:String,user_id: Int, title: Map<String, String>, callback: (Event) -> Unit){
-        callback(Event(1,"mock",mutableListOf(),"mock"))
+        callback(Event(2,"mock",mutableListOf(),"mock"))
     }
 
     //eventListをget,rxjava2
