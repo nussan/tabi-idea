@@ -218,7 +218,8 @@ class EventListFragment : Fragment() {
                 uri = data.data
 
                 val bmp : Bitmap = getBitmapFromUri(uri)
-                val drw = BitmapDrawable(bmp)
+                val reBmp = Bitmap.createScaledBitmap(bmp,240,240,false)
+                val drw = BitmapDrawable(reBmp)
                 (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
             }
         }
