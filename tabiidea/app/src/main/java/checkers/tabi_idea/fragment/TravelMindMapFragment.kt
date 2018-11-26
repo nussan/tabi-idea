@@ -434,7 +434,7 @@ class TravelMindMapFragment :
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.mmomenu, menu)
 
-        val icon: MenuItem = menu.findItem(R.id.mmomenu_icon)
+        //val icon: MenuItem = menu.findItem(R.id.mmomenu_icon)
     }
 
 

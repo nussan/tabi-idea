@@ -136,7 +136,6 @@ class EventListFragment : Fragment() {
                     )
 
                     repository.addEventMock(myuser.token,myuser.id, title) {event -> //要変更
-
                         eventId = event.id
                         Log.d("tubasa", event.id.toString())
                         fireBaseApiClient = FirebaseApiClient(eventId.toString())
