@@ -8,9 +8,13 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface RequestService {
+    //userの追加
+    @POST("home/usercreate")
+    fun addUser(@Body user:Map<String,String>) : Single<User>
+
     //user情報の取得
     @GET("home/show/{uuid}")
-    fun getUser(@Header("Authorization") token:String,@Path("uuid") uuid:String) : Single<User>
+    fun getUser(@Path("uuid") uuid:String) : Single<User>
 
     //user情報の編集
     @POST("home/edit/{id}")

@@ -19,29 +19,21 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 class Repository {
     private var requestService: RequestService
-    private var tokenService: TokenService
 
     init {
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val retrofit = Retrofit.Builder()
-                .baseUrl("https://fast-peak-71769.herokuapp.com/")
+                .baseUrl("https://fast-peak-71769.herokuapp.com/") //https://fast-peak-71769.herokuapp.com/
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .build()
         requestService = retrofit.create(RequestService::class.java)
-
-        val forTokenRetrofit = Retrofit.Builder()
-                .baseUrl("https://auth-tabidea-checkers.herokuapp.com/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .build()
-        tokenService = forTokenRetrofit.create(TokenService::class.java)
     }
 
     /*---heroku---*/
     //userをadd
-    fun addUser(newUser: Map<String, String>, callback: (Map<String,String>) -> Unit) {
-        tokenService.addUser(newUser)
+    fun addUser(newUser: Map<String, String>, callback: (User) -> Unit) {
+        requestService.addUser(newUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -50,23 +42,9 @@ class Repository {
                 )
     }
 
-    //user情報をget,rxjava2
-    fun getToken(uuid: String, callback: (Map<String,String>) -> Unit) {
-        tokenService.getToken(uuid)
-                .retry(3)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { res -> callback(res) },
-                        { err ->
-                            Log.d("errGetToken", err.toString())
-                            callback(mapOf())
-                        }
-                )
-    }
-
     //userをedit
     fun editUser(token:String, id: Int, editName: Map<String, String>, callback: (Map<String,String>) -> Unit) {
+        Log.d("tokentoken",token)
         requestService.editUser(token,id, editName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -77,8 +55,8 @@ class Repository {
     }
 
     //user情報をget,rxjava2
-    fun getUser(token:String, uuid: String, callback: (User) -> Unit) {
-        requestService.getUser(token,uuid)
+    fun getUser(uuid: String, callback: (User) -> Unit) {
+        requestService.getUser(uuid)
                 .retry(3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -86,7 +64,7 @@ class Repository {
                         { res -> callback(res) },
                         { err ->
                             Log.d("errGetUser", err.toString())
-                            callback(User(-1,""))
+                            callback(User(-1,"",""))
                         }
                 )
     }
