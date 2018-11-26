@@ -37,12 +37,14 @@ class EventListFragment : Fragment() {
     private val repository = Repository()
     private var fireBaseApiClient:FirebaseApiClient? = null
     private lateinit var myuser : User
+    private lateinit var token:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             myuser = it.getParcelable("user")
             eventManager.eventList = it.getParcelableArrayList<Event>("eventListKey") as MutableList<Event>
+            token = it.getString("token")
         }
         if (activity?.intent?.action != null && activity?.intent?.action == Intent.ACTION_VIEW) {
             if (activity?.intent?.data != null) {
@@ -86,7 +88,7 @@ class EventListFragment : Fragment() {
                     eventId = eventManager.eventList[it.adapterPosition].id
                     adapter.removeAt(it.adapterPosition)
                 }
-                repository.deleteEvent(myuser.token,myuser.id,eventId!!){
+                repository.deleteEvent(token,myuser.id,eventId!!){
                     Toast.makeText(context,it.get("title")+"が削除されました",Toast.LENGTH_SHORT).show()
                 }
             }
@@ -125,7 +127,7 @@ class EventListFragment : Fragment() {
                             "title" to "${inputText.text}"
                     )
 
-                    repository.addEvent(myuser.token,myuser.id, title) {event ->
+                    repository.addEvent(token,myuser.id, title) {event ->
 
                         eventId = event.id
                         Log.d("tubasa", event.id.toString())
@@ -173,7 +175,7 @@ class EventListFragment : Fragment() {
                             "name" to "${inputText.text}"
                     )
                     Log.d("EventListFragment", "")
-                    repository.editUser(myuser.token,myuser.id, name){name ->
+                    repository.editUser(token,myuser.id, name){name ->
                         // コールバックの操作
                         (activity as AppCompatActivity).supportActionBar?.title = name.get("name")
                         myuser.name = name.get("name")!!
@@ -205,7 +207,7 @@ class EventListFragment : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { res -> repository.joinEvent(myuser.token,myuser!!.id, res.id.toString()) },
+                        { res -> repository.joinEvent(token,myuser!!.id, res.id.toString()) },
                         { err -> Log.d("EventListFragment", err.toString()) }
                 )
     }
@@ -213,9 +215,10 @@ class EventListFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(user: User, eventList: MutableList<Event>) = EventListFragment().apply {
+        fun newInstance(token:String,user: User, eventList: MutableList<Event>) = EventListFragment().apply {
             arguments = Bundle().apply {
                 putInt("userId", user.id)
+                putString("token",token)
                 putParcelable("user", user)
                 putParcelableArrayList("eventListKey", ArrayList(eventList))
             }
