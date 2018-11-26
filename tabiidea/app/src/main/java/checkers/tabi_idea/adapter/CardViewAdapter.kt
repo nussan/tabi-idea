@@ -11,7 +11,7 @@ import checkers.tabi_idea.R
 
 class CardViewDataAdapter(var categoryList: List<String>) : RecyclerView.Adapter<CardViewDataAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewDataAdapter.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.cardview_raw, null)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_category_row, parent, false)
         return ViewHolder(view)
     }
 

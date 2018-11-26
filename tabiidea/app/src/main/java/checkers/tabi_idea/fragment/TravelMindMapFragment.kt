@@ -13,6 +13,8 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.widget.TextViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
@@ -21,6 +23,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import checkers.tabi_idea.R
+import checkers.tabi_idea.adapter.CardViewDataAdapter
 import checkers.tabi_idea.custom.view.CustomActionsInAnimator
 import checkers.tabi_idea.custom.view.CustomActionsTitleAnimator
 import checkers.tabi_idea.custom.view.RoundRectTextView
@@ -201,6 +204,7 @@ class TravelMindMapFragment :
         mindMapConstraintLayout.tapListener = object : ZoomableLayout.TapListener {
             override fun onTap(e: MotionEvent, centerX: Float, centerY: Float, scale: Float) {
                 val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
+                val rv = inflater.findViewById<RecyclerView>(R.id.rv)
                 val inputText: EditText = inflater.findViewById(R.id.inputText)
                 inputText.requestFocus()
                 val newId = map.size
@@ -222,6 +226,8 @@ class TravelMindMapFragment :
                 val inputForm = AlertDialog.Builder(context!!).apply {
                     setTitle("新しいアイデア")
                     setView(inflater)
+                    rv.layoutManager = LinearLayoutManager(context)
+                    rv.adapter = CardViewDataAdapter(listOf("行先", "宿泊", "aaaaaaaaaaaaaaa"))
                     setPositiveButton("OK") { _, _ ->
                         mmo.text = inputText.text.toString()
                         fbApiClient?.addMmo(mmo)
