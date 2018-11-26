@@ -61,6 +61,7 @@ class TravelMindMapFragment :
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
+        (activity as AppCompatActivity).supportActionBar?.setIcon(R.mipmap.ic_tabiidea_round)
         setHasOptionsMenu(true)
         return view
     }
@@ -427,6 +428,16 @@ class TravelMindMapFragment :
     }
     private val popAnimator = PopAnimator(true)
     private val actionTitleAnimator = CustomActionsTitleAnimator()
+
+    //TravelMIndMapFragmentでツールバーにメニュー機能を追加する
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.mmomenu, menu)
+
+        val item: MenuItem = menu.findItem(R.id.action_name_edit)
+    }
+
+
 
     companion object {
         @JvmStatic

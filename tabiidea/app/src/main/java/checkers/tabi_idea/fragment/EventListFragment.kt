@@ -1,8 +1,16 @@
 package checkers.tabi_idea.fragment
 
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.media.Image
+import android.net.Uri
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
+import android.support.customtabs.R.id.image
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -11,9 +19,9 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
 import android.view.*
-import android.view.animation.RotateAnimation
 import android.widget.EditText
 import android.widget.Toast
+import android.widget.Toolbar
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.User
@@ -29,6 +37,7 @@ import kotlinx.android.synthetic.main.fragment_event_list.*
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.io.FileDescriptor
 import java.util.*
 
 class EventListFragment : Fragment() {
@@ -58,6 +67,7 @@ class EventListFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
+        (activity as AppCompatActivity).supportActionBar?.setIcon(R.mipmap.ic_launcher)
         setHasOptionsMenu(true)
 
         return inflater.inflate(R.layout.fragment_event_list, container, false)
@@ -125,7 +135,7 @@ class EventListFragment : Fragment() {
                             "title" to "${inputText.text}"
                     )
 
-                    repository.addEvent(myuser.token,myuser.id, title) {event ->
+                    repository.addEventMock(myuser.token,myuser.id, title) {event -> //要変更
 
                         eventId = event.id
                         Log.d("tubasa", event.id.toString())
@@ -189,6 +199,37 @@ class EventListFragment : Fragment() {
 
             true
         }
+
+        val icon : MenuItem = menu.findItem(R.id.icon_change)
+        icon.setOnMenuItemClickListener{
+            val intent : Intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.setType("image/*")
+            startActivityForResult(intent,1000)
+            // OKが押されるとonActivityResutに処理が移行する
+            true
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        if(requestCode == 1000 && resultCode == RESULT_OK) {
+            var uri : Uri? = null
+            if(data != null) {
+                uri = data.data
+
+                val bmp : Bitmap = getBitmapFromUri(uri)
+                val drw = BitmapDrawable(bmp)
+                (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
+            }
+        }
+    }
+
+    private fun getBitmapFromUri(uri : Uri) : Bitmap{
+        val parcelFileDescriptor : ParcelFileDescriptor = getContext()!!.getContentResolver().openFileDescriptor(uri, "r")
+        val fileDescriptor : FileDescriptor = parcelFileDescriptor.getFileDescriptor()
+        val image : Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        parcelFileDescriptor.close();
+        return image
     }
 
     fun getEvent(url: String) {

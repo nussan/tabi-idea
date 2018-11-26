@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/icon_change"
+        android:id="@+id/mmomenu_icon"
         android:icon="@drawable/ic_edit_black_24dp"
         android:title="アイコンの変更"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_name_edit"
+        android:id="@+id/mmomenu_invite"
         android:icon="@drawable/ic_edit_black_24dp"
-        android:title="名前の編集"
+        android:title="招待"
         app:showAsAction="never" />
 </menu>
