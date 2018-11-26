@@ -586,10 +586,6 @@ public class QuickActionView {
         void onShow(QuickActionView quickActionView);
     }
 
-    public boolean qavMshown(){
-        return mShown;
-    }
-
     protected static class Config {
         private Action.Config mDefaultConfig;
         private Typeface mTypeface;

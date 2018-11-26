@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.main.fragment_event_list.*
 class MainActivity : AppCompatActivity() {
     private val repository = Repository()
     private var user: User? = null
-    private var token: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,50 +31,27 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             Log.d("editprob", uuid)
-            repository.getToken(uuid){
-                if(it==null){
+            repository.getUser(uuid) {
+                Log.d("usertoken",it.token)
+                if (it.id == -1) {
+                    Log.d("editprob", "X")
                     val newUser = mapOf(
                             "uuid" to uuid,
                             "name" to "新しいユーザー"
                     )
-                    repository.addUser(newUser) {
-                        this.token = it.get("token")
+                    repository.addUser(newUser) {user: User ->
+                        repository.getEventList(user.token,user!!.id) {
+                            toEventListFragment(user, it)
+                        }
                     }
-                }else {
-                    this.token = it.get("token")
-
-                    Log.d("myToken" , token)
-                }
-
-
-                repository.getUser(this.token!!,uuid){user ->
-                    this.user = user
-                    repository.getEventList(this.token!!,this.user!!.id){eventList ->
-                        toEventListFragment(token!!,this.user!!,eventList)
+                } else {
+                    Log.d("editprob", "O")
+                    Log.d("usertoken",it.token)
+                    repository.getEventList(it.token,it.id) { evel: MutableList<Event> ->
+                        toEventListFragment(it, evel)
                     }
                 }
             }
-//            repository.getUser(uuid) {
-//                Log.d("usertoken",it.token)
-//                if (it.id == -1) {
-//                    Log.d("editprob", "X")
-//                    val newUser = mapOf(
-//                            "uuid" to uuid,
-//                            "name" to "新しいユーザー"
-//                    )
-//                    repository.addUser(newUser) {user: User ->
-//                        repository.getEventList(user.token,user!!.id) {
-//                            toEventListFragment(user, it)
-//                        }
-//                    }
-//                } else {
-//                    Log.d("editprob", "O")
-//                    Log.d("usertoken",it.token)
-//                    repository.getEventList(it.token,it.id) { evel: MutableList<Event> ->
-//                        toEventListFragment(it, evel)
-//                    }
-//                }
-//            }
         }
     }
 
@@ -85,10 +61,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     //追加しました
-    private fun toEventListFragment(token:String,user: User, eventList: MutableList<Event>) {
+    private fun toEventListFragment(user: User, eventList: MutableList<Event>) {
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.container, EventListFragment.newInstance(token,user, eventList))
+                .replace(R.id.container, EventListFragment.newInstance(user, eventList))
                 .commit()
     }
 

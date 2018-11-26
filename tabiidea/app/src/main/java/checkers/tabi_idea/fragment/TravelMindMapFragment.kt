@@ -21,7 +21,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import checkers.tabi_idea.R
-import checkers.tabi_idea.R.id.mindMapConstraintLayout
 import checkers.tabi_idea.custom.view.CustomActionsInAnimator
 import checkers.tabi_idea.custom.view.CustomActionsTitleAnimator
 import checkers.tabi_idea.custom.view.RoundRectTextView
@@ -122,10 +121,8 @@ class TravelMindMapFragment :
 
                 // 画面のタッチポイントの差分をビュー毎に分けるためにここで宣言
                 val lastRaw = PointF(0f, 0f)
-            val qav:QuickActionView = QuickActionView.make(context)
 
                 view.setOnTouchListener { v, event ->
-                    if(!qav.qavMshown())
                     Log.d("TravelMindMapFragment", "${event.pointerCount}")
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {

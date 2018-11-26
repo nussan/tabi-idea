@@ -9,5 +9,7 @@ data class User(
         @Json(name = "id")
         var id: Int,
         @Json(name = "name")
-        var name: String
+        var name: String,
+        @Json(name = "token")
+        var token: String
 ) : Parcelable
