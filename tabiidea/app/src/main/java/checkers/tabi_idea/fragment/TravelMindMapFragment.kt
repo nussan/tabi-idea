@@ -1,11 +1,16 @@
 package checkers.tabi_idea.fragment
 
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
+import android.content.Intent
 import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -35,6 +40,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
+import java.io.FileDescriptor
 
 
 class TravelMindMapFragment :
@@ -434,7 +440,38 @@ class TravelMindMapFragment :
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.mmomenu, menu)
 
-        //val icon: MenuItem = menu.findItem(R.id.mmomenu_icon)
+        val icon: MenuItem = menu.findItem(R.id.mmomenu_icon)
+        icon.setOnMenuItemClickListener{
+            val intent : Intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.setType("image/*")
+            startActivityForResult(intent,1000)
+            // OKが押されるとonActivityResutに処理が移行する
+            true
+        }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        if(requestCode == 1000 && resultCode == Activity.RESULT_OK) {
+            var uri : Uri? = null
+            if(data != null) {
+                uri = data.data
+
+                val bmp : Bitmap = getBitmapFromUri(uri)
+                val reBmp = Bitmap.createScaledBitmap(bmp,240,240,false)
+                val drw = BitmapDrawable(reBmp)
+                (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
+            }
+        }
+    }
+
+    private fun getBitmapFromUri(uri : Uri) : Bitmap{
+        val parcelFileDescriptor : ParcelFileDescriptor = getContext()!!.getContentResolver().openFileDescriptor(uri, "r")
+        val fileDescriptor : FileDescriptor = parcelFileDescriptor.getFileDescriptor()
+        val image : Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        parcelFileDescriptor.close()
+        return image
     }
 
 

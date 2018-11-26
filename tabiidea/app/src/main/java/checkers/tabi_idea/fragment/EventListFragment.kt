@@ -67,7 +67,17 @@ class EventListFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
-        (activity as AppCompatActivity).supportActionBar?.setIcon(R.mipmap.ic_launcher)
+        repository.getUserIcon(){
+
+        }
+
+        if(repository.getUserIcon){
+
+            // それをアイコンに設定
+            TODO()
+        }else {
+            (activity as AppCompatActivity).supportActionBar?.setIcon(R.mipmap.ic_launcher)
+        }
         setHasOptionsMenu(true)
 
         return inflater.inflate(R.layout.fragment_event_list, container, false)
@@ -218,8 +228,10 @@ class EventListFragment : Fragment() {
 
                 val bmp : Bitmap = getBitmapFromUri(uri)
                 val reBmp = Bitmap.createScaledBitmap(bmp,240,240,false)
-                val drw = BitmapDrawable(reBmp)
-                (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
+                repository.setUserIcon(reBmp,myuser.id,myuser.token){
+                    val drw = BitmapDrawable(it)
+                    (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
+                }
             }
         }
     }

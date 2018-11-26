@@ -1,5 +1,7 @@
 package checkers.tabi_idea.provider
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.widget.Toast
 import checkers.tabi_idea.data.Event
@@ -130,6 +132,22 @@ class Repository {
     //urlの発行
     fun createUrl(token:String,user_id:Int,event_id: String,callback: (Map<String,String>) -> Unit){
         requestService.createUrl(token,user_id,event_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {res -> callback(res)},
+                        {err -> Log.d("errCreateUrl",err.toString())}
+                )
+    }
+
+    //ユーザーアイコンの取得
+    fun getUserIcon() {
+        TODO()
+    }
+
+    //ユーザーアイコンを設定
+    fun setUserIcon(btm : Bitmap, user_id: Int, token : String,callback:(Bitmap) -> Unit) {
+        requestService.setUserIcon(token,user_id,btm)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

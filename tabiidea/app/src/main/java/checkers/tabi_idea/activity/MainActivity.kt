@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
                             "uuid" to uuid,
                             "name" to "新しいユーザー"
                     )
-                    repository.addUserMock(newUser) {user: User -> //要変更
+                    repository.addUserMock(newUser) {user: User -> //TODO 要変更
                         repository.getEventList(user.token,user!!.id) {
                             toEventListFragment(user, it)
                         }
