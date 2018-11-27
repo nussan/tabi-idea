@@ -54,4 +54,8 @@ class FirebaseApiClient(event_id: String) {
         })
         ref.push().setValue(mmo)
     }
+
+    fun addEventToFbMock() {
+
+    }
 }
