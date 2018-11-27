@@ -228,6 +228,7 @@ class TravelMindMapFragment :
                     setTitle("新しいアイデア")
                     setView(inflater)
                     rv.layoutManager = LinearLayoutManager(context)
+                    rv.itemAnimator = null
                     rv.adapter = CardViewDataAdapter(listOf(Category("行先", true), Category("宿泊"), Category("予算"), Category("宿泊")))
                     setPositiveButton("OK") { _, _ ->
                         mmo.text = inputText.text.toString()

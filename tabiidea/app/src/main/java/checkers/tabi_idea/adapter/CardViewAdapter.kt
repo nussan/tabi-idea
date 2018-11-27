@@ -1,5 +1,6 @@
 package checkers.tabi_idea.adapter
 
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -26,31 +27,19 @@ class CardViewDataAdapter(private var categoryList: List<Category>) : RecyclerVi
         viewHolder.tvName.text = categoryList[position].name
         viewHolder.checkBox.tag = categoryList[position]
         viewHolder.checkBox.isChecked = categoryList[position].isChecked
-        viewHolder.checkBox.setOnCheckedChangeListener(null)
-        viewHolder.checkBox.setOnClickListener {
-            selectedPosition =
-                    if (viewHolder.checkBox.isChecked) {
-                        viewHolder.adapterPosition
-                    } else {
-                        -1
-                        return@setOnClickListener
-                    }
+        viewHolder.categoryLayout.setOnClickListener {
+            selectedPosition = viewHolder.adapterPosition
+
             for (i in 0 until categoryList.size) {
                 categoryList[i].isChecked = (i == selectedPosition)
             }
-            viewHolder.checkBox.isChecked = (selectedPosition == position)
             notifyDataSetChanged()
         }
-
     }
 
     class ViewHolder(itemLayoutView: View) : RecyclerView.ViewHolder(itemLayoutView) {
         var tvName: TextView = itemLayoutView.findViewById(R.id.tvName)
         var checkBox: CheckBox = itemLayoutView.findViewById(R.id.chkSelected)
-
-        init {
-            checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
-            }
-        }
+        var categoryLayout: ConstraintLayout = itemLayoutView.findViewById(R.id.categoryLayout)
     }
 }
