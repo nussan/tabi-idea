@@ -28,6 +28,7 @@ import checkers.tabi_idea.custom.view.CustomActionsInAnimator
 import checkers.tabi_idea.custom.view.CustomActionsTitleAnimator
 import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
+import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.provider.FirebaseApiClient
@@ -227,7 +228,7 @@ class TravelMindMapFragment :
                     setTitle("新しいアイデア")
                     setView(inflater)
                     rv.layoutManager = LinearLayoutManager(context)
-                    rv.adapter = CardViewDataAdapter(listOf("行先", "宿泊", "aaaaaaaaaaaaaaa"))
+                    rv.adapter = CardViewDataAdapter(listOf(Category("行先", true), Category("宿泊"), Category("予算"), Category("宿泊")))
                     setPositiveButton("OK") { _, _ ->
                         mmo.text = inputText.text.toString()
                         fbApiClient?.addMmo(mmo)
