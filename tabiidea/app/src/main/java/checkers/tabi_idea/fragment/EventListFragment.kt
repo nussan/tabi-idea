@@ -2,6 +2,7 @@ package checkers.tabi_idea.fragment
 
 
 import android.app.Activity.RESULT_OK
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -20,6 +21,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
 import android.view.*
 import android.widget.EditText
+import android.widget.SearchView
 import android.widget.Toast
 import android.widget.Toolbar
 import checkers.tabi_idea.R
@@ -46,6 +48,7 @@ class EventListFragment : Fragment() {
     private val repository = Repository()
     private var fireBaseApiClient:FirebaseApiClient? = null
     private lateinit var myuser : User
+    private var sortNewOld = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,17 +70,10 @@ class EventListFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
-        repository.getUserIcon(){
-
-        }
-
-        if(repository.getUserIcon){
-
-            // それをアイコンに設定
-            TODO()
-        }else {
-            (activity as AppCompatActivity).supportActionBar?.setIcon(R.mipmap.ic_launcher)
-        }
+//        repository.getUserIcon(myuser.id,myuser.token){
+//            val drw = BitmapDrawable(it)
+//            (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
+//        }
         setHasOptionsMenu(true)
 
         return inflater.inflate(R.layout.fragment_event_list, container, false)
@@ -127,6 +123,10 @@ class EventListFragment : Fragment() {
         })
 
         fab.setOnClickListener {
+
+            val adapter = eventListView.adapter as EventListAdapter
+            adapter.eventList = eventManager.eventList //検索機能を実行したときの更新
+
             it.isEnabled = false
             // レイアウトを取得
             val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
@@ -218,6 +218,44 @@ class EventListFragment : Fragment() {
             // OKが押されるとonActivityResutに処理が移行する
             true
         }
+
+        val sort : MenuItem = menu.findItem(R.id.sort)
+        sort.setOnMenuItemClickListener{
+
+
+            //このソート手法は初期のソートを再現できなくする機能でもある
+            //そこはこだわらなくてよいと判断
+            if(sortNewOld){
+                //ソートを新しいイベントが一番上に来るようにする
+
+            }else {
+                //ソートを古いイベントが一番上に来るようにする
+            }
+            true
+        }
+
+
+        val searchView = menu.findItem(R.id.search).actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(text: String?): Boolean {
+                // 検索キーが押下された
+                Log.d(TAG, "submit text: $text")
+                return false
+            }
+
+            override fun onQueryTextChange(text: String?): Boolean {
+                // テキストが変更された
+                Log.d(TAG, "change text: $text")
+                val adapter = eventListView.adapter as EventListAdapter
+                if (text != null) {
+                    val list = eventManager.eventList.filter {it.title.contains(text) }
+                    adapter.eventList = list.toMutableList()
+                    adapter.notifyDataSetChanged()
+                }
+                return false
+            }
+
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){

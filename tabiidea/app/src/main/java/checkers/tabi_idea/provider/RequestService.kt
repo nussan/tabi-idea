@@ -45,4 +45,7 @@ interface RequestService {
 
     @POST("")
     fun setUserIcon(@Header("Authorization") token:String,@Path("uid") uid: Int, @Body btm: Bitmap):Single<Bitmap>
+
+    @GET("")
+    fun getUserIcon(@Header("Authorization") token:String,@Path("uid") uid: Int):Single<Bitmap>
 }

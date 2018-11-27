@@ -1,5 +1,7 @@
 package checkers.tabi_idea.activity
 
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -39,6 +41,8 @@ class MainActivity : AppCompatActivity() {
                             "name" to "新しいユーザー"
                     )
                     repository.addUserMock(newUser) {user: User -> //TODO 要変更
+                        val bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher)
+                        //TODO repository.setUserIcon(bmp,user.id,user.token){}
                         repository.getEventList(user.token,user!!.id) {
                             toEventListFragment(user, it)
                         }

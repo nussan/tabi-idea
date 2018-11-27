@@ -89,7 +89,7 @@ class Repository {
                 )
     }
     fun addEventMock(token:String,user_id: Int, title: Map<String, String>, callback: (Event) -> Unit){
-        callback(Event(2,"mock",mutableListOf(),"mock"))
+        callback(Event(2,title.get("title")!!,mutableListOf(),"mock"))
     }
 
     //eventListをget,rxjava2
@@ -141,8 +141,14 @@ class Repository {
     }
 
     //ユーザーアイコンの取得
-    fun getUserIcon() {
-        TODO()
+    fun getUserIcon(user_id: Int, token: String,callback:(Bitmap) -> Unit) {
+        requestService.getUserIcon(token,user_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {res -> callback(res)},
+                        {err -> Log.d("errCreateUrl",err.toString())}
+                )
     }
 
     //ユーザーアイコンを設定
