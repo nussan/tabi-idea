@@ -70,7 +70,7 @@ class EventListFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
-//        repository.getUserIcon(myuser.id,myuser.token){
+//        TODO repository.getUserIcon(myuser.id,myuser.token){
 //            val drw = BitmapDrawable(it)
 //            (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
 //        }
@@ -99,8 +99,9 @@ class EventListFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
                 val adapter = eventListView.adapter as EventListAdapter
                 viewHolder?.let {
-                    eventId = eventManager.eventList[it.adapterPosition].id
+                    eventId = adapter.eventList[it.adapterPosition].id
                     adapter.removeAt(it.adapterPosition)
+                    eventManager.eventList = adapter.eventList
                 }
                 repository.deleteEvent(myuser.token,myuser.id,eventId!!){
                     Toast.makeText(context,it.get("title")+"が削除されました",Toast.LENGTH_SHORT).show()
@@ -114,9 +115,10 @@ class EventListFragment : Fragment() {
             override fun onClick(view: View?) {
                 Log.d(javaClass.simpleName, "onTouch!!")
                 val position = eventListView.getChildAdapterPosition(view)
+                Log.d("masaka", (eventListView.adapter as EventListAdapter).eventList[position].title)
                 activity?.supportFragmentManager
                         ?.beginTransaction()
-                        ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[position]))
+                        ?.replace(R.id.container, TravelMindMapFragment.newInstance((eventListView.adapter as EventListAdapter).eventList[position]))
                         ?.addToBackStack(null)
                         ?.commit()
             }
@@ -126,7 +128,6 @@ class EventListFragment : Fragment() {
 
             val adapter = eventListView.adapter as EventListAdapter
             adapter.eventList = eventManager.eventList //検索機能を実行したときの更新
-
             it.isEnabled = false
             // レイアウトを取得
             val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
@@ -145,11 +146,11 @@ class EventListFragment : Fragment() {
                             "title" to "${inputText.text}"
                     )
 
-                    repository.addEventMock(myuser.token,myuser.id, title) {event -> //TODO 要変更
+                    repository.addEvent(myuser.token,myuser.id, title) {event ->
                         eventId = event.id
                         Log.d("tubasa", event.id.toString())
                         fireBaseApiClient = FirebaseApiClient(eventId.toString())
-                        fireBaseApiClient!!.addEventToFbMock() // TODO 用変更
+                        fireBaseApiClient!!.addEventToFb()
                         eventManager.add(event)
                         eventListView.adapter.notifyDataSetChanged()
                     }
@@ -221,15 +222,23 @@ class EventListFragment : Fragment() {
 
         val sort : MenuItem = menu.findItem(R.id.sort)
         sort.setOnMenuItemClickListener{
-
-
             //このソート手法は初期のソートを再現できなくする機能でもある
             //そこはこだわらなくてよいと判断
             if(sortNewOld){
                 //ソートを新しいイベントが一番上に来るようにする
+                eventManager.eventList.sortedBy{
+                    it.title.length
+                    Log.d("masaka",it.title)
+                }
 
+                (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
+                (eventListView.adapter as EventListAdapter).notifyDataSetChanged()
             }else {
                 //ソートを古いイベントが一番上に来るようにする
+                eventManager.eventList.sortedBy{
+                    it.id * -1
+                }
+                (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
             }
             true
         }
@@ -248,7 +257,9 @@ class EventListFragment : Fragment() {
                 Log.d(TAG, "change text: $text")
                 val adapter = eventListView.adapter as EventListAdapter
                 if (text != null) {
-                    val list = eventManager.eventList.filter {it.title.contains(text) }
+                    val list = eventManager.eventList.filter {
+                        it.title.contains(text)
+                    }
                     adapter.eventList = list.toMutableList()
                     adapter.notifyDataSetChanged()
                 }

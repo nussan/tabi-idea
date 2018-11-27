@@ -40,9 +40,10 @@ class MainActivity : AppCompatActivity() {
                             "uuid" to uuid,
                             "name" to "新しいユーザー"
                     )
-                    repository.addUserMock(newUser) {user: User -> //TODO 要変更
+                    repository.addUser(newUser) {user: User ->
                         val bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher)
                         //TODO repository.setUserIcon(bmp,user.id,user.token){}
+                        user.token = "Token " + user.token
                         repository.getEventList(user.token,user!!.id) {
                             toEventListFragment(user, it)
                         }
@@ -50,6 +51,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     Log.d("editprob", "O")
                     Log.d("usertoken",it.token)
+                    it.token = "Token " + it.token
                     repository.getEventList(it.token,it.id) { evel: MutableList<Event> ->
                         toEventListFragment(it, evel)
                     }
