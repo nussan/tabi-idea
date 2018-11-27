@@ -99,13 +99,13 @@ class Repository {
     }
 
     //eventへの参加
-    fun joinEvent(token:String,userid: Int, eventId: String) {
-        requestService.joinEvent(token,userid, eventId)
+    fun joinEvent(token:String,userId: Int, eventToken: String,callback: (Event) -> Unit) {
+        requestService.joinEvent(token,userId, eventToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { res -> },
-                        {err -> Log.d("errJoinEventList",err.toString()) }
+                        { res -> callback(res)},
+                        {err -> Log.d("errJoinEvent",err.toString()) }
                 )
     }
 
