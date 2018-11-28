@@ -1,8 +1,17 @@
 package checkers.tabi_idea.fragment
 
 
+import android.app.Activity.RESULT_OK
+import android.content.ContentValues.TAG
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.media.Image
+import android.net.Uri
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
+import android.support.customtabs.R.id.image
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -11,9 +20,10 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
 import android.view.*
-import android.view.animation.RotateAnimation
 import android.widget.EditText
+import android.widget.SearchView
 import android.widget.Toast
+import android.widget.Toolbar
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.User
@@ -29,6 +39,7 @@ import kotlinx.android.synthetic.main.fragment_event_list.*
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.io.FileDescriptor
 import java.util.*
 
 class EventListFragment : Fragment() {
@@ -37,6 +48,7 @@ class EventListFragment : Fragment() {
     private val repository = Repository()
     private var fireBaseApiClient:FirebaseApiClient? = null
     private lateinit var myuser : User
+    private var sortNewOld = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +70,10 @@ class EventListFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
+//        TODO repository.getUserIcon(myuser.id,myuser.token){
+//            val drw = BitmapDrawable(it)
+//            (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
+//        }
         setHasOptionsMenu(true)
 
         return inflater.inflate(R.layout.fragment_event_list, container, false)
@@ -83,8 +99,9 @@ class EventListFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
                 val adapter = eventListView.adapter as EventListAdapter
                 viewHolder?.let {
-                    eventId = eventManager.eventList[it.adapterPosition].id
+                    eventId = adapter.eventList[it.adapterPosition].id
                     adapter.removeAt(it.adapterPosition)
+                    eventManager.eventList = adapter.eventList
                 }
                 repository.deleteEvent(myuser.token,myuser.id,eventId!!){
                     Toast.makeText(context,it.get("title")+"が削除されました",Toast.LENGTH_SHORT).show()
@@ -98,15 +115,19 @@ class EventListFragment : Fragment() {
             override fun onClick(view: View?) {
                 Log.d(javaClass.simpleName, "onTouch!!")
                 val position = eventListView.getChildAdapterPosition(view)
+                Log.d("masaka", (eventListView.adapter as EventListAdapter).eventList[position].title)
                 activity?.supportFragmentManager
                         ?.beginTransaction()
-                        ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[position]))
+                        ?.replace(R.id.container, TravelMindMapFragment.newInstance((eventListView.adapter as EventListAdapter).eventList[position]))
                         ?.addToBackStack(null)
                         ?.commit()
             }
         })
 
         fab.setOnClickListener {
+
+            val adapter = eventListView.adapter as EventListAdapter
+            adapter.eventList = eventManager.eventList //検索機能を実行したときの更新
             it.isEnabled = false
             // レイアウトを取得
             val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
@@ -126,7 +147,6 @@ class EventListFragment : Fragment() {
                     )
 
                     repository.addEvent(myuser.token,myuser.id, title) {event ->
-
                         eventId = event.id
                         Log.d("tubasa", event.id.toString())
                         fireBaseApiClient = FirebaseApiClient(eventId.toString())
@@ -189,6 +209,88 @@ class EventListFragment : Fragment() {
 
             true
         }
+
+        val icon : MenuItem = menu.findItem(R.id.icon_change)
+        icon.setOnMenuItemClickListener{
+            val intent : Intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.setType("image/*")
+            startActivityForResult(intent,1000)
+            // OKが押されるとonActivityResutに処理が移行する
+            true
+        }
+
+        val sort : MenuItem = menu.findItem(R.id.sort)
+        sort.setOnMenuItemClickListener{
+            //このソート手法は初期のソートを再現できなくする機能でもある
+            //そこはこだわらなくてよいと判断
+            if(sortNewOld){
+                //ソートを新しいイベントが一番上に来るようにする
+                eventManager.eventList.sortedBy{
+                    it.title.length
+                    Log.d("masaka",it.title)
+                }
+
+                (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
+                (eventListView.adapter as EventListAdapter).notifyDataSetChanged()
+            }else {
+                //ソートを古いイベントが一番上に来るようにする
+                eventManager.eventList.sortedBy{
+                    it.id * -1
+                }
+                (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
+            }
+            true
+        }
+
+
+        val searchView = menu.findItem(R.id.search).actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(text: String?): Boolean {
+                // 検索キーが押下された
+                Log.d(TAG, "submit text: $text")
+                return false
+            }
+
+            override fun onQueryTextChange(text: String?): Boolean {
+                // テキストが変更された
+                Log.d(TAG, "change text: $text")
+                val adapter = eventListView.adapter as EventListAdapter
+                if (text != null) {
+                    val list = eventManager.eventList.filter {
+                        it.title.contains(text)
+                    }
+                    adapter.eventList = list.toMutableList()
+                    adapter.notifyDataSetChanged()
+                }
+                return false
+            }
+
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        if(requestCode == 1000 && resultCode == RESULT_OK) {
+            var uri : Uri? = null
+            if(data != null) {
+                uri = data.data
+
+                val bmp : Bitmap = getBitmapFromUri(uri)
+                val reBmp = Bitmap.createScaledBitmap(bmp,240,240,false)
+                repository.setUserIcon(reBmp,myuser.id,myuser.token){
+                    val drw = BitmapDrawable(it)
+                    (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
+                }
+            }
+        }
+    }
+
+    private fun getBitmapFromUri(uri : Uri) : Bitmap{
+        val parcelFileDescriptor : ParcelFileDescriptor = getContext()!!.getContentResolver().openFileDescriptor(uri, "r")
+        val fileDescriptor : FileDescriptor = parcelFileDescriptor.getFileDescriptor()
+        val image : Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        parcelFileDescriptor.close();
+        return image
     }
 
     fun getEvent(url: String) {
