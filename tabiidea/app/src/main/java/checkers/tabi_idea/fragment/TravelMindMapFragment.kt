@@ -13,8 +13,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.widget.TextViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
@@ -23,12 +21,10 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import checkers.tabi_idea.R
-import checkers.tabi_idea.adapter.CategoryViewDataAdapter
 import checkers.tabi_idea.custom.view.CustomActionsInAnimator
 import checkers.tabi_idea.custom.view.CustomActionsTitleAnimator
 import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
-import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.provider.FirebaseApiClient
@@ -159,7 +155,7 @@ class TravelMindMapFragment :
 
                     false
                 }
-                rrvToQAV(context,view)
+                rrvToQAV(context, view)
 
                 map = map.plus(key to mmo)
                 mindMapConstraintLayout.addView(view, mmo)
@@ -194,7 +190,8 @@ class TravelMindMapFragment :
         }
         return super.onOptionsItemSelected(item)
     }
-    private fun onLikeSelected(tag: String){
+
+    private fun onLikeSelected(tag: String) {
 
     }
 
@@ -205,7 +202,6 @@ class TravelMindMapFragment :
         mindMapConstraintLayout.tapListener = object : ZoomableLayout.TapListener {
             override fun onTap(e: MotionEvent, centerX: Float, centerY: Float, scale: Float) {
                 val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
-                val rv = inflater.findViewById<RecyclerView>(R.id.rv)
                 val inputText: EditText = inflater.findViewById(R.id.inputText)
                 inputText.requestFocus()
                 val newId = map.size
@@ -227,15 +223,6 @@ class TravelMindMapFragment :
                 val inputForm = AlertDialog.Builder(context!!).apply {
                     setTitle("新しいアイデア")
                     setView(inflater)
-                    rv.layoutManager = LinearLayoutManager(context)
-                    rv.adapter = CategoryViewDataAdapter(listOf(
-                            Category("行先", false),
-                            Category("宿泊"),
-                            Category("予算"),
-                            Category("宿泊"),
-                            Category("宿泊"),
-                            Category("宿泊"),
-                            Category("宿泊")))
                     setPositiveButton("OK") { _, _ ->
                         mmo.text = inputText.text.toString()
                         fbApiClient?.addMmo(mmo)
@@ -390,7 +377,7 @@ class TravelMindMapFragment :
         return textView
     }
 
-    private fun rrvToQAV(context: Context?, view: View){
+    private fun rrvToQAV(context: Context?, view: View) {
         val qav = QuickActionView.make(context)
         val mQuickActionListener = QuickActionView.OnActionSelectedListener { action, quickActionView ->
             Log.d("aaa", "aaa")
