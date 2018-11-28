@@ -203,7 +203,21 @@ class TravelMindMapFragment :
                 val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
                 val inputText: EditText = inflater.findViewById(R.id.inputText)
                 val spinner = inflater.findViewById<Spinner>(R.id.spinner)
-                val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, listOf(Category("行先"), Category("行先"), Category("行先")))
+                val adapter = ArrayAdapter(context,
+                        android.R.layout.simple_spinner_item,
+                        listOf(Category("行先"),
+                                Category("食事"),
+                                Category("宿泊"),
+                                Category("行先"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊宿泊宿泊宿泊宿泊宿泊宿泊宿泊")
+                        ))
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinner.adapter = adapter
                 inputText.requestFocus()
