@@ -51,6 +51,7 @@ class TravelMindMapFragment :
     private var map: Map<String, MindMapObject> = mutableMapOf()
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
+    private var categoryList: List<Category> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -210,21 +211,7 @@ class TravelMindMapFragment :
                 val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
                 val inputText: EditText = inflater.findViewById(R.id.inputText)
                 val spinner = inflater.findViewById<Spinner>(R.id.spinner)
-                val adapter = ArrayAdapter(context,
-                        android.R.layout.simple_spinner_item,
-                        listOf(Category("行先"),
-                                Category("食事"),
-                                Category("宿泊"),
-                                Category("行先"),
-                                Category("宿泊"),
-                                Category("宿泊"),
-                                Category("宿泊"),
-                                Category("宿泊"),
-                                Category("宿泊"),
-                                Category("宿泊"),
-                                Category("宿泊"),
-                                Category("宿泊宿泊宿泊宿泊宿泊宿泊宿泊宿泊")
-                        ))
+                val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, categoryList)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinner.adapter = adapter
                 inputText.requestFocus()
