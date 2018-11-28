@@ -23,7 +23,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import checkers.tabi_idea.R
-import checkers.tabi_idea.adapter.CardViewDataAdapter
+import checkers.tabi_idea.adapter.CategoryViewDataAdapter
 import checkers.tabi_idea.custom.view.CustomActionsInAnimator
 import checkers.tabi_idea.custom.view.CustomActionsTitleAnimator
 import checkers.tabi_idea.custom.view.RoundRectTextView
@@ -228,8 +228,14 @@ class TravelMindMapFragment :
                     setTitle("新しいアイデア")
                     setView(inflater)
                     rv.layoutManager = LinearLayoutManager(context)
-                    rv.itemAnimator = null
-                    rv.adapter = CardViewDataAdapter(listOf(Category("行先", true), Category("宿泊"), Category("予算"), Category("宿泊")))
+                    rv.adapter = CategoryViewDataAdapter(listOf(
+                            Category("行先", false),
+                            Category("宿泊"),
+                            Category("予算"),
+                            Category("宿泊"),
+                            Category("宿泊"),
+                            Category("宿泊"),
+                            Category("宿泊")))
                     setPositiveButton("OK") { _, _ ->
                         mmo.text = inputText.text.toString()
                         fbApiClient?.addMmo(mmo)
@@ -238,7 +244,7 @@ class TravelMindMapFragment :
                 }.create()
 
                 // ダイアログ表示と同時にキーボードを表示
-                inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+//                inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
                 inputForm.show()
             }
         }
@@ -419,22 +425,6 @@ class TravelMindMapFragment :
         val customActionsInAnimator = CustomActionsInAnimator(qav)
         qav.setActionsInAnimator(customActionsInAnimator)
     }
-
-    //    private var mRoot: ViewGroup? = null
-    private val mQuickActionListener = QuickActionView.OnActionSelectedListener { action, quickActionView ->
-        Log.d("aaa", "aaa")
-        val view = quickActionView.longPressedView
-        if (view != null) {
-            Snackbar.make(view, "Clicked on " + action.id, Snackbar.LENGTH_SHORT).show()
-            when (action.title) {
-                "追加" -> onAddSelected(view.tag as String)
-                "編集" -> onEditSelected(view.tag as String)
-                "いいね" -> onLikeSelected(view.tag as String)
-            }
-        }
-    }
-    private val popAnimator = PopAnimator(true)
-    private val actionTitleAnimator = CustomActionsTitleAnimator()
 
     companion object {
         @JvmStatic

@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import checkers.tabi_idea.R
-import checkers.tabi_idea.adapter.CardViewDataAdapter
+import checkers.tabi_idea.adapter.CategoryViewDataAdapter
 import checkers.tabi_idea.data.Category
 import kotlinx.android.synthetic.main.fragment_category_list.*
 
@@ -27,7 +27,7 @@ class CategoryListFragment : Fragment() {
 
         category_recycler_view.setHasFixedSize(true)
         category_recycler_view.layoutManager = LinearLayoutManager(context)
-        category_recycler_view.adapter = CardViewDataAdapter(listOf(Category("行先"), Category("宿泊")))
+        category_recycler_view.adapter = CategoryViewDataAdapter(listOf(Category("行先"), Category("宿泊")))
     }
 
     companion object {
