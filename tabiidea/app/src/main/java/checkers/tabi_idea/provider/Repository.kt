@@ -1,16 +1,9 @@
 package checkers.tabi_idea.provider
 
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.util.Log
-import android.widget.Toast
 import checkers.tabi_idea.data.Event
-import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -43,8 +36,9 @@ class Repository {
                         { err -> Log.d("errAddUser", err.toString())}
                 )
     }
-    fun addUserMock(newUser: Map<String, String>,callback: (User) -> Unit) {
-        val user : User = User(1,"MOCK","MOCK")
+
+    fun addUserMock(newUser: Map<String, String>, callback: (User) -> Unit) {
+        val user: User = User(1, "MOCK", "MOCK")
         callback(user)
     }
 
@@ -88,8 +82,9 @@ class Repository {
                         }
                 )
     }
-    fun addEventMock(token:String,user_id: Int, title: Map<String, String>, callback: (Event) -> Unit){
-        callback(Event(2,title.get("title")!!,mutableListOf(),"mock"))
+
+    fun addEventMock(token: String, user_id: Int, title: Map<String, String>, callback: (Event) -> Unit) {
+        callback(Event(2, title.get("title")!!, mutableListOf(), "mock"))
     }
 
     //eventListをget,rxjava2
@@ -141,24 +136,24 @@ class Repository {
     }
 
     //ユーザーアイコンの取得
-    fun getUserIcon(user_id: Int, token: String,callback:(Bitmap) -> Unit) {
-        requestService.getUserIcon(token,user_id)
+    fun getUserIcon(user_id: Int, token: String, callback: (Bitmap) -> Unit) {
+        requestService.getUserIcon(token, user_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        {res -> callback(res)},
-                        {err -> Log.d("errCreateUrl",err.toString())}
+                        { res -> callback(res) },
+                        { err -> Log.d("errCreateUrl", err.toString()) }
                 )
     }
 
     //ユーザーアイコンを設定
-    fun setUserIcon(btm : Bitmap, user_id: Int, token : String,callback:(Bitmap) -> Unit) {
-        requestService.setUserIcon(token,user_id,btm)
+    fun setUserIcon(btm: Bitmap, user_id: Int, token: String, callback: (Bitmap) -> Unit) {
+        requestService.setUserIcon(token, user_id, btm)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        {res -> callback(res)},
-                        {err -> Log.d("errCreateUrl",err.toString())}
+                        { res -> callback(res) },
+                        { err -> Log.d("errCreateUrl", err.toString()) }
                 )
     }
 

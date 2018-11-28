@@ -7,11 +7,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
-import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
-import android.support.customtabs.R.id.image
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -23,7 +21,6 @@ import android.view.*
 import android.widget.EditText
 import android.widget.SearchView
 import android.widget.Toast
-import android.widget.Toolbar
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.User
@@ -210,32 +207,32 @@ class EventListFragment : Fragment() {
             true
         }
 
-        val icon : MenuItem = menu.findItem(R.id.icon_change)
-        icon.setOnMenuItemClickListener{
-            val intent : Intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        val icon: MenuItem = menu.findItem(R.id.icon_change)
+        icon.setOnMenuItemClickListener {
+            val intent: Intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
             intent.addCategory(Intent.CATEGORY_OPENABLE)
             intent.setType("image/*")
-            startActivityForResult(intent,1000)
+            startActivityForResult(intent, 1000)
             // OKが押されるとonActivityResutに処理が移行する
             true
         }
 
-        val sort : MenuItem = menu.findItem(R.id.sort)
-        sort.setOnMenuItemClickListener{
+        val sort: MenuItem = menu.findItem(R.id.sort)
+        sort.setOnMenuItemClickListener {
             //このソート手法は初期のソートを再現できなくする機能でもある
             //そこはこだわらなくてよいと判断
-            if(sortNewOld){
+            if (sortNewOld) {
                 //ソートを新しいイベントが一番上に来るようにする
-                eventManager.eventList.sortedBy{
+                eventManager.eventList.sortedBy {
                     it.title.length
-                    Log.d("masaka",it.title)
+                    Log.d("masaka", it.title)
                 }
 
                 (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
                 (eventListView.adapter as EventListAdapter).notifyDataSetChanged()
-            }else {
+            } else {
                 //ソートを古いイベントが一番上に来るようにする
-                eventManager.eventList.sortedBy{
+                eventManager.eventList.sortedBy {
                     it.id * -1
                 }
                 (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
@@ -269,15 +266,15 @@ class EventListFragment : Fragment() {
         })
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
-        if(requestCode == 1000 && resultCode == RESULT_OK) {
-            var uri : Uri? = null
-            if(data != null) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1000 && resultCode == RESULT_OK) {
+            var uri: Uri? = null
+            if (data != null) {
                 uri = data.data
 
-                val bmp : Bitmap = getBitmapFromUri(uri)
-                val reBmp = Bitmap.createScaledBitmap(bmp,240,240,false)
-                repository.setUserIcon(reBmp,myuser.id,myuser.token){
+                val bmp: Bitmap = getBitmapFromUri(uri)
+                val reBmp = Bitmap.createScaledBitmap(bmp, 240, 240, false)
+                repository.setUserIcon(reBmp, myuser.id, myuser.token) {
                     val drw = BitmapDrawable(it)
                     (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
                 }
@@ -285,10 +282,10 @@ class EventListFragment : Fragment() {
         }
     }
 
-    private fun getBitmapFromUri(uri : Uri) : Bitmap{
-        val parcelFileDescriptor : ParcelFileDescriptor = getContext()!!.getContentResolver().openFileDescriptor(uri, "r")
-        val fileDescriptor : FileDescriptor = parcelFileDescriptor.getFileDescriptor()
-        val image : Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+    private fun getBitmapFromUri(uri: Uri): Bitmap {
+        val parcelFileDescriptor: ParcelFileDescriptor = getContext()!!.getContentResolver().openFileDescriptor(uri, "r")
+        val fileDescriptor: FileDescriptor = parcelFileDescriptor.getFileDescriptor()
+        val image: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
         parcelFileDescriptor.close();
         return image
     }
