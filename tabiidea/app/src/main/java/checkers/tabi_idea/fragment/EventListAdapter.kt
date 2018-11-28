@@ -53,7 +53,7 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
     }
 
     //ビットマップを作成する関数
-    private fun createBitmap(capital:String,holder: EventListViewHolder) : Bitmap {
+    private fun createBitmap(capital: String, holder: EventListViewHolder): Bitmap {
         val objPaint = Paint()
         var objBitmap: Bitmap
         val objCanvas: Canvas

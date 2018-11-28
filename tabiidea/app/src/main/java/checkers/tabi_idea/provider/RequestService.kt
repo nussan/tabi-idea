@@ -2,10 +2,8 @@ package checkers.tabi_idea.provider
 
 import android.graphics.Bitmap
 import checkers.tabi_idea.data.Event
-import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
 import io.reactivex.Single
-import retrofit2.Call
 import retrofit2.http.*
 
 interface RequestService {
@@ -44,8 +42,8 @@ interface RequestService {
     fun createUrl(@Header("Authorization") token:String,@Path("uid") uid: Int, @Path("eid") eid: String): Single<Map<String,String>>
 
     @POST("")
-    fun setUserIcon(@Header("Authorization") token:String,@Path("uid") uid: Int, @Body btm: Bitmap):Single<Bitmap>
+    fun setUserIcon(@Header("Authorization") token: String, @Path("uid") uid: Int, @Body btm: Bitmap): Single<Bitmap>
 
     @GET("")
-    fun getUserIcon(@Header("Authorization") token:String,@Path("uid") uid: Int):Single<Bitmap>
+    fun getUserIcon(@Header("Authorization") token: String, @Path("uid") uid: Int): Single<Bitmap>
 }
