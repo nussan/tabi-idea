@@ -17,14 +17,13 @@ import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import checkers.tabi_idea.R
 import checkers.tabi_idea.custom.view.CustomActionsInAnimator
 import checkers.tabi_idea.custom.view.CustomActionsTitleAnimator
 import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
+import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.provider.FirebaseApiClient
@@ -203,6 +202,10 @@ class TravelMindMapFragment :
             override fun onTap(e: MotionEvent, centerX: Float, centerY: Float, scale: Float) {
                 val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
                 val inputText: EditText = inflater.findViewById(R.id.inputText)
+                val spinner = inflater.findViewById<Spinner>(R.id.spinner)
+                val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, listOf(Category("行先"), Category("行先"), Category("行先")))
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinner.adapter = adapter
                 inputText.requestFocus()
                 val newId = map.size
                 val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(tag)
