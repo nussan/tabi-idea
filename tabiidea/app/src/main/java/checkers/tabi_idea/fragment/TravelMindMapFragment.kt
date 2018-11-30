@@ -51,7 +51,12 @@ class TravelMindMapFragment :
     private var map: Map<String, MindMapObject> = mutableMapOf()
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
-    private var categoryList: List<Category> = listOf()
+    private var categoryList: List<Category> = listOf(
+            Category("行先", "#ffb6c1"),
+            Category("予算", "#32cd32"),
+            Category("食物", "#ff8c00"),
+            Category("宿泊", "#ffe4b5")
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -194,6 +199,14 @@ class TravelMindMapFragment :
                 (activity as AppCompatActivity).supportFragmentManager.popBackStack()
             }
 
+            R.id.mmomenu_list -> {
+                activity?.supportFragmentManager
+                        ?.beginTransaction()
+                        ?.replace(R.id.container, CategoryListFragment.newInstance(categoryList as ArrayList<Category>))
+                        ?.addToBackStack(null)
+                        ?.commit()
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -211,9 +224,11 @@ class TravelMindMapFragment :
                 val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
                 val inputText: EditText = inflater.findViewById(R.id.inputText)
                 val spinner = inflater.findViewById<Spinner>(R.id.spinner)
+
                 val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, categoryList)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinner.adapter = adapter
+
                 inputText.requestFocus()
                 val newId = map.size
                 val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(tag)
@@ -228,8 +243,18 @@ class TravelMindMapFragment :
                         (e.y - matrix[Matrix.MTRANS_Y]) - parent.height * scale / 2,
                         parent.tag as String,
                         0,
-                        map[parent.tag as String]!!.type
+                        spinner.selectedItem.toString()
                 )
+                spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        Toast.makeText(context, (parent as Spinner).selectedItem.toString(), Toast.LENGTH_SHORT).show()
+                        mmo.type = parent.selectedItem.toString()
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                    }
+                }
+
                 // ダイアログの設定
                 val inputForm = AlertDialog.Builder(context!!).apply {
                     setTitle("新しいアイデア")
@@ -370,19 +395,9 @@ class TravelMindMapFragment :
         textView.gravity = Gravity.CENTER
         textView.text = TextUtils.ellipsize(mindMapObject.text, textView.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
         textView.setTextColor(Color.WHITE)
-        when (mindMapObject.type) {
-            "destination" -> {
-                textView.setBackgroundColor(Color.parseColor("#ffb6c1"))
-            }
-            "budget" -> {
-                textView.setBackgroundColor(Color.parseColor("#32cd32"))
-            }
-            "food" -> {
-                textView.setBackgroundColor(Color.parseColor("#ff8c00"))
-            }
-            "hotel" -> {
-                textView.setBackgroundColor(Color.parseColor("#ffe4b5"))
-            }
+        categoryList.forEach { category ->
+            if (mindMapObject.type == category.name)
+                textView.setBackgroundColor(Color.parseColor(category.color))
 
         }
         return textView
@@ -431,9 +446,9 @@ class TravelMindMapFragment :
 
         val icon: MenuItem = menu.findItem(R.id.mmomenu_icon)
         icon.setOnMenuItemClickListener {
-            val intent: Intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
             intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.setType("image/*")
+            intent.type = "image/*"
             startActivityForResult(intent, 1000)
             // OKが押されるとonActivityResutに処理が移行する
             true

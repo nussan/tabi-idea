@@ -39,10 +39,10 @@ class FirebaseApiClient(event_id: String) {
                     Log.d("Repository", rootKey)
                     updateMmo(rootKey to MindMapObject(0, "旅行", 0f, 0f, rootKey, 0, "root"))
                     val ml = mutableListOf(
-                            MindMapObject(1, "行先", 200f, 200f, rootKey, 0, "destination"),
-                            MindMapObject(2, "予算", 200f, -200f, rootKey, 0, "budget"),
-                            MindMapObject(3, "食事", -200f, 200f, rootKey, 0, "food"),
-                            MindMapObject(4, "宿泊", -200f, -200f, rootKey, 0, "hotel"))
+                            MindMapObject(1, "行先", 200f, 200f, rootKey, 0, "行先"),
+                            MindMapObject(2, "予算", 200f, -200f, rootKey, 0, "予算"),
+                            MindMapObject(3, "食事", -200f, 200f, rootKey, 0, "食物"),
+                            MindMapObject(4, "宿泊", -200f, -200f, rootKey, 0, "宿泊"))
                     ml.forEach {child ->
                         addMmo(child)
                     }
