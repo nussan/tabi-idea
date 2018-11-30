@@ -22,6 +22,7 @@ import android.widget.EditText
 import android.widget.SearchView
 import android.widget.Toast
 import checkers.tabi_idea.R
+import checkers.tabi_idea.adapter.EventListAdapter
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.manager.EventManager

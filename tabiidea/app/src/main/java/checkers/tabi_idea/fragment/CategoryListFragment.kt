@@ -2,12 +2,15 @@ package checkers.tabi_idea.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import checkers.tabi_idea.R
+import checkers.tabi_idea.adapter.CategoryListAdapter
 import checkers.tabi_idea.data.Category
+import kotlinx.android.synthetic.main.fragment_category_list.*
 
 class CategoryListFragment : Fragment() {
     var categoryList = listOf<Category>()
@@ -26,6 +29,10 @@ class CategoryListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        category_recycler_view.setHasFixedSize(true)
+        category_recycler_view.layoutManager = LinearLayoutManager(context)
+        category_recycler_view.adapter = CategoryListAdapter(categoryList)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

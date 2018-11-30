@@ -1,4 +1,4 @@
-package checkers.tabi_idea.fragment
+package checkers.tabi_idea.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
