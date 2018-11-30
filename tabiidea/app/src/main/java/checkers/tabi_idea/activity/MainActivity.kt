@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.fragment_event_list.*
 
 class MainActivity : AppCompatActivity() {
     private val repository = Repository()
-    private var user: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

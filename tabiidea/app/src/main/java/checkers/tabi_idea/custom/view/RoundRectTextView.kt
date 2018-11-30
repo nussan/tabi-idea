@@ -35,7 +35,6 @@ class RoundRectTextView : AppCompatTextView {
         val w = Math.max(this.measuredWidth, MIN_SIZE)
 //        val r = Math.min(Math.max(w, h), MAX_SIZE)
         setMeasuredDimension(w, h)
-
     }
 
     override fun performClick(): Boolean {

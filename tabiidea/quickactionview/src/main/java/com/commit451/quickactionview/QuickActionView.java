@@ -558,6 +558,10 @@ public class QuickActionView {
         return mClickedView;
     }
 
+    public void setTouchPoint(Point point) {
+        this.mTouchPoint = point;
+    }
+
     /**
      * Listener for when an action is selected (hovered, then released)
      */

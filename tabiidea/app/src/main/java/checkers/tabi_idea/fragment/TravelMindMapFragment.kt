@@ -35,6 +35,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
+import kotlin.reflect.jvm.internal.impl.resolve.constants.IntValue
 
 
 class TravelMindMapFragment :
@@ -121,13 +122,17 @@ class TravelMindMapFragment :
 
                 // 画面のタッチポイントの差分をビュー毎に分けるためにここで宣言
                 val lastRaw = PointF(0f, 0f)
+                val point = Point(0,0)
 
                 view.setOnTouchListener { v, event ->
+
                     Log.d("TravelMindMapFragment", "${event.pointerCount}")
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
                             lastRaw.set(event.rawX, event.rawY)
+                            point.set(event.x.toInt(),event.y.toInt())
+                            rrvToQAV(context,view,point)
                         }
 
                         MotionEvent.ACTION_MOVE -> {
@@ -155,7 +160,6 @@ class TravelMindMapFragment :
 
                     false
                 }
-                rrvToQAV(context,view)
 
                 map = map.plus(key to mmo)
                 mindMapConstraintLayout.addView(view, mmo)
@@ -191,7 +195,7 @@ class TravelMindMapFragment :
         return super.onOptionsItemSelected(item)
     }
     private fun onLikeSelected(tag: String){
-
+        
     }
 
     private fun onAddSelected(tag: String) {
@@ -376,8 +380,9 @@ class TravelMindMapFragment :
         return textView
     }
 
-    private fun rrvToQAV(context: Context?, view: View){
+    private fun rrvToQAV(context: Context?, view: View, point:Point){
         val qav = QuickActionView.make(context)
+        qav.setTouchPoint(point)
         val mQuickActionListener = QuickActionView.OnActionSelectedListener { action, quickActionView ->
             Log.d("aaa", "aaa")
             val view = quickActionView.longPressedView
