@@ -3,6 +3,7 @@ package checkers.tabi_idea.activity
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
@@ -10,10 +11,11 @@ import checkers.tabi_idea.data.Installation
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.fragment.EventListFragment
 import checkers.tabi_idea.provider.Repository
+import com.jaredrummler.android.colorpicker.ColorPickerDialogListener
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ColorPickerDialogListener {
     private val repository = Repository()
     private var user: User? = null
 
@@ -73,4 +75,22 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.actions, menu)
         return true
     }*/
+
+    override fun onDialogDismissed(dialogId: Int) {
+        Log.d(TAG, "onDialogDismissed() called with: dialogId = [$dialogId]")
+    }
+
+    override fun onColorSelected(dialogId: Int, color: Int) {
+        Log.d(TAG, "onColorSelected() called with: dialogId = [$dialogId], color = [$color]")
+        when (dialogId) {
+            DIALOG_ID ->
+                // We got result from the dialog that is shown when clicking on the icon in the action bar.
+                Toast.makeText(this@MainActivity, "Selected Color: #" + Integer.toHexString(color), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    companion object {
+        private const val DIALOG_ID = 0
+        private const val TAG = "MainActivity"
+    }
 }
