@@ -1,12 +1,13 @@
 package checkers.tabi_idea.fragment
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import checkers.tabi_idea.R
 import checkers.tabi_idea.adapter.CategoryListAdapter
 import checkers.tabi_idea.data.Category
@@ -23,6 +24,8 @@ class CategoryListFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_category_list, container, false)
     }
@@ -43,12 +46,13 @@ class CategoryListFragment : Fragment() {
         }
         return super.onOptionsItemSelected(item)
     }
+
     companion object {
         @JvmStatic
-        fun newInstance(list: ArrayList<Category>) =
+        fun newInstance(list: List<Category>) =
                 CategoryListFragment().apply {
                     arguments = Bundle().apply {
-                        putParcelableArrayList("categoryList", list)
+                        putParcelableArrayList("categoryList", ArrayList(list))
                     }
                 }
     }

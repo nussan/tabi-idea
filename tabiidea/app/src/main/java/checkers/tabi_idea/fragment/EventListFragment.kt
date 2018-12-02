@@ -10,17 +10,17 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
-import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import checkers.tabi_idea.R
 import checkers.tabi_idea.adapter.EventListAdapter
 import checkers.tabi_idea.data.Event
@@ -94,15 +94,15 @@ class EventListFragment : Fragment() {
         eventListView.layoutManager = GridLayoutManager(context, 1)
 
         val swipHandler = object : SwipeToDeleteCallback(context!!) {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val adapter = eventListView.adapter as EventListAdapter
-                viewHolder?.let {
+                viewHolder.let {
                     eventId = adapter.eventList[it.adapterPosition].id
                     adapter.removeAt(it.adapterPosition)
                     eventManager.eventList = adapter.eventList
                 }
                 repository.deleteEvent(myuser.token,myuser.id,eventId!!){
-                    Toast.makeText(context,it.get("title")+"が削除されました",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, it["title"] + "が削除されました", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -110,7 +110,7 @@ class EventListFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(eventListView)
 
         (eventListView.adapter as EventListAdapter).setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View?) {
+            override fun onClick(view: View) {
                 Log.d(javaClass.simpleName, "onTouch!!")
                 val position = eventListView.getChildAdapterPosition(view)
                 Log.d("masaka", (eventListView.adapter as EventListAdapter).eventList[position].title)
@@ -150,7 +150,7 @@ class EventListFragment : Fragment() {
                         fireBaseApiClient = FirebaseApiClient(eventId.toString())
                         fireBaseApiClient!!.addEventToFb()
                         eventManager.add(event)
-                        eventListView.adapter.notifyDataSetChanged()
+                        (eventListView.adapter as EventListAdapter).notifyDataSetChanged()
                     }
 
                 }

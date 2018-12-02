@@ -3,11 +3,11 @@ package checkers.tabi_idea.custom.view
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Outline
-import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.view.ViewOutlineProvider
+import androidx.appcompat.widget.AppCompatTextView
 
 
 class RoundRectTextView : AppCompatTextView {

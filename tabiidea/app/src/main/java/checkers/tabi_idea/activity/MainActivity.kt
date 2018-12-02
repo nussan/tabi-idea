@@ -2,8 +2,8 @@ package checkers.tabi_idea.activity
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.Installation

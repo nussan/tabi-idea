@@ -1,10 +1,12 @@
 package checkers.tabi_idea.adapter
 
-import android.support.v7.widget.RecyclerView
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Category
 
@@ -20,9 +22,11 @@ class CategoryListAdapter(var categoryList: List<Category>) : RecyclerView.Adapt
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         holder.tvName.text = categoryList[position].name
+        holder.backgroud.setBackgroundColor(Color.parseColor(categoryList[position].color))
     }
 
     class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var tvName: TextView = view.findViewById(R.id.tvName)
+        var backgroud: FrameLayout = view.findViewById(R.id.category_background)
     }
 }

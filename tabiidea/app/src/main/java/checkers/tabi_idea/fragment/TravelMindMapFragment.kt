@@ -11,18 +11,16 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v4.widget.TextViewCompat
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.widget.TextViewCompat
+import androidx.fragment.app.Fragment
 import checkers.tabi_idea.R
 import checkers.tabi_idea.custom.view.CustomActionsInAnimator
 import checkers.tabi_idea.custom.view.CustomActionsTitleAnimator
@@ -35,6 +33,8 @@ import checkers.tabi_idea.provider.FirebaseApiClient
 import com.commit451.quickactionview.Action
 import com.commit451.quickactionview.QuickActionView
 import com.commit451.quickactionview.animator.PopAnimator
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -202,7 +202,7 @@ class TravelMindMapFragment :
             R.id.mmomenu_list -> {
                 activity?.supportFragmentManager
                         ?.beginTransaction()
-                        ?.replace(R.id.container, CategoryListFragment.newInstance(categoryList as ArrayList<Category>))
+                        ?.replace(R.id.container, CategoryListFragment.newInstance(categoryList))
                         ?.addToBackStack(null)
                         ?.commit()
                 return true
