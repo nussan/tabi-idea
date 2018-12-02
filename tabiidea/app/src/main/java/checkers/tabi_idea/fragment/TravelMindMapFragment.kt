@@ -30,6 +30,7 @@ import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
+import checkers.tabi_idea.data.User
 import checkers.tabi_idea.provider.FirebaseApiClient
 import com.commit451.quickactionview.Action
 import com.commit451.quickactionview.QuickActionView
@@ -47,6 +48,7 @@ class TravelMindMapFragment :
         View.OnDragListener {
     private var fbApiClient: FirebaseApiClient? = null
     private var event: Event? = null
+    private var user: User? = null
     private var map: Map<String, MindMapObject> = mutableMapOf()
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
@@ -55,6 +57,7 @@ class TravelMindMapFragment :
         super.onCreate(savedInstanceState)
         arguments?.let {
             event = it.getParcelable("eventKey")
+            user = it.getParcelable("userKey")
         }
     }
 
@@ -204,7 +207,14 @@ class TravelMindMapFragment :
         return super.onOptionsItemSelected(item)
     }
     private fun onLikeSelected(tag: String){
-        
+        val mmo = map[tag] ?: return
+        if(!mmo.likeList.contains(user!!.id)) {
+            mmo.likeList.add(user!!.id)
+        }else {
+            mmo.likeList.remove(user!!.id)
+        }
+        mmo.point = mmo.likeList.size
+        fbApiClient?.updateMmo(tag to mmo)
     }
 
     private fun onAddSelected(tag: String) {
@@ -400,7 +410,7 @@ class TravelMindMapFragment :
                 when (action.title) {
                     "追加" -> onAddSelected(view.tag as String)
                     "編集" -> onEditSelected(view.tag as String)
-//                "いいね" -> onLikeSelected(view.tag as String)
+                "いいね" -> onLikeSelected(view.tag as String)
                 }
             }
         }
@@ -435,8 +445,9 @@ class TravelMindMapFragment :
 
     companion object {
         @JvmStatic
-        fun newInstance(event: Event) = TravelMindMapFragment().apply {
+        fun newInstance(user: User, event: Event) = TravelMindMapFragment().apply {
             arguments = Bundle().apply {
+                putParcelable("userKey",user)
                 putParcelable("eventKey", event)
             }
         }

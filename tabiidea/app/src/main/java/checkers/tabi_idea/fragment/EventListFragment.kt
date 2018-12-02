@@ -100,7 +100,7 @@ class EventListFragment : Fragment() {
                 val position = eventListView.getChildAdapterPosition(view)
                 activity?.supportFragmentManager
                         ?.beginTransaction()
-                        ?.replace(R.id.container, TravelMindMapFragment.newInstance(eventManager.eventList[position]))
+                        ?.replace(R.id.container, TravelMindMapFragment.newInstance(myuser,eventManager.eventList[position]))
                         ?.addToBackStack(null)
                         ?.commit()
             }
