@@ -10,7 +10,6 @@ import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
-import kotlinx.android.synthetic.main.activity_main.*
 
 class Repository {
     private var requestService: RequestService
