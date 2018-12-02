@@ -3,15 +3,12 @@ package checkers.tabi_idea.activity
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.Installation
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.fragment.EventListFragment
 import checkers.tabi_idea.provider.Repository
-import checkers.tabi_idea.provider.RequestService
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_event_list.*
 

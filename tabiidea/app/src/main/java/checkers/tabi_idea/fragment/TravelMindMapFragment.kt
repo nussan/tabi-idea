@@ -5,6 +5,9 @@ import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.Snackbar
@@ -113,23 +116,18 @@ class TravelMindMapFragment :
                 val view = mindMapObjectToTextView(context, mmo)
                 view.tag = key
 
-                view.setOnLongClickListener { v ->
-                    behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-                    val item = ClipData.Item(v.tag as? CharSequence)
-                    val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
-                    v.startDrag(data, View.DragShadowBuilder(v), v, 0)
-                }
-
                 // 画面のタッチポイントの差分をビュー毎に分けるためにここで宣言
                 val lastRaw = PointF(0f, 0f)
                 val point = Point(0,0)
 
                 view.setOnTouchListener { v, event ->
-
                     Log.d("TravelMindMapFragment", "${event.pointerCount}")
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
+
+                            drawStroke(v,true)
+
                             lastRaw.set(event.rawX, event.rawY)
                             point.set(event.x.toInt(),event.y.toInt())
                             rrvToQAV(context,view,point)
@@ -155,10 +153,21 @@ class TravelMindMapFragment :
 
                         MotionEvent.ACTION_UP -> {
                             Log.d("TravelMindMapFragment", "ACTION_UP")
+
+                            drawStroke(v,false)
+
                         }
                     }
 
                     false
+                }
+
+                view.setOnLongClickListener { v ->
+                    behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+                    val item = ClipData.Item(v.tag as? CharSequence)
+                    val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
+                    drawStroke(v,false)
+                    v.startDrag(data, View.DragShadowBuilder(v), v, 0)
                 }
 
                 map = map.plus(key to mmo)
@@ -417,21 +426,12 @@ class TravelMindMapFragment :
         qav.setActionsInAnimator(customActionsInAnimator)
     }
 
-    //    private var mRoot: ViewGroup? = null
-    private val mQuickActionListener = QuickActionView.OnActionSelectedListener { action, quickActionView ->
-        Log.d("aaa", "aaa")
-        val view = quickActionView.longPressedView
-        if (view != null) {
-            Snackbar.make(view, "Clicked on " + action.id, Snackbar.LENGTH_SHORT).show()
-            when (action.title) {
-                "追加" -> onAddSelected(view.tag as String)
-                "編集" -> onEditSelected(view.tag as String)
-                "いいね" -> onLikeSelected(view.tag as String)
-            }
-        }
+    fun drawStroke(view: View,actionDown: Boolean){
+        var strokeDrawable = GradientDrawable()
+        strokeDrawable.setColor(Color.parseColor("#ffe4b5"))
+        if(actionDown) strokeDrawable.setStroke(16, resources.getColor(R.color.colorPrimaryDark))
+        view.background = strokeDrawable
     }
-    private val popAnimator = PopAnimator(true)
-    private val actionTitleAnimator = CustomActionsTitleAnimator()
 
     companion object {
         @JvmStatic
