@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import checkers.tabi_idea.R
 import checkers.tabi_idea.adapter.EventListAdapter
+import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.manager.EventManager
@@ -42,10 +43,10 @@ import java.util.*
 
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
-    private var eventId:Int? = null
+    private var eventId: Int? = null
     private val repository = Repository()
-    private var fireBaseApiClient:FirebaseApiClient? = null
-    private lateinit var myuser : User
+    private var fireBaseApiClient: FirebaseApiClient? = null
+    private lateinit var myuser: User
     private var sortNewOld = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,7 +102,7 @@ class EventListFragment : Fragment() {
                     adapter.removeAt(it.adapterPosition)
                     eventManager.eventList = adapter.eventList
                 }
-                repository.deleteEvent(myuser.token,myuser.id,eventId!!){
+                repository.deleteEvent(myuser.token, myuser.id, eventId!!) {
                     Toast.makeText(context, it["title"] + "が削除されました", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -114,11 +115,18 @@ class EventListFragment : Fragment() {
                 Log.d(javaClass.simpleName, "onTouch!!")
                 val position = eventListView.getChildAdapterPosition(view)
                 Log.d("masaka", (eventListView.adapter as EventListAdapter).eventList[position].title)
-                activity?.supportFragmentManager
-                        ?.beginTransaction()
-                        ?.replace(R.id.container, TravelMindMapFragment.newInstance((eventListView.adapter as EventListAdapter).eventList[position]))
-                        ?.addToBackStack(null)
-                        ?.commit()
+                repository
+                        .getCategoryList(
+                                myuser.token,
+                                (eventListView.adapter as EventListAdapter).eventList[position].id) { list ->
+                            activity?.supportFragmentManager
+                                    ?.beginTransaction()
+                                    ?.replace(R.id.container,
+                                            TravelMindMapFragment.newInstance(
+                                                    (eventListView.adapter as EventListAdapter).eventList[position], list))
+                                    ?.addToBackStack(null)
+                                    ?.commit()
+                        }
             }
         })
 
@@ -144,13 +152,26 @@ class EventListFragment : Fragment() {
                             "title" to "${inputText.text}"
                     )
 
-                    repository.addEvent(myuser.token,myuser.id, title) {event ->
+                    repository.addEvent(myuser.token, myuser.id, title) { event ->
                         eventId = event.id
                         Log.d("tubasa", event.id.toString())
                         fireBaseApiClient = FirebaseApiClient(eventId.toString())
                         fireBaseApiClient!!.addEventToFb()
                         eventManager.add(event)
                         (eventListView.adapter as EventListAdapter).notifyDataSetChanged()
+
+                        // イベントにデフォルトのカテゴリを追加
+                        val cl = listOf(
+                                Category("行先", "#ffb6c1"),
+                                Category("予算", "#32cd32"),
+                                Category("食物", "#ff8c00"),
+                                Category("宿泊", "#ffe4b5")
+                        )
+                        cl.forEach { category ->
+                            repository.addCategory(myuser.token, event.id, category) {
+                                // 特にやることなし
+                            }
+                        }
                     }
 
                 }
@@ -191,7 +212,7 @@ class EventListFragment : Fragment() {
                             "name" to "${inputText.text}"
                     )
                     Log.d("EventListFragment", "")
-                    repository.editUser(myuser.token,myuser.id, name){name ->
+                    repository.editUser(myuser.token, myuser.id, name) { name ->
                         // コールバックの操作
                         (activity as AppCompatActivity).supportActionBar?.title = name.get("name")
                         myuser.name = name.get("name")!!
@@ -305,7 +326,7 @@ class EventListFragment : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { res -> repository.joinEvent(myuser.token,myuser!!.id, res.id.toString()) },
+                        { res -> repository.joinEvent(myuser.token, myuser!!.id, res.id.toString()) },
                         { err -> Log.d("EventListFragment", err.toString()) }
                 )
     }

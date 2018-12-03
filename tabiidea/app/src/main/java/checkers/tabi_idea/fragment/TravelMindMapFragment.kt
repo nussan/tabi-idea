@@ -51,17 +51,13 @@ class TravelMindMapFragment :
     private var map: Map<String, MindMapObject> = mutableMapOf()
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
-    private var categoryList: List<Category> = listOf(
-            Category("行先", "#ffb6c1"),
-            Category("予算", "#32cd32"),
-            Category("食物", "#ff8c00"),
-            Category("宿泊", "#ffe4b5")
-    )
+    private var categoryList: List<Category> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             event = it.getParcelable("eventKey")
+            categoryList = it.getParcelableArrayList<Category>("categoryList") as MutableList<Category>
         }
     }
 
@@ -481,9 +477,10 @@ class TravelMindMapFragment :
 
     companion object {
         @JvmStatic
-        fun newInstance(event: Event) = TravelMindMapFragment().apply {
+        fun newInstance(event: Event, categoryList: MutableList<Category>) = TravelMindMapFragment().apply {
             arguments = Bundle().apply {
                 putParcelable("eventKey", event)
+                putParcelableArrayList("categoryList", ArrayList(categoryList))
             }
         }
     }
