@@ -158,7 +158,7 @@ class EventListFragment : Fragment() {
             }.create()
 
             //ダイアログ表示と同時にキーボードを表示
-            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            inputForm.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
             inputForm.show()
 
             it.isEnabled = true

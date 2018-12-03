@@ -135,6 +135,7 @@ class TravelMindMapFragment :
                 val lastRaw = PointF(0f, 0f)
 
                 view.setOnTouchListener { v, event ->
+                    activity?.currentFocus
                     Log.d("TravelMindMapFragment", "${event.pointerCount}")
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
