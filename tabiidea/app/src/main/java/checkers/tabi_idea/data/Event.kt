@@ -16,8 +16,17 @@ data class Event(
         var member: MutableList<Int> = mutableListOf(),
         @Json(name= "creator")
         var creator: String
-): Parcelable {
+): Parcelable,Comparable<Event> {
         override fun toString(): String {
                 return title
         }
+        override fun compareTo(other : Event) : Int {
+                if (this.title.length > other.title.length) {
+                        return 1
+                } else if (this.title.length < other.title.length) {
+                        return -1
+                }
+                return 0
+        }
 }
+

@@ -7,11 +7,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
-import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
-import android.support.customtabs.R.id.image
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -23,7 +21,6 @@ import android.view.*
 import android.widget.EditText
 import android.widget.SearchView
 import android.widget.Toast
-import android.widget.Toolbar
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.User
@@ -222,23 +219,20 @@ class EventListFragment : Fragment() {
 
         val sort : MenuItem = menu.findItem(R.id.sort)
         sort.setOnMenuItemClickListener{
+            val ml = mutableListOf("aaaa","bb","d")
+            ml.sortBy{it.length}
             //このソート手法は初期のソートを再現できなくする機能でもある
-            //そこはこだわらなくてよいと判断
             if(sortNewOld){
-                //ソートを新しいイベントが一番上に来るようにする
-                eventManager.eventList.sortedBy{
-                    it.title.length
-                    Log.d("masaka",it.title)
-                }
-
+                eventManager.eventList.sort()
+                sortNewOld = false
                 (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
-                (eventListView.adapter as EventListAdapter).notifyDataSetChanged()
+                eventListView.adapter.notifyDataSetChanged()
             }else {
                 //ソートを古いイベントが一番上に来るようにする
-                eventManager.eventList.sortedBy{
-                    it.id * -1
-                }
+                eventManager.eventList.sortDescending()
+                sortNewOld = true
                 (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
+                eventListView.adapter.notifyDataSetChanged()
             }
             true
         }
@@ -325,3 +319,5 @@ class EventListFragment : Fragment() {
     }
 
 }
+
+
