@@ -5,6 +5,7 @@ import com.google.firebase.database.IgnoreExtraProperties
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 import org.jetbrains.annotations.Nullable
+import java.util.*
 
 @Parcelize
 data class Event(
@@ -15,7 +16,12 @@ data class Event(
         @Json(name = "member")
         var member: MutableList<Int> = mutableListOf(),
         @Json(name= "creator")
-        var creator: String
+        var creator: String,
+        @Json(name= "updated_at")
+        var upadated:String,
+        @Json(name= "createed_at")
+        var created: String
+
 ): Parcelable,Comparable<Event> {
         override fun toString(): String {
                 return title
