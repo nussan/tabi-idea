@@ -130,7 +130,7 @@ class Repository {
     }
 
     //urlの発行
-    fun createUrl(token:String,user_id:Int,event_id: String,callback: (Map<String,String>) -> Unit){
+    fun createUrl(token:String,user_id:Int,event_id: Int,callback: (Map<String,String>) -> Unit){
         requestService.createUrl(token,user_id,event_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

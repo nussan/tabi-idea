@@ -2,10 +2,7 @@ package checkers.tabi_idea.fragment
 
 
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipDescription
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -32,7 +29,9 @@ import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
+import checkers.tabi_idea.data.User
 import checkers.tabi_idea.provider.FirebaseApiClient
+import checkers.tabi_idea.provider.Repository
 import com.commit451.quickactionview.Action
 import com.commit451.quickactionview.QuickActionView
 import com.commit451.quickactionview.animator.PopAnimator
@@ -52,10 +51,13 @@ class TravelMindMapFragment :
     private var map: Map<String, MindMapObject> = mutableMapOf()
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
+    private val repository = Repository()
+    private lateinit var user : User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
+            user = it.getParcelable("user")
             event = it.getParcelable("eventKey")
         }
     }
@@ -450,6 +452,24 @@ class TravelMindMapFragment :
             true
         }
 
+        val invite: MenuItem = menu.findItem(R.id.mmomenu_invite)
+        invite.setOnMenuItemClickListener{
+            repository.createUrl(user.token,user.id,event!!.id){
+                Log.d("masak",it.getValue("url"))
+                AlertDialog.Builder(context!!).apply {
+                    setTitle("招待URLを発行しました")
+                    setMessage(it.getValue("url"))
+                    setPositiveButton("OK") { _, _ ->
+                        // OKをタップしたときの処理
+                        copyToClipboard(context,"",it.getValue("url"))
+                        Toast.makeText(context, "Dialog OK", Toast.LENGTH_LONG).show()
+                    }
+                    setNegativeButton("Cancel", null)
+                    show()
+                }
+            }
+            true
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
@@ -474,7 +494,12 @@ class TravelMindMapFragment :
         return image
     }
 
-
+    //招待ＵＲＬをクリップボードにコピーするメソッド
+    private fun copyToClipboard(context: Context, label:String, text:String) {
+        // copy to clipboard
+        val clipboardManager: ClipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.primaryClip = ClipData.newPlainText(label, text)
+    }
 
     companion object {
         @JvmStatic
