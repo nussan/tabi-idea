@@ -1,6 +1,7 @@
 package checkers.tabi_idea.provider
 
 import android.graphics.Bitmap
+import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.User
 import io.reactivex.Single
@@ -46,4 +47,10 @@ interface RequestService {
 
     @GET("")
     fun getUserIcon(@Header("Authorization") token: String, @Path("uid") uid: Int): Single<Bitmap>
+
+    @POST("category/create/{eid}")
+    fun addCategory(@Header("Authorization") token: String, @Path("eid") eid: Int, @Body title: String, @Body color: String): Single<Category>
+
+    @GET("category/show/{eid}")
+    fun getCategoryList(@Header("Authorization") token: String, @Path("eid") eid: Int): Single<MutableList<Category>>
 }

@@ -2,6 +2,7 @@ package checkers.tabi_idea.provider
 
 import android.graphics.Bitmap
 import android.util.Log
+import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.User
 import com.squareup.moshi.KotlinJsonAdapterFactory
@@ -33,7 +34,7 @@ class Repository {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { res -> callback(res) },
-                        { err -> Log.d("errAddUser", err.toString())}
+                        { err -> Log.d("errAddUser", err.toString()) }
                 )
     }
 
@@ -43,9 +44,9 @@ class Repository {
     }
 
     //userをedit
-    fun editUser(token:String, id: Int, editName: Map<String, String>, callback: (Map<String,String>) -> Unit) {
-        Log.d("tokentoken",token)
-        requestService.editUser(token,id, editName)
+    fun editUser(token: String, id: Int, editName: Map<String, String>, callback: (Map<String, String>) -> Unit) {
+        Log.d("tokentoken", token)
+        requestService.editUser(token, id, editName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -64,15 +65,15 @@ class Repository {
                         { res -> callback(res) },
                         { err ->
                             Log.d("errGetUser", err.toString())
-                            callback(User(-1,"",""))
+                            callback(User(-1, "", ""))
                         }
                 )
     }
 
     //eventlistをadd,rxjava2
-    fun addEvent(token:String,user_id: Int, title: Map<String, String>, callback: (Event) -> Unit) {
-        Log.d("tokentoken",token)
-        requestService.addEvent(token,user_id, title)
+    fun addEvent(token: String, user_id: Int, title: Map<String, String>, callback: (Event) -> Unit) {
+        Log.d("tokentoken", token)
+        requestService.addEvent(token, user_id, title)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -88,8 +89,8 @@ class Repository {
     }
 
     //eventListをget,rxjava2
-    fun getEventList(token:String,user_id: Int, callback: (MutableList<Event>) -> Unit) {
-        requestService.getEvent(token,user_id)
+    fun getEventList(token: String, user_id: Int, callback: (MutableList<Event>) -> Unit) {
+        requestService.getEvent(token, user_id)
                 .retry(3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -103,35 +104,35 @@ class Repository {
     }
 
     //eventへの参加
-    fun joinEvent(token:String,userid: Int, eventId: String) {
-        requestService.joinEvent(token,userid, eventId)
+    fun joinEvent(token: String, userid: Int, eventId: String) {
+        requestService.joinEvent(token, userid, eventId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { res -> },
-                        {err -> Log.d("errJoinEventList",err.toString()) }
+                        { err -> Log.d("errJoinEventList", err.toString()) }
                 )
     }
 
     //eventの削除
-    fun deleteEvent(token:String,user_id:Int,event_id: Int,callback: (Map<String,String>) -> Unit){
-        requestService.deleteEvent(token,user_id,event_id)
+    fun deleteEvent(token: String, user_id: Int, event_id: Int, callback: (Map<String, String>) -> Unit) {
+        requestService.deleteEvent(token, user_id, event_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        {res -> callback(res)},
-                        {err -> Log.d("errDeleteEvent",err.toString())}
+                        { res -> callback(res) },
+                        { err -> Log.d("errDeleteEvent", err.toString()) }
                 )
     }
 
     //urlの発行
-    fun createUrl(token:String,user_id:Int,event_id: String,callback: (Map<String,String>) -> Unit){
-        requestService.createUrl(token,user_id,event_id)
+    fun createUrl(token: String, user_id: Int, event_id: String, callback: (Map<String, String>) -> Unit) {
+        requestService.createUrl(token, user_id, event_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        {res -> callback(res)},
-                        {err -> Log.d("errCreateUrl",err.toString())}
+                        { res -> callback(res) },
+                        { err -> Log.d("errCreateUrl", err.toString()) }
                 )
     }
 
@@ -157,7 +158,25 @@ class Repository {
                 )
     }
 
+    fun addCategory(token: String, eventId: Int, category: Category, callback: (Category) -> Unit) {
+        requestService.addCategory(token, eventId, category.name, category.color)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { res -> callback(res) },
+                        { err -> Log.d("errAddCategory", err.toString()) }
+                )
+    }
 
+    fun getCategoryList(token: String, eventId: Int, callback: (MutableList<Category>) -> Unit) {
+        requestService.getCategoryList(token, eventId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { res -> callback(res) },
+                        { err -> Log.d("errGetCategoryList", err.toString()) }
+                )
+    }
     //eventをfbにadd
 //    fun addEventToFb(event_id: String) {
 //        val mmo = MindMapObject(0, "旅行", 0f, 0f, "", 0, "root")
