@@ -117,6 +117,9 @@ class TravelMindMapFragment :
                 val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
 
                 val view = mindMapObjectToTextView(context, mmo)
+
+                val colorInt = (view.background as ColorDrawable).color
+
                 view.tag = key
 
                 // 画面のタッチポイントの差分をビュー毎に分けるためにここで宣言
@@ -129,7 +132,7 @@ class TravelMindMapFragment :
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
 
-                            drawStroke(v,true)
+                            v.background = drawStroke(colorInt,true)
 
                             lastRaw.set(event.rawX, event.rawY)
                             point.set(event.x.toInt(),event.y.toInt())
@@ -157,7 +160,7 @@ class TravelMindMapFragment :
                         MotionEvent.ACTION_UP -> {
                             Log.d("TravelMindMapFragment", "ACTION_UP")
 
-                            drawStroke(v,false)
+                            v.background = drawStroke(colorInt,false)
 
                         }
                     }
@@ -169,7 +172,7 @@ class TravelMindMapFragment :
                     behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
                     val item = ClipData.Item(v.tag as? CharSequence)
                     val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
-                    drawStroke(v,false)
+                    v.background = drawStroke(colorInt,false)
                     v.startDrag(data, View.DragShadowBuilder(v), v, 0)
                 }
 
@@ -436,11 +439,12 @@ class TravelMindMapFragment :
         qav.setActionsInAnimator(customActionsInAnimator)
     }
 
-    fun drawStroke(view: View,actionDown: Boolean){
+    fun drawStroke(colorInt: Int ,push: Boolean): GradientDrawable{
         var strokeDrawable = GradientDrawable()
-        strokeDrawable.setColor(Color.parseColor("#ffe4b5"))
-        if(actionDown) strokeDrawable.setStroke(16, resources.getColor(R.color.colorPrimaryDark))
-        view.background = strokeDrawable
+//        strokeDrawable.setColor(Color.parseColor("#ffe4b5"))
+        strokeDrawable.setColor(colorInt)
+        if(push) strokeDrawable.setStroke(16, resources.getColor(R.color.colorPrimaryDark))
+        return strokeDrawable
     }
 
     companion object {
