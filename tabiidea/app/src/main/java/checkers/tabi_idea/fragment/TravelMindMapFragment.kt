@@ -1,14 +1,19 @@
 package checkers.tabi_idea.fragment
 
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
+import android.content.Intent
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -20,14 +25,13 @@ import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import checkers.tabi_idea.R
 import checkers.tabi_idea.custom.view.CustomActionsInAnimator
 import checkers.tabi_idea.custom.view.CustomActionsTitleAnimator
 import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
+import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
@@ -40,6 +44,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 import kotlin.reflect.jvm.internal.impl.resolve.constants.IntValue
+import java.io.FileDescriptor
 
 
 class TravelMindMapFragment :
@@ -68,6 +73,7 @@ class TravelMindMapFragment :
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
+        (activity as AppCompatActivity).supportActionBar?.setIcon(R.mipmap.ic_tabiidea_round)
         setHasOptionsMenu(true)
         return view
     }
@@ -228,6 +234,24 @@ class TravelMindMapFragment :
             override fun onTap(e: MotionEvent, centerX: Float, centerY: Float, scale: Float) {
                 val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
                 val inputText: EditText = inflater.findViewById(R.id.inputText)
+                val spinner = inflater.findViewById<Spinner>(R.id.spinner)
+                val adapter = ArrayAdapter(context,
+                        android.R.layout.simple_spinner_item,
+                        listOf(Category("行先"),
+                                Category("食事"),
+                                Category("宿泊"),
+                                Category("行先"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊宿泊宿泊宿泊宿泊宿泊宿泊宿泊")
+                        ))
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinner.adapter = adapter
                 inputText.requestFocus()
                 val newId = map.size
                 val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(tag)
@@ -256,7 +280,7 @@ class TravelMindMapFragment :
                 }.create()
 
                 // ダイアログ表示と同時にキーボードを表示
-                inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+//                inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
                 inputForm.show()
             }
         }
@@ -445,6 +469,45 @@ class TravelMindMapFragment :
         strokeDrawable.setColor(colorInt)
         if(push) strokeDrawable.setStroke(16, resources.getColor(R.color.colorPrimaryDark))
         return strokeDrawable
+    }
+
+    //TravelMIndMapFragmentでツールバーにメニュー機能を追加する
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.mmomenu, menu)
+
+        val icon: MenuItem = menu.findItem(R.id.mmomenu_icon)
+        icon.setOnMenuItemClickListener {
+            val intent: Intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.setType("image/*")
+            startActivityForResult(intent, 1000)
+            // OKが押されるとonActivityResutに処理が移行する
+            true
+        }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1000 && resultCode == Activity.RESULT_OK) {
+            var uri: Uri? = null
+            if (data != null) {
+                uri = data.data
+
+                val bmp: Bitmap = getBitmapFromUri(uri)
+                val reBmp = Bitmap.createScaledBitmap(bmp, 240, 240, false)
+                val drw = BitmapDrawable(reBmp)
+                (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
+            }
+        }
+    }
+
+    private fun getBitmapFromUri(uri: Uri): Bitmap {
+        val parcelFileDescriptor: ParcelFileDescriptor = getContext()!!.getContentResolver().openFileDescriptor(uri, "r")
+        val fileDescriptor: FileDescriptor = parcelFileDescriptor.getFileDescriptor()
+        val image: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        parcelFileDescriptor.close()
+        return image
     }
 
     companion object {

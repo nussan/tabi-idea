@@ -1,5 +1,6 @@
 package checkers.tabi_idea.activity
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -10,7 +11,6 @@ import checkers.tabi_idea.data.User
 import checkers.tabi_idea.fragment.EventListFragment
 import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_event_list.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -20,7 +20,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        toolbar.setNavigationIcon(R.mipmap.ic_launcher)//TODO
 
         //sIdを取得
         val uuid = Installation.id(this)
@@ -36,6 +35,8 @@ class MainActivity : AppCompatActivity() {
                             "name" to "新しいユーザー"
                     )
                     repository.addUser(newUser) {user: User ->
+                        val bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher)
+                        //TODO repository.setUserIcon(bmp,user.id,user.token){}
                         user.token = "Token " + user.token
                         repository.getEventList(user.token,user!!.id) {
                             toEventListFragment(user, it)

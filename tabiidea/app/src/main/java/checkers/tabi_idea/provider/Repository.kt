@@ -1,5 +1,6 @@
 package checkers.tabi_idea.provider
 
+import android.graphics.Bitmap
 import android.util.Log
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.User
@@ -34,6 +35,11 @@ class Repository {
                         { res -> callback(res) },
                         { err -> Log.d("errAddUser", err.toString()) }
                 )
+    }
+
+    fun addUserMock(newUser: Map<String, String>, callback: (User) -> Unit) {
+        val user: User = User(1, "MOCK", "MOCK")
+        callback(user)
     }
 
     //userをedit
@@ -75,6 +81,10 @@ class Repository {
                             Log.d("errAddEvent", err.toString())
                         }
                 )
+    }
+
+    fun addEventMock(token: String, user_id: Int, title: Map<String, String>, callback: (Event) -> Unit) {
+        callback(Event(2, title.get("title")!!, mutableListOf(), "mock"))
     }
 
     //eventListをget,rxjava2
@@ -124,4 +134,26 @@ class Repository {
                         {err -> Log.d("errCreateUrl",err.toString())}
                 )
     }
+    //ユーザーアイコンの取得
+    fun getUserIcon(user_id: Int, token: String, callback: (Bitmap) -> Unit) {
+        requestService.getUserIcon(token, user_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { res -> callback(res) },
+                        { err -> Log.d("errCreateUrl", err.toString()) }
+                )
+    }
+
+    //ユーザーアイコンを設定
+    fun setUserIcon(btm: Bitmap, user_id: Int, token: String, callback: (Bitmap) -> Unit) {
+        requestService.setUserIcon(token, user_id, btm)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { res -> callback(res) },
+                        { err -> Log.d("errCreateUrl", err.toString()) }
+                )
+    }
+
 }

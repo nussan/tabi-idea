@@ -53,20 +53,20 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
     }
 
     //ビットマップを作成する関数
-    private fun createBitmap(capital:String,holder: EventListViewHolder) : Bitmap{
+    private fun createBitmap(capital: String, holder: EventListViewHolder): Bitmap {
         val objPaint = Paint()
-        var objBitmap : Bitmap
-        val objCanvas : Canvas
-        val fm : Paint.FontMetrics
+        var objBitmap: Bitmap
+        val objCanvas: Canvas
+        val fm: Paint.FontMetrics
 
         val base = "無"
         val textSize = 20
         val width = textSize * base.length
         val height = textSize
-        val baseWidth : Int
-        val baseHeight : Int
+        val baseWidth: Int
+        val baseHeight: Int
         val capitalWidth: Int
-        val centerX : Int
+        val centerX: Int
         val modPow = 1.8f // 倍率調整
         val modAdd = 100 // 調整
 
@@ -75,33 +75,29 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
         objPaint.textSize = 1000f
         fm = objPaint.fontMetrics
         // これがなんの役割を果たしているのか不明
-        objPaint.getTextBounds(capital,0,0, Rect(0,0,width,height))
+        objPaint.getTextBounds(capital, 0, 0, Rect(0, 0, width, height))
 
-        baseWidth = (objPaint.measureText(base) .toInt())*2
-        baseHeight = ((Math.abs(fm.top) - Math.abs(fm.bottom)+modAdd) .toInt())*2
+        baseWidth = (objPaint.measureText(base).toInt()) * 2
+        baseHeight = ((Math.abs(fm.top) - Math.abs(fm.bottom) + modAdd).toInt()) * 2
         objBitmap = Bitmap.createBitmap(baseWidth, baseHeight, Bitmap.Config.ARGB_8888)
 
-        capitalWidth = objPaint.measureText(capital) .toInt()
-        centerX = (baseWidth/2) - (capitalWidth/2)
+        capitalWidth = objPaint.measureText(capital).toInt()
+        centerX = (baseWidth / 2) - (capitalWidth / 2)
 
         objCanvas = Canvas(objBitmap)
-        var g = holder.creator.text.toString().codePointAt(0)/100//187
-        var r =capital.codePointAt(0)/100//200
-        var b =170// 190
-        if (r>244 && b>244 && g>244 ) {
+        var g = holder.creator.text.toString().codePointAt(0) / 100//187
+        var r = capital.codePointAt(0) / 100//200
+        var b = 170// 190
+        if (r > 244 && b > 244 && g > 244) {
             r = 240
             b = 240
             g = 240
         }
 
-        objCanvas.drawRGB(r,g,b)
-        objCanvas.drawText(capital,centerX.toFloat(),-(fm.ascent+fm.descent)*modPow,objPaint)
+        objCanvas.drawRGB(r, g, b)
+        objCanvas.drawText(capital, centerX.toFloat(), -(fm.ascent + fm.descent) * modPow, objPaint)
 
         return objBitmap
-    }
-
-    fun refreshEventList(newEventList: MutableList<Event>){
-        eventList = newEventList
     }
 
     // Viewへの参照を持っておくViewHolder
