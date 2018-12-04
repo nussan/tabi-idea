@@ -6,6 +6,7 @@ import android.graphics.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -100,8 +101,12 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
         return objBitmap
     }
 
+    fun disable() {
+    }
+
     // Viewへの参照を持っておくViewHolder
     class EventListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val frameLayout = view.findViewById<FrameLayout>(R.id.frameLayout)
         val event = view.findViewById<TextView>(R.id.eventView)!!
         val image = view.findViewById<ImageView>(R.id.imageView)!!
         val creator = view.findViewById<TextView>(R.id.creatorView)!!
