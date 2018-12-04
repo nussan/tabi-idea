@@ -11,18 +11,16 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v4.widget.TextViewCompat
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.widget.TextViewCompat
+import androidx.fragment.app.Fragment
 import checkers.tabi_idea.R
 import checkers.tabi_idea.custom.view.CustomActionsInAnimator
 import checkers.tabi_idea.custom.view.CustomActionsTitleAnimator
@@ -31,10 +29,13 @@ import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
+import checkers.tabi_idea.data.User
 import checkers.tabi_idea.provider.FirebaseApiClient
 import com.commit451.quickactionview.Action
 import com.commit451.quickactionview.QuickActionView
 import com.commit451.quickactionview.animator.PopAnimator
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -51,11 +52,15 @@ class TravelMindMapFragment :
     private var map: Map<String, MindMapObject> = mutableMapOf()
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
+    private var categoryList: List<Category> = listOf()
+    private lateinit var user: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             event = it.getParcelable("eventKey")
+            categoryList = it.getParcelableArrayList<Category>("categoryList") as MutableList<Category>
+            user = it.getParcelable("user") ?: return@let
         }
     }
 
@@ -129,6 +134,7 @@ class TravelMindMapFragment :
                 val lastRaw = PointF(0f, 0f)
 
                 view.setOnTouchListener { v, event ->
+                    activity?.currentFocus
                     Log.d("TravelMindMapFragment", "${event.pointerCount}")
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
@@ -193,6 +199,14 @@ class TravelMindMapFragment :
                 (activity as AppCompatActivity).supportFragmentManager.popBackStack()
             }
 
+            R.id.mmomenu_list -> {
+                activity?.supportFragmentManager
+                        ?.beginTransaction()
+                        ?.replace(R.id.container, CategoryListFragment.newInstance(categoryList, user))
+                        ?.addToBackStack(null)
+                        ?.commit()
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -210,23 +224,11 @@ class TravelMindMapFragment :
                 val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
                 val inputText: EditText = inflater.findViewById(R.id.inputText)
                 val spinner = inflater.findViewById<Spinner>(R.id.spinner)
-                val adapter = ArrayAdapter(context,
-                        android.R.layout.simple_spinner_item,
-                        listOf(Category("行先"),
-                                Category("食事"),
-                                Category("宿泊"),
-                                Category("行先"),
-                                Category("宿泊"),
-                                Category("宿泊"),
-                                Category("宿泊"),
-                                Category("宿泊"),
-                                Category("宿泊"),
-                                Category("宿泊"),
-                                Category("宿泊"),
-                                Category("宿泊宿泊宿泊宿泊宿泊宿泊宿泊宿泊")
-                        ))
+
+                val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, categoryList)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinner.adapter = adapter
+
                 inputText.requestFocus()
                 val newId = map.size
                 val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(tag)
@@ -241,8 +243,18 @@ class TravelMindMapFragment :
                         (e.y - matrix[Matrix.MTRANS_Y]) - parent.height * scale / 2,
                         parent.tag as String,
                         0,
-                        map[parent.tag as String]!!.type
+                        spinner.selectedItem.toString()
                 )
+                spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        Toast.makeText(context, (parent as Spinner).selectedItem.toString(), Toast.LENGTH_SHORT).show()
+                        mmo.type = parent.selectedItem.toString()
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                    }
+                }
+
                 // ダイアログの設定
                 val inputForm = AlertDialog.Builder(context!!).apply {
                     setTitle("新しいアイデア")
@@ -383,19 +395,9 @@ class TravelMindMapFragment :
         textView.gravity = Gravity.CENTER
         textView.text = TextUtils.ellipsize(mindMapObject.text, textView.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
         textView.setTextColor(Color.WHITE)
-        when (mindMapObject.type) {
-            "destination" -> {
-                textView.setBackgroundColor(Color.parseColor("#ffb6c1"))
-            }
-            "budget" -> {
-                textView.setBackgroundColor(Color.parseColor("#32cd32"))
-            }
-            "food" -> {
-                textView.setBackgroundColor(Color.parseColor("#ff8c00"))
-            }
-            "hotel" -> {
-                textView.setBackgroundColor(Color.parseColor("#ffe4b5"))
-            }
+        categoryList.forEach { category ->
+            if (mindMapObject.type == category.name)
+                textView.setBackgroundColor(Color.parseColor(category.color))
 
         }
         return textView
@@ -444,9 +446,9 @@ class TravelMindMapFragment :
 
         val icon: MenuItem = menu.findItem(R.id.mmomenu_icon)
         icon.setOnMenuItemClickListener {
-            val intent: Intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
             intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.setType("image/*")
+            intent.type = "image/*"
             startActivityForResult(intent, 1000)
             // OKが押されるとonActivityResutに処理が移行する
             true
@@ -478,9 +480,11 @@ class TravelMindMapFragment :
 
     companion object {
         @JvmStatic
-        fun newInstance(event: Event) = TravelMindMapFragment().apply {
+        fun newInstance(event: Event, categoryList: MutableList<Category>, user: User) = TravelMindMapFragment().apply {
             arguments = Bundle().apply {
                 putParcelable("eventKey", event)
+                putParcelableArrayList("categoryList", ArrayList(categoryList))
+                putParcelable("user", user)
             }
         }
     }

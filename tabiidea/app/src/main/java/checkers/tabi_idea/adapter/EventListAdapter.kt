@@ -1,14 +1,14 @@
-package checkers.tabi_idea.fragment
+package checkers.tabi_idea.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 import java.io.ByteArrayOutputStream

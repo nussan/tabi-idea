@@ -10,18 +10,20 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
-import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import checkers.tabi_idea.R
+import checkers.tabi_idea.adapter.EventListAdapter
+import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.manager.EventManager
@@ -41,10 +43,10 @@ import java.util.*
 
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
-    private var eventId:Int? = null
+    private var eventId: Int? = null
     private val repository = Repository()
-    private var fireBaseApiClient:FirebaseApiClient? = null
-    private lateinit var myuser : User
+    private var fireBaseApiClient: FirebaseApiClient? = null
+    private lateinit var myuser: User
     private var sortNewOld = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,15 +95,15 @@ class EventListFragment : Fragment() {
         eventListView.layoutManager = GridLayoutManager(context, 1)
 
         val swipHandler = object : SwipeToDeleteCallback(context!!) {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val adapter = eventListView.adapter as EventListAdapter
-                viewHolder?.let {
+                viewHolder.let {
                     eventId = adapter.eventList[it.adapterPosition].id
                     adapter.removeAt(it.adapterPosition)
                     eventManager.eventList = adapter.eventList
                 }
-                repository.deleteEvent(myuser.token,myuser.id,eventId!!){
-                    Toast.makeText(context,it.get("title")+"が削除されました",Toast.LENGTH_SHORT).show()
+                repository.deleteEvent(myuser.token, myuser.id, eventId!!) {
+                    Toast.makeText(context, it["title"] + "が削除されました", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -109,15 +111,22 @@ class EventListFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(eventListView)
 
         (eventListView.adapter as EventListAdapter).setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View?) {
+            override fun onClick(view: View) {
                 Log.d(javaClass.simpleName, "onTouch!!")
                 val position = eventListView.getChildAdapterPosition(view)
                 Log.d("masaka", (eventListView.adapter as EventListAdapter).eventList[position].title)
-                activity?.supportFragmentManager
-                        ?.beginTransaction()
-                        ?.replace(R.id.container, TravelMindMapFragment.newInstance((eventListView.adapter as EventListAdapter).eventList[position]))
-                        ?.addToBackStack(null)
-                        ?.commit()
+                repository
+                        .getCategoryList(
+                                myuser.token,
+                                (eventListView.adapter as EventListAdapter).eventList[position].id) { list ->
+                            activity?.supportFragmentManager
+                                    ?.beginTransaction()
+                                    ?.replace(R.id.container,
+                                            TravelMindMapFragment.newInstance(
+                                                    (eventListView.adapter as EventListAdapter).eventList[position], list, myuser))
+                                    ?.addToBackStack(null)
+                                    ?.commit()
+                        }
             }
         })
 
@@ -143,13 +152,26 @@ class EventListFragment : Fragment() {
                             "title" to "${inputText.text}"
                     )
 
-                    repository.addEvent(myuser.token,myuser.id, title) {event ->
+                    repository.addEvent(myuser.token, myuser.id, title) { event ->
                         eventId = event.id
                         Log.d("tubasa", event.id.toString())
                         fireBaseApiClient = FirebaseApiClient(eventId.toString())
                         fireBaseApiClient!!.addEventToFb()
                         eventManager.add(event)
-                        eventListView.adapter.notifyDataSetChanged()
+                        (eventListView.adapter as EventListAdapter).notifyDataSetChanged()
+
+                        // イベントにデフォルトのカテゴリを追加
+                        val cl = listOf(
+                                Category("行先", "#ffb6c1"),
+                                Category("予算", "#32cd32"),
+                                Category("食物", "#ff8c00"),
+                                Category("宿泊", "#ffe4b5")
+                        )
+                        cl.forEach { category ->
+                            repository.addCategory(myuser.token, event.id, category) {
+                                // 特にやることなし
+                            }
+                        }
                     }
 
                 }
@@ -157,7 +179,7 @@ class EventListFragment : Fragment() {
             }.create()
 
             //ダイアログ表示と同時にキーボードを表示
-            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            inputForm.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
             inputForm.show()
 
             it.isEnabled = true
@@ -190,7 +212,7 @@ class EventListFragment : Fragment() {
                             "name" to "${inputText.text}"
                     )
                     Log.d("EventListFragment", "")
-                    repository.editUser(myuser.token,myuser.id, name){name ->
+                    repository.editUser(myuser.token, myuser.id, name) { name ->
                         // コールバックの操作
                         (activity as AppCompatActivity).supportActionBar?.title = name.get("name")
                         myuser.name = name.get("name")!!
@@ -304,7 +326,7 @@ class EventListFragment : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { res -> repository.joinEvent(myuser.token,myuser!!.id, res.id.toString()) },
+                        { res -> repository.joinEvent(myuser.token, myuser!!.id, res.id.toString()) },
                         { err -> Log.d("EventListFragment", err.toString()) }
                 )
     }
