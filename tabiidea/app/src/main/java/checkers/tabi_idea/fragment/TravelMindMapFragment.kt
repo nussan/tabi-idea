@@ -61,7 +61,7 @@ class TravelMindMapFragment :
         arguments?.let {
             event = it.getParcelable("eventKey")
             categoryList = it.getParcelableArrayList<Category>("categoryList") as MutableList<Category>
-            user = it.getParcelable("userKey")
+            user = it.getParcelable("user")
         }
     }
 

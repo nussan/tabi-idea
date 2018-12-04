@@ -64,7 +64,7 @@ class EventListFragment : Fragment() {
                     eventId = event.id
                     Log.d("tubasa", event.id.toString())
                     eventManager.add(event)
-                    eventListView.adapter.notifyDataSetChanged()
+                    eventListView.adapter?.notifyDataSetChanged()
                 }
             }
         }
@@ -122,7 +122,6 @@ class EventListFragment : Fragment() {
                 Log.d(javaClass.simpleName, "onTouch!!")
                 val position = eventListView.getChildAdapterPosition(view)
                 Log.d("masaka", (eventListView.adapter as EventListAdapter).eventList[position].title)
-                <<<<<<< HEAD
                 repository
                         .getCategoryList(
                                 myuser.token,
@@ -135,13 +134,6 @@ class EventListFragment : Fragment() {
                                     ?.addToBackStack(null)
                                     ?.commit()
                         }
-                ====== =
-                activity?.supportFragmentManager
-                        ?.beginTransaction()
-                        ?.replace(R.id.container, TravelMindMapFragment.newInstance((eventListView.adapter as EventListAdapter).eventList[position], myuser))
-                        ?.addToBackStack(null)
-                        ?.commit()
-                >>>>>>> 4ff390923a875df4f1cdd1056a1173bba004661e
             }
         })
 
@@ -264,13 +256,13 @@ class EventListFragment : Fragment() {
                 eventManager.eventList.sort()
                 sortNewOld = false
                 (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
-                eventListView.adapter.notifyDataSetChanged()
+                (eventListView.adapter as EventListAdapter).notifyDataSetChanged()
             } else {
                 //ソートを古いイベントが一番上に来るようにする
                 eventManager.eventList.sortDescending()
                 sortNewOld = true
                 (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
-                eventListView.adapter.notifyDataSetChanged()
+                (eventListView.adapter as EventListAdapter).notifyDataSetChanged()
             }
             true
         }
@@ -325,7 +317,6 @@ class EventListFragment : Fragment() {
         return image
     }
 
-    <<<<<<< HEAD
     fun getEvent(url: String) {
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val retrofit = Retrofit.Builder()
@@ -340,14 +331,15 @@ class EventListFragment : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { res -> repository.joinEvent(myuser.token, myuser!!.id, res.id.toString()) },
+                        { res ->
+                            repository.joinEvent(myuser.token, myuser!!.id, res.id.toString()) {
+
+                            }
+                        },
                         { err -> Log.d("EventListFragment", err.toString()) }
                 )
     }
 
-
-    =======
-    >>>>>>> 4ff390923a875df4f1cdd1056a1173bba004661e
     companion object {
         @JvmStatic
         fun newInstance(user: User, eventList: MutableList<Event>) = EventListFragment().apply {
