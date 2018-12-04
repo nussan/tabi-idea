@@ -3,6 +3,7 @@ package checkers.tabi_idea.fragment
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -14,17 +15,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import checkers.tabi_idea.R
 import checkers.tabi_idea.adapter.CategoryListAdapter
 import checkers.tabi_idea.data.Category
+import checkers.tabi_idea.data.User
+import checkers.tabi_idea.provider.Repository
 import com.jaredrummler.android.colorpicker.ColorPickerDialog
 import kotlinx.android.synthetic.main.fragment_category_list.*
 
 class CategoryListFragment : Fragment() {
-    var categoryList = listOf<Category>()
-    var targetPosition = -1
+    private var categoryList = listOf<Category>()
+    private lateinit var user: User
+    private val repository = Repository()
+    private var targetPosition = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             categoryList = it.getParcelableArrayList<Category>("categoryList") as List<Category>
+            user = it.getParcelable("user")
         }
     }
 
@@ -71,18 +77,24 @@ class CategoryListFragment : Fragment() {
 
     fun changeColor(colorString: String) {
         if (targetPosition == -1) return
-        categoryList[targetPosition].color = colorString
-        category_recycler_view.adapter?.notifyItemChanged(targetPosition)
-        targetPosition = -1
+        val after = Category(categoryList[targetPosition].name, colorString)
+        Log.d("CategoryListFragment", categoryList[targetPosition].id.toString())
+        repository.updateCategory(user.token, categoryList[targetPosition].id, after) { after ->
+            categoryList[targetPosition].color = after.color
+            category_recycler_view.adapter?.notifyItemChanged(targetPosition)
+            targetPosition = -1
+        }
+
     }
 
 
     companion object {
         @JvmStatic
-        fun newInstance(list: List<Category>) =
+        fun newInstance(list: List<Category>, user: User) =
                 CategoryListFragment().apply {
                     arguments = Bundle().apply {
                         putParcelableArrayList("categoryList", ArrayList(list))
+                        putParcelable("user", user)
                     }
                 }
     }

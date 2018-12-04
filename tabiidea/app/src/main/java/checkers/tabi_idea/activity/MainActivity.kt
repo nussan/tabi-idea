@@ -40,10 +40,11 @@ class MainActivity : AppCompatActivity(),
                             "name" to "新しいユーザー"
                     )
                     repository.addUser(newUser) { user: User ->
+                        this.user = user
                         val bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher)
                         //TODO repository.setUserIcon(bmp,user.id,user.token){}
                         user.token = "Token " + user.token
-                        repository.getEventList(user.token, user!!.id) {
+                        repository.getEventList(user.token, user.id) {
                             toEventListFragment(user, it)
                         }
                     }

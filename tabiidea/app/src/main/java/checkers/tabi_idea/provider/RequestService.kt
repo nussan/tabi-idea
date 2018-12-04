@@ -53,4 +53,7 @@ interface RequestService {
 
     @GET("category/show/{eid}")
     fun getCategoryList(@Header("Authorization") token: String, @Path("eid") eid: Int): Single<MutableList<Category>>
+
+    @PATCH("category/edit/{cid}")
+    fun updateMmo(@Header("Authorization") token: String, @Path("cid") cid: Int, @Body category: Map<String, String>): Single<Category>
 }

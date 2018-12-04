@@ -123,7 +123,7 @@ class EventListFragment : Fragment() {
                                     ?.beginTransaction()
                                     ?.replace(R.id.container,
                                             TravelMindMapFragment.newInstance(
-                                                    (eventListView.adapter as EventListAdapter).eventList[position], list))
+                                                    (eventListView.adapter as EventListAdapter).eventList[position], list, myuser))
                                     ?.addToBackStack(null)
                                     ?.commit()
                         }

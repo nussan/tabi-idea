@@ -29,6 +29,7 @@ import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
+import checkers.tabi_idea.data.User
 import checkers.tabi_idea.provider.FirebaseApiClient
 import com.commit451.quickactionview.Action
 import com.commit451.quickactionview.QuickActionView
@@ -52,12 +53,14 @@ class TravelMindMapFragment :
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
     private var categoryList: List<Category> = listOf()
+    private lateinit var user: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             event = it.getParcelable("eventKey")
             categoryList = it.getParcelableArrayList<Category>("categoryList") as MutableList<Category>
+            user = it.getParcelable("user") ?: return@let
         }
     }
 
@@ -199,7 +202,7 @@ class TravelMindMapFragment :
             R.id.mmomenu_list -> {
                 activity?.supportFragmentManager
                         ?.beginTransaction()
-                        ?.replace(R.id.container, CategoryListFragment.newInstance(categoryList))
+                        ?.replace(R.id.container, CategoryListFragment.newInstance(categoryList, user))
                         ?.addToBackStack(null)
                         ?.commit()
                 return true
@@ -477,10 +480,11 @@ class TravelMindMapFragment :
 
     companion object {
         @JvmStatic
-        fun newInstance(event: Event, categoryList: MutableList<Category>) = TravelMindMapFragment().apply {
+        fun newInstance(event: Event, categoryList: MutableList<Category>, user: User) = TravelMindMapFragment().apply {
             arguments = Bundle().apply {
                 putParcelable("eventKey", event)
                 putParcelableArrayList("categoryList", ArrayList(categoryList))
+                putParcelable("user", user)
             }
         }
     }

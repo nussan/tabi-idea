@@ -181,4 +181,14 @@ class Repository {
                         { err -> Log.d("errGetCategoryList", err.toString()) }
                 )
     }
+
+    fun updateCategory(token: String, categoryId: Int, category: Category, callback: (Category) -> Unit) {
+        requestService.updateMmo(token, categoryId, mapOf("name" to category.name, "color" to category.color))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { res -> callback(res) },
+                        { err -> Log.d("errUpdateCategory", err.toString()) }
+                )
+    }
 }
