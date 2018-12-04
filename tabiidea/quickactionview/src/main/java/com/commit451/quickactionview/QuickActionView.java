@@ -8,7 +8,9 @@ import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -71,6 +73,8 @@ public class QuickActionView {
 
     private View mClickedView;
     private Point mTouchPoint=new Point(0,0);
+    private int mColorInt;
+    private boolean mClick = false;
 
     private QuickActionView(Context context) {
         mContext = context;
@@ -115,6 +119,15 @@ public class QuickActionView {
         Point point = new Point(offset);
         point.offset(loc[0], loc[1]);
         display(point);
+    }
+
+    private void drawStroke(View anchor,int colorInt, boolean show){
+        GradientDrawable strokeDrawable = new GradientDrawable();
+        strokeDrawable.setColor(colorInt);
+        if(show)strokeDrawable.setStroke(16, Color.parseColor("#303f9f"));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            anchor.setBackground(strokeDrawable);
+        }
     }
 
 
@@ -558,9 +571,11 @@ public class QuickActionView {
         return mClickedView;
     }
 
-    public void setTouchPoint(Point point) {
-        this.mTouchPoint = point;
-    }
+    public void setTouchPoint(Point point) { this.mTouchPoint = point; }
+
+    public void setColorInt(int colorInt) { this.mColorInt = colorInt; }
+
+    public void setClick(boolean click){ this.mClick = click; }
 
     /**
      * Listener for when an action is selected (hovered, then released)
@@ -874,7 +889,7 @@ public class QuickActionView {
                             if (entry.getValue().isSelected() && mOnActionSelectedListener != null) {
                                 mOnActionSelectedListener.onActionSelected(entry.getKey(), QuickActionView.this);
                                 break;
-                            }
+                            }else drawStroke(mClickedView, mColorInt, false);
                         }
                     case MotionEvent.ACTION_CANCEL:
                     case MotionEvent.ACTION_OUTSIDE:
@@ -980,7 +995,10 @@ public class QuickActionView {
 
         @Override
         public void onClick(View v) {
-            show(v, mTouchPoint);
+            if(mClick) {
+                drawStroke(v, mColorInt, true);
+                show(v, mTouchPoint);
+            }
         }
     }
 }
