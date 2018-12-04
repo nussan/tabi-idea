@@ -19,7 +19,7 @@ class Repository {
     init {
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val retrofit = Retrofit.Builder()
-                .baseUrl("https://fast-peak-71769.herokuapp.com/") //https://fast-peak-71769.herokuapp.com/
+                .baseUrl("https://fast-peak-71769.herokuapp.com/")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .build()
@@ -84,9 +84,10 @@ class Repository {
                 )
     }
 
-    fun addEventMock(token: String, user_id: Int, title: Map<String, String>, callback: (Event) -> Unit) {
-        callback(Event(2, title.get("title")!!, mutableListOf(), "mock"))
-    }
+//    fun addEventMock(token:String,user_id: Int, title: Map<String, String>, callback: (Event) -> Unit){
+//        callback(Event(2,title.get("title")!!,mutableListOf(),"mock","s","s"))
+//    }
+
 
     //eventListをget,rxjava2
     fun getEventList(token: String, user_id: Int, callback: (MutableList<Event>) -> Unit) {
@@ -104,15 +105,16 @@ class Repository {
     }
 
     //eventへの参加
-    fun joinEvent(token: String, userid: Int, eventId: String) {
-        requestService.joinEvent(token, userid, eventId)
+    fun joinEvent(token: String, userId: Int, eventToken: String, callback: (Event) -> Unit) {
+        requestService.joinEvent(token, userId, eventToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { res -> },
-                        { err -> Log.d("errJoinEventList", err.toString()) }
+                        { res -> callback(res) },
+                        { err -> Log.d("errJoinEvent", err.toString()) }
                 )
     }
+
 
     //eventの削除
     fun deleteEvent(token: String, user_id: Int, event_id: Int, callback: (Map<String, String>) -> Unit) {
@@ -126,7 +128,8 @@ class Repository {
     }
 
     //urlの発行
-    fun createUrl(token: String, user_id: Int, event_id: String, callback: (Map<String, String>) -> Unit) {
+
+    fun createUrl(token: String, user_id: Int, event_id: Int, callback: (Map<String, String>) -> Unit) {
         requestService.createUrl(token, user_id, event_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

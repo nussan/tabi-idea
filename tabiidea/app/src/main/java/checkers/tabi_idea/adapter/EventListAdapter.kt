@@ -30,7 +30,7 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
     override fun onBindViewHolder(holder: EventListViewHolder, position: Int) {
         val event = eventList[position]
         holder.event.text = event.title
-        holder.creator.text = "作成者：" + event.creator
+        holder.creator.text = "作成者：" + event.creator+ " 　作成日時：" + event.created
         val capital = if(event.title.isNotEmpty()) event.title.substring(0,1) else "a"
         val objBitmap = createBitmap(capital,holder)
 

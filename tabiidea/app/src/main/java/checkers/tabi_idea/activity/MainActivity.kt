@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity(),
         ColorPickerDialogListener {
 
     private val repository = Repository()
-    private var user: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
