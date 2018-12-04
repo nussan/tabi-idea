@@ -55,8 +55,15 @@ class EventListFragment : Fragment() {
         }
         if (activity?.intent?.action != null && activity?.intent?.action == Intent.ACTION_VIEW) {
             if (activity?.intent?.data != null) {
-                val url = activity?.intent?.data!!.buildUpon().scheme("http").build().toString()
-                getEvent(url)
+                val url = activity!!.intent.data
+                val eventToken = url.getQueryParameter("event")
+                Log.d("intentdata",eventToken)
+                repository.joinEvent(myuser.token,myuser.id,eventToken){event:Event ->
+                    eventId = event.id
+                    Log.d("tubasa", event.id.toString())
+                    eventManager.add(event)
+                    eventListView.adapter.notifyDataSetChanged()
+                }
             }
         }
     }
@@ -207,15 +214,16 @@ class EventListFragment : Fragment() {
             true
         }
 
-        val icon : MenuItem = menu.findItem(R.id.icon_change)
-        icon.setOnMenuItemClickListener{
-            val intent : Intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        val icon: MenuItem = menu.findItem(R.id.icon_change)
+        icon.setOnMenuItemClickListener {
+            val intent: Intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
             intent.addCategory(Intent.CATEGORY_OPENABLE)
             intent.setType("image/*")
-            startActivityForResult(intent,1000)
+            startActivityForResult(intent, 1000)
             // OKが押されるとonActivityResutに処理が移行する
             true
         }
+
 
         val sort : MenuItem = menu.findItem(R.id.sort)
         sort.setOnMenuItemClickListener{
@@ -263,15 +271,15 @@ class EventListFragment : Fragment() {
         })
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
-        if(requestCode == 1000 && resultCode == RESULT_OK) {
-            var uri : Uri? = null
-            if(data != null) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1000 && resultCode == RESULT_OK) {
+            var uri: Uri? = null
+            if (data != null) {
                 uri = data.data
 
-                val bmp : Bitmap = getBitmapFromUri(uri)
-                val reBmp = Bitmap.createScaledBitmap(bmp,240,240,false)
-                repository.setUserIcon(reBmp,myuser.id,myuser.token){
+                val bmp: Bitmap = getBitmapFromUri(uri)
+                val reBmp = Bitmap.createScaledBitmap(bmp, 240, 240, false)
+                repository.setUserIcon(reBmp, myuser.id, myuser.token) {
                     val drw = BitmapDrawable(it)
                     (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
                 }
@@ -279,33 +287,13 @@ class EventListFragment : Fragment() {
         }
     }
 
-    private fun getBitmapFromUri(uri : Uri) : Bitmap{
-        val parcelFileDescriptor : ParcelFileDescriptor = getContext()!!.getContentResolver().openFileDescriptor(uri, "r")
-        val fileDescriptor : FileDescriptor = parcelFileDescriptor.getFileDescriptor()
-        val image : Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+    private fun getBitmapFromUri(uri: Uri): Bitmap {
+        val parcelFileDescriptor: ParcelFileDescriptor = getContext()!!.getContentResolver().openFileDescriptor(uri, "r")
+        val fileDescriptor: FileDescriptor = parcelFileDescriptor.getFileDescriptor()
+        val image: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
         parcelFileDescriptor.close();
         return image
     }
-
-    fun getEvent(url: String) {
-        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-        val retrofit = Retrofit.Builder()
-                .baseUrl("http://bit.ly/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .build()
-        val requestService = retrofit.create(RequestService::class.java)
-        val url = url.replace("http://bit.ly/", "")
-        Log.d("EventListFragment", url)
-        requestService.getEvent(url)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { res -> repository.joinEvent(myuser.token,myuser!!.id, res.id.toString()) },
-                        { err -> Log.d("EventListFragment", err.toString()) }
-                )
-    }
-
 
     companion object {
         @JvmStatic

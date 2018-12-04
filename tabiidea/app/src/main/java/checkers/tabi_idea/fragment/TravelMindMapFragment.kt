@@ -4,6 +4,9 @@ package checkers.tabi_idea.fragment
 import android.app.Activity
 import android.content.*
 import android.graphics.*
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -19,14 +22,13 @@ import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import checkers.tabi_idea.R
 import checkers.tabi_idea.custom.view.CustomActionsInAnimator
 import checkers.tabi_idea.custom.view.CustomActionsTitleAnimator
 import checkers.tabi_idea.custom.view.RoundRectTextView
 import checkers.tabi_idea.custom.view.ZoomableLayout
+import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
@@ -39,6 +41,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
+import kotlin.reflect.jvm.internal.impl.resolve.constants.IntValue
 import java.io.FileDescriptor
 
 
@@ -48,17 +51,20 @@ class TravelMindMapFragment :
         View.OnDragListener {
     private var fbApiClient: FirebaseApiClient? = null
     private var event: Event? = null
+    private var user: User? = null
     private var map: Map<String, MindMapObject> = mutableMapOf()
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
     private val repository = Repository()
     private lateinit var myuser : User
+    private var click: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             myuser = it.getParcelable("user")
             event = it.getParcelable("eventKey")
+            user = it.getParcelable("userKey")
         }
     }
 
@@ -119,32 +125,39 @@ class TravelMindMapFragment :
                 val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
 
                 val view = mindMapObjectToTextView(context, mmo)
-                view.tag = key
 
-                view.setOnLongClickListener { v ->
-                    behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-                    val item = ClipData.Item(v.tag as? CharSequence)
-                    val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
-                    v.startDrag(data, View.DragShadowBuilder(v), v, 0)
-                }
+                view.tag = key
 
                 // 画面のタッチポイントの差分をビュー毎に分けるためにここで宣言
                 val lastRaw = PointF(0f, 0f)
+                val point = Point(0,0)
+
+                val colorInt = (view.background as ColorDrawable).color
+                Log.d("colorInt",Integer.toHexString(colorInt).substring(2))
+
+                click = false
 
                 view.setOnTouchListener { v, event ->
                     Log.d("TravelMindMapFragment", "${event.pointerCount}")
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
+                            (v as RoundRectTextView).drawStroke(colorInt!!,true)
+
+                            click = true
+
                             lastRaw.set(event.rawX, event.rawY)
+                            point.set((event.x*v.scaleX).toInt(),(event.y*v.scaleY).toInt())
                         }
 
                         MotionEvent.ACTION_MOVE -> {
                             Log.d("TravelMindMapFragment", "ACTION_MOVE")
+                            (v as RoundRectTextView).drawStroke(colorInt!!,true)
                             val trans = PointF((event.rawX - lastRaw.x), (event.rawY - lastRaw.y))
                             if (trans.x * trans.x + trans.y * trans.y > 5) {
                                 // 移動量が一定以上のときロングプレスをキャンセル
                                 v.cancelLongPress()
+                                click = false
                             }
                             val matrix = v.matrix
                             matrix?.postTranslate(trans.x, trans.y)
@@ -152,19 +165,27 @@ class TravelMindMapFragment :
                             matrix?.getValues(f)
                             v.translationX += trans.x
                             v.translationY += trans.y
-//                            Log.d("TravelMindMapFragment", v.matrix.toShortString())
                             lastRaw.set(event.rawX, event.rawY)
                             mindMapConstraintLayout.invalidate()
                         }
 
                         MotionEvent.ACTION_UP -> {
                             Log.d("TravelMindMapFragment", "ACTION_UP")
+
+                            rrvToQAV(context,view,point,colorInt)
+                            if(!click){(v as RoundRectTextView).drawStroke(colorInt,false)}
                         }
                     }
-
                     false
                 }
-                rrvToQAV(context,view)
+
+                view.setOnLongClickListener { v ->
+                    behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+                    val item = ClipData.Item(v.tag as? CharSequence)
+                    val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
+                    (v as RoundRectTextView).drawStroke(colorInt,false)
+                    v.startDrag(data, View.DragShadowBuilder(v), v, 0)
+                }
 
                 map = map.plus(key to mmo)
                 mindMapConstraintLayout.addView(view, mmo)
@@ -199,18 +220,47 @@ class TravelMindMapFragment :
         }
         return super.onOptionsItemSelected(item)
     }
-    private fun onLikeSelected(tag: String){
 
+    private fun onLikeSelected(view: View,colorInt: Int){
+        val tag = view.tag as String
+        val mmo = map[tag] ?: return
+        if(!mmo.likeList.contains(user!!.id)) {
+            mmo.likeList.add(user!!.id)
+        }else {
+            mmo.likeList.remove(user!!.id)
+        }
+        mmo.point = mmo.likeList.size
+        fbApiClient?.updateMmo(tag to mmo)
+        (view as RoundRectTextView).drawStroke(colorInt,false)
     }
 
-    private fun onAddSelected(tag: String) {
+    private fun onAddSelected(view: View,colorInt: Int) {
         Log.d(javaClass.simpleName, "onAddSelected")
         Toast.makeText(context, "タップした位置に追加します", Toast.LENGTH_SHORT).show()
+        val tag = view.tag as String
 
         mindMapConstraintLayout.tapListener = object : ZoomableLayout.TapListener {
             override fun onTap(e: MotionEvent, centerX: Float, centerY: Float, scale: Float) {
                 val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
                 val inputText: EditText = inflater.findViewById(R.id.inputText)
+                val spinner = inflater.findViewById<Spinner>(R.id.spinner)
+                val adapter = ArrayAdapter(context,
+                        android.R.layout.simple_spinner_item,
+                        listOf(Category("行先"),
+                                Category("食事"),
+                                Category("宿泊"),
+                                Category("行先"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊"),
+                                Category("宿泊宿泊宿泊宿泊宿泊宿泊宿泊宿泊")
+                        ))
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinner.adapter = adapter
                 inputText.requestFocus()
                 val newId = map.size
                 val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(tag)
@@ -239,8 +289,9 @@ class TravelMindMapFragment :
                 }.create()
 
                 // ダイアログ表示と同時にキーボードを表示
-                inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+//                inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
                 inputForm.show()
+                (view as RoundRectTextView).drawStroke(colorInt,false)
             }
         }
     }
@@ -254,9 +305,9 @@ class TravelMindMapFragment :
         fbApiClient?.deleteMmo(Pair(tag, mmo))
     }
 
-    private fun onEditSelected(tag: String) {
+    private fun onEditSelected(view: View,colorInt: Int) {
         val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
-
+        val tag = view.tag as String
         // ダイアログ内のテキストエリア
         val inputText: EditText = inflater.findViewById(R.id.inputText)
         inputText.requestFocus()
@@ -275,6 +326,7 @@ class TravelMindMapFragment :
         // ダイアログ表示と同時にキーボードを表示
         inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         inputForm.show()
+        (view as RoundRectTextView).drawStroke(colorInt,false)
     }
 
     override fun onDrag(v: View?, event: DragEvent?): Boolean {
@@ -309,9 +361,9 @@ class TravelMindMapFragment :
                 val view = event.localState as View
 
                 when (v) {
-                    linear_left -> onAddSelected(view.tag as String)
+//                    linear_left -> onAddSelected(view.tag as String,)
                     linear_center -> onDeleteSelected(view.tag as String)
-                    linear_right -> onEditSelected(view.tag as String)
+//                    linear_right -> onEditSelected(view.tag as String)
                 }
 
                 behavior?.state = BottomSheetBehavior.STATE_HIDDEN
@@ -385,17 +437,20 @@ class TravelMindMapFragment :
         return textView
     }
 
-    private fun rrvToQAV(context: Context?, view: View){
+    private fun rrvToQAV(context: Context?, view: View, point:Point,colorInt:Int){
         val qav = QuickActionView.make(context)
+        qav.setTouchPoint(point)
+        qav.setColorInt(colorInt)
+        qav.setClick(click)
         val mQuickActionListener = QuickActionView.OnActionSelectedListener { action, quickActionView ->
             Log.d("aaa", "aaa")
             val view = quickActionView.longPressedView
             if (view != null) {
                 Snackbar.make(view, "Clicked on " + action.id, Snackbar.LENGTH_SHORT).show()
                 when (action.title) {
-                    "追加" -> onAddSelected(view.tag as String)
-                    "編集" -> onEditSelected(view.tag as String)
-//                "いいね" -> onLikeSelected(view.tag as String)
+                    "追加" -> onAddSelected(view,colorInt)
+                    "編集" -> onEditSelected(view,colorInt)
+                    "いいね" -> onLikeSelected(view,colorInt)
                 }
             }
         }
@@ -403,8 +458,8 @@ class TravelMindMapFragment :
         val actionTitleAnimator = CustomActionsTitleAnimator()
         val pareIconTitle = listOf(
                 ContextCompat.getDrawable(context!!, R.drawable.ic_add_black_24dp)!! to getString(R.string.add),
-                ContextCompat.getDrawable(context!!, R.drawable.ic_edit_black_24dp)!! to getString(R.string.edit),
-                ContextCompat.getDrawable(context!!, R.drawable.ic_favorite_black_24dp)!! to getString(R.string.good)
+                ContextCompat.getDrawable(context, R.drawable.ic_edit_black_24dp)!! to getString(R.string.edit),
+                ContextCompat.getDrawable(context, R.drawable.ic_favorite_black_24dp)!! to getString(R.string.good)
         )
         val actionList = mutableListOf<Action>()
         pareIconTitle.forEach {
@@ -421,33 +476,17 @@ class TravelMindMapFragment :
         qav.setActionsInAnimator(customActionsInAnimator)
     }
 
-    //    private var mRoot: ViewGroup? = null
-    private val mQuickActionListener = QuickActionView.OnActionSelectedListener { action, quickActionView ->
-        Log.d("aaa", "aaa")
-        val view = quickActionView.longPressedView
-        if (view != null) {
-            Snackbar.make(view, "Clicked on " + action.id, Snackbar.LENGTH_SHORT).show()
-            when (action.title) {
-                "追加" -> onAddSelected(view.tag as String)
-                "編集" -> onEditSelected(view.tag as String)
-                "いいね" -> onLikeSelected(view.tag as String)
-            }
-        }
-    }
-    private val popAnimator = PopAnimator(true)
-    private val actionTitleAnimator = CustomActionsTitleAnimator()
-
     //TravelMIndMapFragmentでツールバーにメニュー機能を追加する
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.mmomenu, menu)
 
         val icon: MenuItem = menu.findItem(R.id.mmomenu_icon)
-        icon.setOnMenuItemClickListener{
-            val intent : Intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        icon.setOnMenuItemClickListener {
+            val intent: Intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
             intent.addCategory(Intent.CATEGORY_OPENABLE)
             intent.setType("image/*")
-            startActivityForResult(intent,1000)
+            startActivityForResult(intent, 1000)
             // OKが押されるとonActivityResutに処理が移行する
             true
         }
@@ -472,27 +511,28 @@ class TravelMindMapFragment :
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
-        if(requestCode == 1000 && resultCode == Activity.RESULT_OK) {
-            var uri : Uri? = null
-            if(data != null) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1000 && resultCode == Activity.RESULT_OK) {
+            var uri: Uri? = null
+            if (data != null) {
                 uri = data.data
 
-                val bmp : Bitmap = getBitmapFromUri(uri)
-                val reBmp = Bitmap.createScaledBitmap(bmp,240,240,false)
+                val bmp: Bitmap = getBitmapFromUri(uri)
+                val reBmp = Bitmap.createScaledBitmap(bmp, 240, 240, false)
                 val drw = BitmapDrawable(reBmp)
                 (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
             }
         }
     }
 
-    private fun getBitmapFromUri(uri : Uri) : Bitmap{
-        val parcelFileDescriptor : ParcelFileDescriptor = getContext()!!.getContentResolver().openFileDescriptor(uri, "r")
-        val fileDescriptor : FileDescriptor = parcelFileDescriptor.getFileDescriptor()
-        val image : Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+    private fun getBitmapFromUri(uri: Uri): Bitmap {
+        val parcelFileDescriptor: ParcelFileDescriptor = getContext()!!.getContentResolver().openFileDescriptor(uri, "r")
+        val fileDescriptor: FileDescriptor = parcelFileDescriptor.getFileDescriptor()
+        val image: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
         parcelFileDescriptor.close()
         return image
     }
+
 
     //招待ＵＲＬをクリップボードにコピーするメソッド
     private fun copyToClipboard(context: Context, label:String, text:String) {
@@ -505,6 +545,7 @@ class TravelMindMapFragment :
         @JvmStatic
         fun newInstance(event: Event, user:User) = TravelMindMapFragment().apply {
             arguments = Bundle().apply {
+                putParcelable("userKey",user)
                 putParcelable("eventKey", event)
                 putParcelable("user",user)
             }

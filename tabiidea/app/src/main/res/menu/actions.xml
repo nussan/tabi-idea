@@ -6,14 +6,12 @@
         android:icon="@drawable/ic_search_black_24dp"
         android:title="search"
         app:actionViewClass="android.widget.SearchView"
-        app:showAsAction="always"
-        />
+        app:showAsAction="always" />
     <item
         android:id="@+id/sort"
         android:icon="@drawable/ic_sort_black_24dp"
         android:title="sort"
-        app:showAsAction="always"
-        />
+        app:showAsAction="always" />
     <item
         android:id="@+id/icon_change"
         android:icon="@drawable/ic_edit_black_24dp"
