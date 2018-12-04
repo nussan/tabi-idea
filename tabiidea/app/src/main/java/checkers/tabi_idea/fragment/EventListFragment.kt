@@ -120,6 +120,8 @@ class EventListFragment : Fragment() {
         (eventListView.adapter as EventListAdapter).setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View) {
                 Log.d(javaClass.simpleName, "onTouch!!")
+                fab?.isEnabled = false
+
                 val position = eventListView.getChildAdapterPosition(view)
                 Log.d("masaka", (eventListView.adapter as EventListAdapter).eventList[position].title)
                 repository.getCategoryList(myuser.token, eventManager.eventList[position].id, fun(list: MutableList<Category>) {
