@@ -76,7 +76,7 @@ class EventListFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
-//        TODO repository.getUserIcon(myuser.id,myuser.token){
+//        TODO ユーザーアイコンゲット repository.getUserIcon(myuser.id,myuser.token){
 //            val drw = BitmapDrawable(it)
 //            (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
 //        }
@@ -157,27 +157,32 @@ class EventListFragment : Fragment() {
                     val title = mapOf(
                             "title" to "${inputText.text}"
                     )
+                    if("${inputText.text}" != "" && "${inputText.text}".substring(0,1) != " " && "${inputText.text}".substring(0,1) != "　") {
+                        repository.addEvent(myuser.token, myuser.id, title) { event ->
+                            eventId = event.id
+                            Log.d("tubasa", event.id.toString())
+                            fireBaseApiClient = FirebaseApiClient(eventId.toString())
+                            fireBaseApiClient!!.addEventToFb()
+                            eventManager.add(event)
+                            (eventListView.adapter as EventListAdapter).notifyDataSetChanged()
 
-                    repository.addEvent(myuser.token, myuser.id, title) { event ->
-                        eventId = event.id
-                        Log.d("tubasa", event.id.toString())
-                        fireBaseApiClient = FirebaseApiClient(eventId.toString())
-                        fireBaseApiClient!!.addEventToFb()
-                        eventManager.add(event)
-                        (eventListView.adapter as EventListAdapter).notifyDataSetChanged()
-
-                        // イベントにデフォルトのカテゴリを追加
-                        val cl = listOf(
-                                Category("行先", "#ffb6c1"),
-                                Category("予算", "#32cd32"),
-                                Category("食物", "#ff8c00"),
-                                Category("宿泊", "#ffe4b5")
-                        )
-                        cl.forEach { category ->
-                            repository.addCategory(myuser.token, event.id, category) {
-                                // 特にやることなし
+                            // イベントにデフォルトのカテゴリを追加
+                            val cl = listOf(
+                                    Category("行先", "#ffb6c1"),
+                                    Category("予算", "#32cd32"),
+                                    Category("食物", "#ff8c00"),
+                                    Category("宿泊", "#ffe4b5")
+                            )
+                            cl.forEach { category ->
+                                repository.addCategory(myuser.token, event.id, category) {
+                                    // 特にやることなし
+                                }
                             }
                         }
+                    } else {
+                        val toast = Toast.makeText(context, "文字を入力してください", Toast.LENGTH_SHORT)
+                        toast.setGravity(Gravity.CENTER, 0, 0)
+                        toast.show()
                     }
 
                 }
@@ -221,16 +226,23 @@ class EventListFragment : Fragment() {
             val inputForm = AlertDialog.Builder(context!!).apply {
                 setTitle("名前の編集")
                 setView(inflater)
+
                 setPositiveButton("OK") { _, _ ->
                     // OKボタンを押したときの処理
                     val name = mapOf(
                             "name" to "${inputText.text}"
                     )
                     Log.d("EventListFragment", "")
-                    repository.editUser(myuser.token, myuser.id, name) { name ->
-                        // コールバックの操作
-                        (activity as AppCompatActivity).supportActionBar?.title = name.get("name")
-                        myuser.name = name.get("name")!!
+                    if("${inputText.text}" != "" && "${inputText.text}".substring(0,1) != " " && "${inputText.text}".substring(0,1) != "　") {
+                        repository.editUser(myuser.token, myuser.id, name) { name ->
+                            // コールバックの操作
+                            (activity as AppCompatActivity).supportActionBar?.title = name.get("name")
+                            myuser.name = name.get("name")!!
+                        }
+                    } else {
+                        val toast = Toast.makeText(context, "文字を入力してください", Toast.LENGTH_SHORT)
+                        toast.setGravity(Gravity.CENTER, 0, 0)
+                        toast.show()
                     }
                 }
                 setNegativeButton("Cancel", null)
@@ -308,6 +320,7 @@ class EventListFragment : Fragment() {
 
                 val bmp: Bitmap = getBitmapFromUri(uri)
                 val reBmp = Bitmap.createScaledBitmap(bmp, 240, 240, false)
+                // TODO ユーザーアイコンセット（任意）
                 repository.setUserIcon(reBmp, myuser.id, myuser.token) {
                     val drw = BitmapDrawable(it)
                     (activity as AppCompatActivity).supportActionBar?.setIcon(drw)

@@ -72,6 +72,7 @@ class TravelMindMapFragment :
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
+        // TODO イベントアイコンゲット
         (activity as AppCompatActivity).supportActionBar?.setIcon(R.drawable.ic_launcher_foreground)
         setHasOptionsMenu(true)
         return view
@@ -515,6 +516,7 @@ class TravelMindMapFragment :
 
                 val bmp: Bitmap = getBitmapFromUri(uri)
                 val reBmp = Bitmap.createScaledBitmap(bmp, 240, 240, false)
+                // TODO イベントアイコンセット（任意）
                 val drw = BitmapDrawable(reBmp)
                 (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
             }

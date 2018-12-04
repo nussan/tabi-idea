@@ -41,6 +41,9 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
         val options : BitmapFactory.Options = BitmapFactory.Options()
         options.inSampleSize = 10
         val bitmap = BitmapFactory.decodeByteArray(jpgarr,0,jpgarr.size,options)
+        // TODO イベントアイコン初期セット
+        // TODO イベントアイコンゲット
+        // ここは場合分けが必須
         holder.image.setImageBitmap(bitmap)
     }
 
