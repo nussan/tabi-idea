@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.User
+import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.http.*
 
@@ -52,7 +53,7 @@ interface RequestService {
     fun addCategory(@Header("Authorization") token: String, @Path("eid") eid: Int, @Body category: Map<String, String>): Single<Category>
 
     @GET("category/show/{eid}")
-    fun getCategoryList(@Header("Authorization") token: String, @Path("eid") eid: Int): Single<MutableList<Category>>
+    fun getCategoryList(@Header("Authorization") token: String, @Path("eid") eid: Int): Observable<MutableList<Category>>
 
     @PATCH("category/edit/{cid}")
     fun updateMmo(@Header("Authorization") token: String, @Path("cid") cid: Int, @Body category: Map<String, String>): Single<Category>

@@ -44,7 +44,7 @@ import java.util.*
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
     private var eventId: Int? = null
-    private val repository = Repository()
+    private lateinit var repository: Repository
     private var fireBaseApiClient: FirebaseApiClient? = null
     private lateinit var myuser: User
     private var sortNewOld = true
@@ -122,18 +122,15 @@ class EventListFragment : Fragment() {
                 Log.d(javaClass.simpleName, "onTouch!!")
                 val position = eventListView.getChildAdapterPosition(view)
                 Log.d("masaka", (eventListView.adapter as EventListAdapter).eventList[position].title)
-                repository
-                        .getCategoryList(
-                                myuser.token,
-                                (eventListView.adapter as EventListAdapter).eventList[position].id) { list ->
-                            activity?.supportFragmentManager
-                                    ?.beginTransaction()
-                                    ?.replace(R.id.container,
-                                            TravelMindMapFragment.newInstance(
-                                                    (eventListView.adapter as EventListAdapter).eventList[position], list, myuser))
-                                    ?.addToBackStack(null)
-                                    ?.commit()
-                        }
+                repository.getCategoryList(myuser.token, eventManager.eventList[position].id, fun(list: MutableList<Category>) {
+                    activity?.supportFragmentManager
+                            ?.beginTransaction()
+                            ?.replace(R.id.container,
+                                    TravelMindMapFragment.newInstance(
+                                            eventManager.eventList[position], list, myuser))
+                            ?.addToBackStack(null)
+                            ?.commit()
+                })
             }
         })
 
@@ -194,7 +191,16 @@ class EventListFragment : Fragment() {
 
     }
 
+    override fun onStart() {
+        super.onStart()
+        repository = Repository()
+    }
 
+    override fun onStop() {
+        Log.d("EventListFragment", "onStop")
+        repository.unsub()
+        super.onStop()
+    }
     //EventListFragmentでツールバーにメニュー機能を追加する
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -224,7 +230,6 @@ class EventListFragment : Fragment() {
                         (activity as AppCompatActivity).supportActionBar?.title = name.get("name")
                         myuser.name = name.get("name")!!
                     }
-
                 }
                 setNegativeButton("Cancel", null)
             }.create()

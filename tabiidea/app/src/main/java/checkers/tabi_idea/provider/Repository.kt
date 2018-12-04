@@ -8,6 +8,7 @@ import checkers.tabi_idea.data.User
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -15,6 +16,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 class Repository {
     private var requestService: RequestService
+    var api: CompositeDisposable? = CompositeDisposable()
 
     init {
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
@@ -176,13 +178,18 @@ class Repository {
     }
 
     fun getCategoryList(token: String, eventId: Int, callback: (MutableList<Category>) -> Unit) {
-        requestService.getCategoryList(token, eventId)
+        val task = requestService.getCategoryList(token, eventId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { res -> callback(res) },
                         { err -> Log.d("errGetCategoryList", err.toString()) }
                 )
+        api?.add(task)
+    }
+
+    fun unsub() {
+        api?.dispose()
     }
 
     fun updateCategory(token: String, categoryId: Int, category: Category, callback: (Category) -> Unit) {
