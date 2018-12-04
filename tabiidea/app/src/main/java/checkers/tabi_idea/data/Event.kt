@@ -16,9 +16,9 @@ data class Event(
         @Json(name= "creator")
         var creator: String,
         @Json(name = "updated_at")
-        var upadated: String = "",
+        var upadated: String ,
         @Json(name = "created_at")
-        var created: String = ""
+        var created: String
 ) : Parcelable, Comparable<Event> {
         override fun toString(): String {
                 return title
