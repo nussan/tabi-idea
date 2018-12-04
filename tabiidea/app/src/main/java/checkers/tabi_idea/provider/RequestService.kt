@@ -24,8 +24,8 @@ interface RequestService {
     fun addEvent(@Header("Authorization") token:String,@Path("id") id :Int, @Body title:Map<String,String>) : Single<Event>
 
     //Eventへの参加
-    @GET("event/join/{id}/{eid}")
-    fun joinEvent(@Header("Authorization") token:String,@Path("id") id: Int, @Path("eid") eid: String): Single<Event>
+    @GET("event/join/{uid}/{eventToken}")
+    fun joinEvent(@Header("Authorization") token:String,@Path("uid") uid: Int, @Path("eventToken") eventToken: String): Single<Event>
 
     @GET("{url}")
     fun getEvent(@Path("url") url: String): Single<Event>

@@ -55,8 +55,15 @@ class EventListFragment : Fragment() {
         }
         if (activity?.intent?.action != null && activity?.intent?.action == Intent.ACTION_VIEW) {
             if (activity?.intent?.data != null) {
-                val url = activity?.intent?.data!!.buildUpon().scheme("http").build().toString()
-                getEvent(url)
+                val url = activity!!.intent.data
+                val eventToken = url.getQueryParameter("event")
+                Log.d("intentdata",eventToken)
+                repository.joinEvent(myuser.token,myuser.id,eventToken){event:Event ->
+                    eventId = event.id
+                    Log.d("tubasa", event.id.toString())
+                    eventManager.add(event)
+                    eventListView.adapter.notifyDataSetChanged()
+                }
             }
         }
     }
@@ -115,7 +122,7 @@ class EventListFragment : Fragment() {
                 Log.d("masaka", (eventListView.adapter as EventListAdapter).eventList[position].title)
                 activity?.supportFragmentManager
                         ?.beginTransaction()
-                        ?.replace(R.id.container, TravelMindMapFragment.newInstance((eventListView.adapter as EventListAdapter).eventList[position]))
+                        ?.replace(R.id.container, TravelMindMapFragment.newInstance(myuser,eventManager.eventList[position]))
                         ?.addToBackStack(null)
                         ?.commit()
             }
@@ -289,26 +296,6 @@ class EventListFragment : Fragment() {
         parcelFileDescriptor.close();
         return image
     }
-
-    fun getEvent(url: String) {
-        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-        val retrofit = Retrofit.Builder()
-                .baseUrl("http://bit.ly/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .build()
-        val requestService = retrofit.create(RequestService::class.java)
-        val url = url.replace("http://bit.ly/", "")
-        Log.d("EventListFragment", url)
-        requestService.getEvent(url)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { res -> repository.joinEvent(myuser.token,myuser!!.id, res.id.toString()) },
-                        { err -> Log.d("EventListFragment", err.toString()) }
-                )
-    }
-
 
     companion object {
         @JvmStatic

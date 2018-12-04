@@ -7,6 +7,9 @@ import android.content.ClipDescription
 import android.content.Context
 import android.content.Intent
 import android.graphics.*
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -31,6 +34,7 @@ import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
+import checkers.tabi_idea.data.User
 import checkers.tabi_idea.provider.FirebaseApiClient
 import com.commit451.quickactionview.Action
 import com.commit451.quickactionview.QuickActionView
@@ -39,6 +43,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
+import kotlin.reflect.jvm.internal.impl.resolve.constants.IntValue
 import java.io.FileDescriptor
 
 
@@ -48,14 +53,17 @@ class TravelMindMapFragment :
         View.OnDragListener {
     private var fbApiClient: FirebaseApiClient? = null
     private var event: Event? = null
+    private var user: User? = null
     private var map: Map<String, MindMapObject> = mutableMapOf()
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
+    private var click: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             event = it.getParcelable("eventKey")
+            user = it.getParcelable("userKey")
         }
     }
 
@@ -116,32 +124,39 @@ class TravelMindMapFragment :
                 val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
 
                 val view = mindMapObjectToTextView(context, mmo)
-                view.tag = key
 
-                view.setOnLongClickListener { v ->
-                    behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-                    val item = ClipData.Item(v.tag as? CharSequence)
-                    val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
-                    v.startDrag(data, View.DragShadowBuilder(v), v, 0)
-                }
+                view.tag = key
 
                 // 画面のタッチポイントの差分をビュー毎に分けるためにここで宣言
                 val lastRaw = PointF(0f, 0f)
+                val point = Point(0,0)
+
+                val colorInt = (view.background as ColorDrawable).color
+                Log.d("colorInt",Integer.toHexString(colorInt).substring(2))
+
+                click = false
 
                 view.setOnTouchListener { v, event ->
                     Log.d("TravelMindMapFragment", "${event.pointerCount}")
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
+                            (v as RoundRectTextView).drawStroke(colorInt!!,true)
+
+                            click = true
+
                             lastRaw.set(event.rawX, event.rawY)
+                            point.set((event.x*v.scaleX).toInt(),(event.y*v.scaleY).toInt())
                         }
 
                         MotionEvent.ACTION_MOVE -> {
                             Log.d("TravelMindMapFragment", "ACTION_MOVE")
+                            (v as RoundRectTextView).drawStroke(colorInt!!,true)
                             val trans = PointF((event.rawX - lastRaw.x), (event.rawY - lastRaw.y))
                             if (trans.x * trans.x + trans.y * trans.y > 5) {
                                 // 移動量が一定以上のときロングプレスをキャンセル
                                 v.cancelLongPress()
+                                click = false
                             }
                             val matrix = v.matrix
                             matrix?.postTranslate(trans.x, trans.y)
@@ -149,19 +164,27 @@ class TravelMindMapFragment :
                             matrix?.getValues(f)
                             v.translationX += trans.x
                             v.translationY += trans.y
-//                            Log.d("TravelMindMapFragment", v.matrix.toShortString())
                             lastRaw.set(event.rawX, event.rawY)
                             mindMapConstraintLayout.invalidate()
                         }
 
                         MotionEvent.ACTION_UP -> {
                             Log.d("TravelMindMapFragment", "ACTION_UP")
+
+                            rrvToQAV(context,view,point,colorInt)
+                            if(!click){(v as RoundRectTextView).drawStroke(colorInt,false)}
                         }
                     }
-
                     false
                 }
-                rrvToQAV(context, view)
+
+                view.setOnLongClickListener { v ->
+                    behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+                    val item = ClipData.Item(v.tag as? CharSequence)
+                    val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
+                    (v as RoundRectTextView).drawStroke(colorInt,false)
+                    v.startDrag(data, View.DragShadowBuilder(v), v, 0)
+                }
 
                 map = map.plus(key to mmo)
                 mindMapConstraintLayout.addView(view, mmo)
@@ -197,13 +220,23 @@ class TravelMindMapFragment :
         return super.onOptionsItemSelected(item)
     }
 
-    private fun onLikeSelected(tag: String) {
-
+    private fun onLikeSelected(view: View,colorInt: Int){
+        val tag = view.tag as String
+        val mmo = map[tag] ?: return
+        if(!mmo.likeList.contains(user!!.id)) {
+            mmo.likeList.add(user!!.id)
+        }else {
+            mmo.likeList.remove(user!!.id)
+        }
+        mmo.point = mmo.likeList.size
+        fbApiClient?.updateMmo(tag to mmo)
+        (view as RoundRectTextView).drawStroke(colorInt,false)
     }
 
-    private fun onAddSelected(tag: String) {
+    private fun onAddSelected(view: View,colorInt: Int) {
         Log.d(javaClass.simpleName, "onAddSelected")
         Toast.makeText(context, "タップした位置に追加します", Toast.LENGTH_SHORT).show()
+        val tag = view.tag as String
 
         mindMapConstraintLayout.tapListener = object : ZoomableLayout.TapListener {
             override fun onTap(e: MotionEvent, centerX: Float, centerY: Float, scale: Float) {
@@ -257,6 +290,7 @@ class TravelMindMapFragment :
                 // ダイアログ表示と同時にキーボードを表示
 //                inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
                 inputForm.show()
+                (view as RoundRectTextView).drawStroke(colorInt,false)
             }
         }
     }
@@ -270,9 +304,9 @@ class TravelMindMapFragment :
         fbApiClient?.deleteMmo(Pair(tag, mmo))
     }
 
-    private fun onEditSelected(tag: String) {
+    private fun onEditSelected(view: View,colorInt: Int) {
         val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
-
+        val tag = view.tag as String
         // ダイアログ内のテキストエリア
         val inputText: EditText = inflater.findViewById(R.id.inputText)
         inputText.requestFocus()
@@ -291,6 +325,7 @@ class TravelMindMapFragment :
         // ダイアログ表示と同時にキーボードを表示
         inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         inputForm.show()
+        (view as RoundRectTextView).drawStroke(colorInt,false)
     }
 
     override fun onDrag(v: View?, event: DragEvent?): Boolean {
@@ -325,9 +360,9 @@ class TravelMindMapFragment :
                 val view = event.localState as View
 
                 when (v) {
-                    linear_left -> onAddSelected(view.tag as String)
+//                    linear_left -> onAddSelected(view.tag as String,)
                     linear_center -> onDeleteSelected(view.tag as String)
-                    linear_right -> onEditSelected(view.tag as String)
+//                    linear_right -> onEditSelected(view.tag as String)
                 }
 
                 behavior?.state = BottomSheetBehavior.STATE_HIDDEN
@@ -401,17 +436,20 @@ class TravelMindMapFragment :
         return textView
     }
 
-    private fun rrvToQAV(context: Context?, view: View) {
+    private fun rrvToQAV(context: Context?, view: View, point:Point,colorInt:Int){
         val qav = QuickActionView.make(context)
+        qav.setTouchPoint(point)
+        qav.setColorInt(colorInt)
+        qav.setClick(click)
         val mQuickActionListener = QuickActionView.OnActionSelectedListener { action, quickActionView ->
             Log.d("aaa", "aaa")
             val view = quickActionView.longPressedView
             if (view != null) {
                 Snackbar.make(view, "Clicked on " + action.id, Snackbar.LENGTH_SHORT).show()
                 when (action.title) {
-                    "追加" -> onAddSelected(view.tag as String)
-                    "編集" -> onEditSelected(view.tag as String)
-//                "いいね" -> onLikeSelected(view.tag as String)
+                    "追加" -> onAddSelected(view,colorInt)
+                    "編集" -> onEditSelected(view,colorInt)
+                    "いいね" -> onLikeSelected(view,colorInt)
                 }
             }
         }
@@ -419,8 +457,8 @@ class TravelMindMapFragment :
         val actionTitleAnimator = CustomActionsTitleAnimator()
         val pareIconTitle = listOf(
                 ContextCompat.getDrawable(context!!, R.drawable.ic_add_black_24dp)!! to getString(R.string.add),
-                ContextCompat.getDrawable(context!!, R.drawable.ic_edit_black_24dp)!! to getString(R.string.edit),
-                ContextCompat.getDrawable(context!!, R.drawable.ic_favorite_black_24dp)!! to getString(R.string.good)
+                ContextCompat.getDrawable(context, R.drawable.ic_edit_black_24dp)!! to getString(R.string.edit),
+                ContextCompat.getDrawable(context, R.drawable.ic_favorite_black_24dp)!! to getString(R.string.good)
         )
         val actionList = mutableListOf<Action>()
         pareIconTitle.forEach {
@@ -451,7 +489,6 @@ class TravelMindMapFragment :
             // OKが押されるとonActivityResutに処理が移行する
             true
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -478,8 +515,9 @@ class TravelMindMapFragment :
 
     companion object {
         @JvmStatic
-        fun newInstance(event: Event) = TravelMindMapFragment().apply {
+        fun newInstance(user: User, event: Event) = TravelMindMapFragment().apply {
             arguments = Bundle().apply {
+                putParcelable("userKey",user)
                 putParcelable("eventKey", event)
             }
         }
