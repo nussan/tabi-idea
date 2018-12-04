@@ -122,7 +122,7 @@ class EventListFragment : Fragment() {
                 Log.d("masaka", (eventListView.adapter as EventListAdapter).eventList[position].title)
                 activity?.supportFragmentManager
                         ?.beginTransaction()
-                        ?.replace(R.id.container, TravelMindMapFragment.newInstance(myuser,eventManager.eventList[position]))
+                        ?.replace(R.id.container, TravelMindMapFragment.newInstance((eventListView.adapter as EventListAdapter).eventList[position],myuser))
                         ?.addToBackStack(null)
                         ?.commit()
             }
@@ -224,25 +224,23 @@ class EventListFragment : Fragment() {
             true
         }
 
-        val sort: MenuItem = menu.findItem(R.id.sort)
-        sort.setOnMenuItemClickListener {
-            //このソート手法は初期のソートを再現できなくする機能でもある
-            //そこはこだわらなくてよいと判断
-            if (sortNewOld) {
-                //ソートを新しいイベントが一番上に来るようにする
-                eventManager.eventList.sortedBy {
-                    it.title.length
-                    Log.d("masaka", it.title)
-                }
 
+        val sort : MenuItem = menu.findItem(R.id.sort)
+        sort.setOnMenuItemClickListener{
+            val ml = mutableListOf("aaaa","bb","d")
+            ml.sortBy{it.length}
+            //このソート手法は初期のソートを再現できなくする機能でもある
+            if(sortNewOld){
+                eventManager.eventList.sort()
+                sortNewOld = false
                 (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
-                (eventListView.adapter as EventListAdapter).notifyDataSetChanged()
-            } else {
+                eventListView.adapter.notifyDataSetChanged()
+            }else {
                 //ソートを古いイベントが一番上に来るようにする
-                eventManager.eventList.sortedBy {
-                    it.id * -1
-                }
+                eventManager.eventList.sortDescending()
+                sortNewOld = true
                 (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
+                eventListView.adapter.notifyDataSetChanged()
             }
             true
         }
@@ -309,3 +307,5 @@ class EventListFragment : Fragment() {
     }
 
 }
+
+

@@ -2,10 +2,7 @@ package checkers.tabi_idea.fragment
 
 
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipDescription
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
@@ -36,6 +33,7 @@ import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.provider.FirebaseApiClient
+import checkers.tabi_idea.provider.Repository
 import com.commit451.quickactionview.Action
 import com.commit451.quickactionview.QuickActionView
 import com.commit451.quickactionview.animator.PopAnimator
@@ -57,11 +55,14 @@ class TravelMindMapFragment :
     private var map: Map<String, MindMapObject> = mutableMapOf()
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
+    private val repository = Repository()
+    private lateinit var myuser : User
     private var click: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
+            myuser = it.getParcelable("user")
             event = it.getParcelable("eventKey")
             user = it.getParcelable("userKey")
         }
@@ -74,7 +75,7 @@ class TravelMindMapFragment :
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
-        (activity as AppCompatActivity).supportActionBar?.setIcon(R.mipmap.ic_tabiidea_round)
+        (activity as AppCompatActivity).supportActionBar?.setIcon(R.drawable.ic_launcher_foreground)
         setHasOptionsMenu(true)
         return view
     }
@@ -489,6 +490,25 @@ class TravelMindMapFragment :
             // OKが押されるとonActivityResutに処理が移行する
             true
         }
+
+        val invite: MenuItem = menu.findItem(R.id.mmomenu_invite)
+        invite.setOnMenuItemClickListener{
+            repository.createUrl(myuser.token,myuser.id,event!!.id){
+                Log.d("masak",it.getValue("url"))
+                AlertDialog.Builder(context!!).apply {
+                    setTitle("招待URLを発行しました")
+                    setMessage(it.getValue("url"))
+                    setPositiveButton("コピー") { _, _ ->
+                        // OKをタップしたときの処理
+                        copyToClipboard(context,"",it.getValue("url"))
+                        Toast.makeText(context, "コピーしました", Toast.LENGTH_LONG).show()
+                    }
+                    setNegativeButton("Cancel", null)
+                    show()
+                }
+            }
+            true
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -513,12 +533,21 @@ class TravelMindMapFragment :
         return image
     }
 
+
+    //招待ＵＲＬをクリップボードにコピーするメソッド
+    private fun copyToClipboard(context: Context, label:String, text:String) {
+        // copy to clipboard
+        val clipboardManager: ClipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.primaryClip = ClipData.newPlainText(label, text)
+    }
+
     companion object {
         @JvmStatic
-        fun newInstance(user: User, event: Event) = TravelMindMapFragment().apply {
+        fun newInstance(event: Event, user:User) = TravelMindMapFragment().apply {
             arguments = Bundle().apply {
                 putParcelable("userKey",user)
                 putParcelable("eventKey", event)
+                putParcelable("user",user)
             }
         }
     }
