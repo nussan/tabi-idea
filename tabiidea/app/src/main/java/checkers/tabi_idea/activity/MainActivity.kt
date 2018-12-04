@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity(),
                     repository.addUser(newUser) { user: User ->
                         this.user = user
                         val bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher)
-                        //TODO repository.setUserIcon(bmp,user.id,user.token){}
+                        //TODO ユーザーアイコン初期セット repository.setUserIcon(bmp,user.id,user.token){}
                         user.token = "Token " + user.token
                         repository.getEventList(user.token, user.id) {
                             toEventListFragment(user, it)
@@ -65,7 +65,6 @@ class MainActivity : AppCompatActivity(),
         super.onWindowFocusChanged(hasFocus)
     }
 
-    //追加しました
     private fun toEventListFragment(user: User, eventList: MutableList<Event>) {
         supportFragmentManager
                 .beginTransaction()

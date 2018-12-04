@@ -42,11 +42,21 @@ interface RequestService {
     @GET("event/invitation/{uid}/{eid}")
     fun createUrl(@Header("Authorization") token: String, @Path("uid") uid: Int, @Path("eid") eid: Int): Single<Map<String, String>>
 
-    @POST("")
+    //TODO ユーザーアイコンをセット
+    @POST("event/update/{eid}")
     fun setUserIcon(@Header("Authorization") token: String, @Path("uid") uid: Int, @Body btm: Bitmap): Single<Bitmap>
 
-    @GET("")
+    //TODO ユーザーアイコンをゲット
+    @GET("public/user/{uid}/")
     fun getUserIcon(@Header("Authorization") token: String, @Path("uid") uid: Int): Single<Bitmap>
+
+    //TODO イベントアイコンをセット
+    @POST("")
+    fun setEventIcon(): Single<Bitmap>
+
+    //TODO イベントアイコンをゲット
+    @GET("")
+    fun getEventIcon(): Single<Bitmap>
 
     @POST("category/create/{eid}")
     fun addCategory(@Header("Authorization") token: String, @Path("eid") eid: Int, @Body category: Map<String, String>): Single<Category>
