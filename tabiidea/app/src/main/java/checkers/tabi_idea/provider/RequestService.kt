@@ -40,7 +40,7 @@ interface RequestService {
     @GET("event/show/{id}")
     fun getEvent(@Header("Authorization") token:String,@Path("id") id:Int):Single<MutableList<Event>>
 
-    @POST("event/invitation/{uid}/{eid}")
+    @GET("event/invitation/{uid}/{eid}")
     fun createUrl(@Header("Authorization") token:String,@Path("uid") uid: Int, @Path("eid") eid: Int): Single<Map<String,String>>
 
     @POST("")

@@ -52,12 +52,12 @@ class TravelMindMapFragment :
     private var behavior: BottomSheetBehavior<LinearLayout>? = null
     private var listener: ChildEventListener? = null
     private val repository = Repository()
-    private lateinit var user : User
+    private lateinit var myuser : User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            user = it.getParcelable("user")
+            myuser = it.getParcelable("user")
             event = it.getParcelable("eventKey")
         }
     }
@@ -454,15 +454,15 @@ class TravelMindMapFragment :
 
         val invite: MenuItem = menu.findItem(R.id.mmomenu_invite)
         invite.setOnMenuItemClickListener{
-            repository.createUrl(user.token,user.id,event!!.id){
+            repository.createUrl(myuser.token,myuser.id,event!!.id){
                 Log.d("masak",it.getValue("url"))
                 AlertDialog.Builder(context!!).apply {
                     setTitle("招待URLを発行しました")
                     setMessage(it.getValue("url"))
-                    setPositiveButton("OK") { _, _ ->
+                    setPositiveButton("コピー") { _, _ ->
                         // OKをタップしたときの処理
                         copyToClipboard(context,"",it.getValue("url"))
-                        Toast.makeText(context, "Dialog OK", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "コピーしました", Toast.LENGTH_LONG).show()
                     }
                     setNegativeButton("Cancel", null)
                     show()
@@ -503,9 +503,10 @@ class TravelMindMapFragment :
 
     companion object {
         @JvmStatic
-        fun newInstance(event: Event) = TravelMindMapFragment().apply {
+        fun newInstance(event: Event, user:User) = TravelMindMapFragment().apply {
             arguments = Bundle().apply {
                 putParcelable("eventKey", event)
+                putParcelable("user",user)
             }
         }
     }

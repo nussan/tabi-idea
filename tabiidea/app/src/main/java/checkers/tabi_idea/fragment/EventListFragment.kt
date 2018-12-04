@@ -115,7 +115,7 @@ class EventListFragment : Fragment() {
                 Log.d("masaka", (eventListView.adapter as EventListAdapter).eventList[position].title)
                 activity?.supportFragmentManager
                         ?.beginTransaction()
-                        ?.replace(R.id.container, TravelMindMapFragment.newInstance((eventListView.adapter as EventListAdapter).eventList[position]))
+                        ?.replace(R.id.container, TravelMindMapFragment.newInstance((eventListView.adapter as EventListAdapter).eventList[position],myuser))
                         ?.addToBackStack(null)
                         ?.commit()
             }
