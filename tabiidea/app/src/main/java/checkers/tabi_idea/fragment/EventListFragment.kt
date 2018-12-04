@@ -59,8 +59,8 @@ class EventListFragment : Fragment() {
             if (activity?.intent?.data != null) {
                 val url = activity!!.intent.data
                 val eventToken = url.getQueryParameter("event")
-                Log.d("intentdata",eventToken)
-                repository.joinEvent(myuser.token,myuser.id,eventToken){event:Event ->
+                Log.d("intentdata", eventToken)
+                repository.joinEvent(myuser.token, myuser.id, eventToken) { event: Event ->
                     eventId = event.id
                     Log.d("tubasa", event.id.toString())
                     eventManager.add(event)
@@ -122,7 +122,7 @@ class EventListFragment : Fragment() {
                 Log.d(javaClass.simpleName, "onTouch!!")
                 val position = eventListView.getChildAdapterPosition(view)
                 Log.d("masaka", (eventListView.adapter as EventListAdapter).eventList[position].title)
-<<<<<<< HEAD
+                <<<<<<< HEAD
                 repository
                         .getCategoryList(
                                 myuser.token,
@@ -135,13 +135,13 @@ class EventListFragment : Fragment() {
                                     ?.addToBackStack(null)
                                     ?.commit()
                         }
-=======
+                ====== =
                 activity?.supportFragmentManager
                         ?.beginTransaction()
-                        ?.replace(R.id.container, TravelMindMapFragment.newInstance((eventListView.adapter as EventListAdapter).eventList[position],myuser))
+                        ?.replace(R.id.container, TravelMindMapFragment.newInstance((eventListView.adapter as EventListAdapter).eventList[position], myuser))
                         ?.addToBackStack(null)
                         ?.commit()
->>>>>>> 4ff390923a875df4f1cdd1056a1173bba004661e
+                >>>>>>> 4ff390923a875df4f1cdd1056a1173bba004661e
             }
         })
 
@@ -255,17 +255,17 @@ class EventListFragment : Fragment() {
         }
 
 
-        val sort : MenuItem = menu.findItem(R.id.sort)
-        sort.setOnMenuItemClickListener{
-            val ml = mutableListOf("aaaa","bb","d")
-            ml.sortBy{it.length}
+        val sort: MenuItem = menu.findItem(R.id.sort)
+        sort.setOnMenuItemClickListener {
+            val ml = mutableListOf("aaaa", "bb", "d")
+            ml.sortBy { it.length }
             //このソート手法は初期のソートを再現できなくする機能でもある
-            if(sortNewOld){
+            if (sortNewOld) {
                 eventManager.eventList.sort()
                 sortNewOld = false
                 (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
                 eventListView.adapter.notifyDataSetChanged()
-            }else {
+            } else {
                 //ソートを古いイベントが一番上に来るようにする
                 eventManager.eventList.sortDescending()
                 sortNewOld = true
@@ -325,7 +325,7 @@ class EventListFragment : Fragment() {
         return image
     }
 
-<<<<<<< HEAD
+    <<<<<<< HEAD
     fun getEvent(url: String) {
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val retrofit = Retrofit.Builder()
@@ -346,8 +346,8 @@ class EventListFragment : Fragment() {
     }
 
 
-=======
->>>>>>> 4ff390923a875df4f1cdd1056a1173bba004661e
+    =======
+    >>>>>>> 4ff390923a875df4f1cdd1056a1173bba004661e
     companion object {
         @JvmStatic
         fun newInstance(user: User, eventList: MutableList<Event>) = EventListFragment().apply {

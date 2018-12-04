@@ -127,10 +127,10 @@ class TravelMindMapFragment :
 
                 // 画面のタッチポイントの差分をビュー毎に分けるためにここで宣言
                 val lastRaw = PointF(0f, 0f)
-                val point = Point(0,0)
+                val point = Point(0, 0)
 
                 val colorInt = (view.background as ColorDrawable).color
-                Log.d("colorInt",Integer.toHexString(colorInt).substring(2))
+                Log.d("colorInt", Integer.toHexString(colorInt).substring(2))
 
                 click = false
 
@@ -140,17 +140,17 @@ class TravelMindMapFragment :
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
-                            (v as RoundRectTextView).drawStroke(colorInt!!,true)
+                            (v as RoundRectTextView).drawStroke(colorInt!!, true)
 
                             click = true
 
                             lastRaw.set(event.rawX, event.rawY)
-                            point.set((event.x*v.scaleX).toInt(),(event.y*v.scaleY).toInt())
+                            point.set((event.x * v.scaleX).toInt(), (event.y * v.scaleY).toInt())
                         }
 
                         MotionEvent.ACTION_MOVE -> {
                             Log.d("TravelMindMapFragment", "ACTION_MOVE")
-                            (v as RoundRectTextView).drawStroke(colorInt!!,true)
+                            (v as RoundRectTextView).drawStroke(colorInt!!, true)
                             val trans = PointF((event.rawX - lastRaw.x), (event.rawY - lastRaw.y))
                             if (trans.x * trans.x + trans.y * trans.y > 5) {
                                 // 移動量が一定以上のときロングプレスをキャンセル
@@ -170,8 +170,10 @@ class TravelMindMapFragment :
                         MotionEvent.ACTION_UP -> {
                             Log.d("TravelMindMapFragment", "ACTION_UP")
 
-                            rrvToQAV(context,view,point,colorInt)
-                            if(!click){(v as RoundRectTextView).drawStroke(colorInt,false)}
+                            rrvToQAV(context, view, point, colorInt)
+                            if (!click) {
+                                (v as RoundRectTextView).drawStroke(colorInt, false)
+                            }
                         }
                     }
                     false
@@ -181,7 +183,7 @@ class TravelMindMapFragment :
                     behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
                     val item = ClipData.Item(v.tag as? CharSequence)
                     val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
-                    (v as RoundRectTextView).drawStroke(colorInt,false)
+                    (v as RoundRectTextView).drawStroke(colorInt, false)
                     v.startDrag(data, View.DragShadowBuilder(v), v, 0)
                 }
 
@@ -227,20 +229,20 @@ class TravelMindMapFragment :
         return super.onOptionsItemSelected(item)
     }
 
-    private fun onLikeSelected(view: View,colorInt: Int){
+    private fun onLikeSelected(view: View, colorInt: Int) {
         val tag = view.tag as String
         val mmo = map[tag] ?: return
-        if(!mmo.likeList.contains(user!!.id)) {
+        if (!mmo.likeList.contains(user!!.id)) {
             mmo.likeList.add(user!!.id)
-        }else {
+        } else {
             mmo.likeList.remove(user!!.id)
         }
         mmo.point = mmo.likeList.size
         fbApiClient?.updateMmo(tag to mmo)
-        (view as RoundRectTextView).drawStroke(colorInt,false)
+        (view as RoundRectTextView).drawStroke(colorInt, false)
     }
 
-    private fun onAddSelected(view: View,colorInt: Int) {
+    private fun onAddSelected(view: View, colorInt: Int) {
         Log.d(javaClass.simpleName, "onAddSelected")
         Toast.makeText(context, "タップした位置に追加します", Toast.LENGTH_SHORT).show()
         val tag = view.tag as String
@@ -295,7 +297,7 @@ class TravelMindMapFragment :
                 // ダイアログ表示と同時にキーボードを表示
 //                inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
                 inputForm.show()
-                (view as RoundRectTextView).drawStroke(colorInt,false)
+                (view as RoundRectTextView).drawStroke(colorInt, false)
             }
         }
     }
@@ -309,7 +311,7 @@ class TravelMindMapFragment :
         fbApiClient?.deleteMmo(Pair(tag, mmo))
     }
 
-    private fun onEditSelected(view: View,colorInt: Int) {
+    private fun onEditSelected(view: View, colorInt: Int) {
         val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
         val tag = view.tag as String
         // ダイアログ内のテキストエリア
@@ -330,7 +332,7 @@ class TravelMindMapFragment :
         // ダイアログ表示と同時にキーボードを表示
         inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         inputForm.show()
-        (view as RoundRectTextView).drawStroke(colorInt,false)
+        (view as RoundRectTextView).drawStroke(colorInt, false)
     }
 
     override fun onDrag(v: View?, event: DragEvent?): Boolean {
@@ -431,7 +433,7 @@ class TravelMindMapFragment :
         return textView
     }
 
-    private fun rrvToQAV(context: Context?, view: View, point:Point,colorInt:Int){
+    private fun rrvToQAV(context: Context?, view: View, point: Point, colorInt: Int) {
         val qav = QuickActionView.make(context)
         qav.setTouchPoint(point)
         qav.setColorInt(colorInt)
@@ -442,9 +444,9 @@ class TravelMindMapFragment :
             if (view != null) {
                 Snackbar.make(view, "Clicked on " + action.id, Snackbar.LENGTH_SHORT).show()
                 when (action.title) {
-                    "追加" -> onAddSelected(view,colorInt)
-                    "編集" -> onEditSelected(view,colorInt)
-                    "いいね" -> onLikeSelected(view,colorInt)
+                    "追加" -> onAddSelected(view, colorInt)
+                    "編集" -> onEditSelected(view, colorInt)
+                    "いいね" -> onLikeSelected(view, colorInt)
                 }
             }
         }
@@ -486,15 +488,15 @@ class TravelMindMapFragment :
         }
 
         val invite: MenuItem = menu.findItem(R.id.mmomenu_invite)
-        invite.setOnMenuItemClickListener{
-            repository.createUrl(user.token, user.id,event!!.id){
-                Log.d("masak",it.getValue("url"))
+        invite.setOnMenuItemClickListener {
+            repository.createUrl(user.token, user.id, event!!.id) {
+                Log.d("masak", it.getValue("url"))
                 AlertDialog.Builder(context!!).apply {
                     setTitle("招待URLを発行しました")
                     setMessage(it.getValue("url"))
                     setPositiveButton("コピー") { _, _ ->
                         // OKをタップしたときの処理
-                        copyToClipboard(context,"",it.getValue("url"))
+                        copyToClipboard(context, "", it.getValue("url"))
                         Toast.makeText(context, "コピーしました", Toast.LENGTH_LONG).show()
                     }
                     setNegativeButton("Cancel", null)
@@ -529,7 +531,7 @@ class TravelMindMapFragment :
 
 
     //招待ＵＲＬをクリップボードにコピーするメソッド
-    private fun copyToClipboard(context: Context, label:String, text:String) {
+    private fun copyToClipboard(context: Context, label: String, text: String) {
         // copy to clipboard
         val clipboardManager: ClipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.primaryClip = ClipData.newPlainText(label, text)

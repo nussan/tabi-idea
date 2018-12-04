@@ -1,14 +1,9 @@
 package checkers.tabi_idea.data
 
 import android.os.Parcelable
-import com.google.firebase.database.IgnoreExtraProperties
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
-import org.jetbrains.annotations.Nullable
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 @Parcelize
 data class Event(
@@ -20,15 +15,16 @@ data class Event(
         var member: MutableList<Int> = mutableListOf(),
         @Json(name= "creator")
         var creator: String,
-        @Json(name= "updated_at")
+        @Json(name = "updated_at")
         var upadated: String = "",
-        @Json(name= "created_at")
+        @Json(name = "created_at")
         var created: String = ""
-): Parcelable,Comparable<Event> {
+) : Parcelable, Comparable<Event> {
         override fun toString(): String {
                 return title
         }
-        override fun compareTo(other : Event) : Int {
+
+        override fun compareTo(other: Event): Int {
                 val sdFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
                 val thisdate = sdFormat.parse(this.created)
                 val otherdate = sdFormat.parse(other.created)

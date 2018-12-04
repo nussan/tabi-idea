@@ -22,7 +22,7 @@ data class MindMapObject(
         @Json(name = "point")
         var point : Int = 0,
         @Json(name = "type")
-        var type : String = "",
+        var type: String = "",
         @Json(name = "likeList")
-        var likeList : MutableList<Int> = mutableListOf()
+        var likeList: MutableList<Int> = mutableListOf()
 ) : Parcelable
