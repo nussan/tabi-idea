@@ -36,7 +36,9 @@ import java.io.ByteArrayOutputStream
 import java.io.FileDescriptor
 
 
-class TravelActivity : AppCompatActivity(), ColorPickerDialogListener {
+class TravelActivity : AppCompatActivity(),
+        ColorPickerDialogListener,
+        CategoryListFragment.OnFragmentInteractionListener {
 
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
     private lateinit var mUser: User
@@ -54,12 +56,11 @@ class TravelActivity : AppCompatActivity(), ColorPickerDialogListener {
 
         setSupportActionBar(toolbar)
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
-
         container.adapter = mSectionsPagerAdapter
 
-        tabs.addTab(tabs.newTab().setText("0"), 0)
-        tabs.addTab(tabs.newTab().setText("1"), 0)
-        tabs.addTab(tabs.newTab().setText("2"), 0)
+        tabs.addTab(tabs.newTab().setText("マインドマップ"))
+        tabs.addTab(tabs.newTab().setText("カテゴリ"))
+        tabs.addTab(tabs.newTab().setText("2"))
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
     }
@@ -162,17 +163,27 @@ class TravelActivity : AppCompatActivity(), ColorPickerDialogListener {
         }
     }
 
+    override fun onCategoryChanged(position: Int, category: Category) {
+        mCategoryList[position].name = category.name
+        mCategoryList[position].color = category.color
+    }
+
 
     /**
      * A [FragmentPagerAdapter] that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-
         override fun getItem(position: Int): Fragment {
             return when (position) {
-                TRAVEL_MIND_MAP -> TravelMindMapFragment.newInstance(mEvent, mCategoryList, mUser)
-                CATEGORY_LIST -> CategoryListFragment.newInstance(mCategoryList, mUser)
+                TRAVEL_MIND_MAP -> {
+                    container?.requestDisallowInterceptTouchEvent(true)
+                    TravelMindMapFragment.newInstance(mEvent, mCategoryList, mUser)
+                }
+                CATEGORY_LIST -> {
+                    container?.requestDisallowInterceptTouchEvent(false)
+                    CategoryListFragment.newInstance(mCategoryList, mUser)
+                }
 //                RESULT -> TODO まとめ
                 else -> TravelMindMapFragment.newInstance(mEvent, mCategoryList, mUser)
             }

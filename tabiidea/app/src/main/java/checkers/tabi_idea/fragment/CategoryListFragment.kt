@@ -25,6 +25,7 @@ class CategoryListFragment : Fragment() {
     private lateinit var user: User
     private val repository = Repository()
     private var targetPosition = -1
+    private var listener: OnFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +65,11 @@ class CategoryListFragment : Fragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
+        if (context is OnFragmentInteractionListener) {
+            listener = context
+        } else {
+            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -82,11 +88,15 @@ class CategoryListFragment : Fragment() {
         repository.updateCategory(user.token, categoryList[targetPosition].id, after) { after ->
             categoryList[targetPosition].color = after.color
             category_recycler_view.adapter?.notifyItemChanged(targetPosition)
+            listener?.onCategoryChanged(targetPosition, categoryList[targetPosition])
             targetPosition = -1
         }
 
     }
 
+    interface OnFragmentInteractionListener {
+        fun onCategoryChanged(position: Int, category: Category)
+    }
 
     companion object {
         @JvmStatic

@@ -23,10 +23,10 @@
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ffffff"
+        android:background="#00ffffFF"
+        android:baselineAligned="false"
         android:orientation="horizontal"
         android:padding="2dp"
-        android:baselineAligned="false"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
         <LinearLayout
@@ -34,31 +34,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#00FFFFFF"
             android:gravity="center"
-            android:orientation="vertical"
-            android:background="@android:color/white">
-
-            <ImageView
-                android:id="@+id/addView"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/ic_add_black_24dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/add" />
-        </LinearLayout>
+            android:orientation="vertical" />
 
         <LinearLayout
             android:id="@+id/linear_center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#9FFFFFFF"
             android:gravity="center"
-            android:orientation="vertical"
-            android:background="@android:color/white">
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/deleteView"
@@ -78,21 +65,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#00FFFFFF"
             android:gravity="center"
-            android:orientation="vertical"
-            android:background="@android:color/white">
-
-            <ImageView
-                android:id="@+id/editView"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/ic_edit_black_24dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/edit" />
-        </LinearLayout>
+            android:orientation="vertical" />
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
