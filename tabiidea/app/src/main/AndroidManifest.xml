@@ -27,7 +27,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="tabidea/join"
+                    android:host="tabidea"
+                    android:pathPrefix="/"
                     android:scheme="http" />
             </intent-filter>
         </activity>

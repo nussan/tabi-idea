@@ -29,15 +29,7 @@ import checkers.tabi_idea.data.User
 import checkers.tabi_idea.manager.EventManager
 import checkers.tabi_idea.provider.FirebaseApiClient
 import checkers.tabi_idea.provider.Repository
-import checkers.tabi_idea.provider.RequestService
-import com.squareup.moshi.KotlinJsonAdapterFactory
-import com.squareup.moshi.Moshi
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_event_list.*
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.FileDescriptor
 import java.util.*
 
@@ -65,9 +57,18 @@ class EventListFragment : Fragment() {
                     Log.d("tubasa", event.id.toString())
                     eventManager.add(event)
                     eventListView.adapter?.notifyDataSetChanged()
+
+                    val toast = Toast.makeText(context, "${event.title}に参加しました。", Toast.LENGTH_SHORT)
+                    toast.setGravity(Gravity.CENTER, 0, 0)
+                    toast.show()
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        repository = Repository()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -121,6 +122,7 @@ class EventListFragment : Fragment() {
             override fun onClick(view: View) {
                 Log.d(javaClass.simpleName, "onTouch!!")
                 fab?.isEnabled = false
+                eventListView?.isEnabled = false
 
                 val position = eventListView.getChildAdapterPosition(view)
                 Log.d("masaka", (eventListView.adapter as EventListAdapter).eventList[position].title)
@@ -137,6 +139,7 @@ class EventListFragment : Fragment() {
         })
 
         fab.setOnClickListener {
+            eventListView?.isClickable = false
 
             val adapter = eventListView.adapter as EventListAdapter
             adapter.eventList = eventManager.eventList //検索機能を実行したときの更新
@@ -157,7 +160,7 @@ class EventListFragment : Fragment() {
                     val title = mapOf(
                             "title" to "${inputText.text}"
                     )
-                    if("${inputText.text}" != "" && "${inputText.text}".substring(0,1) != " " && "${inputText.text}".substring(0,1) != "　") {
+                    if ("${inputText.text}" != "" && "${inputText.text}".substring(0, 1) != " " && "${inputText.text}".substring(0, 1) != "　") {
                         repository.addEvent(myuser.token, myuser.id, title) { event ->
                             eventId = event.id
                             Log.d("tubasa", event.id.toString())
@@ -200,7 +203,6 @@ class EventListFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        repository = Repository()
     }
 
     override fun onStop() {
@@ -208,6 +210,7 @@ class EventListFragment : Fragment() {
         repository.unsub()
         super.onStop()
     }
+
     //EventListFragmentでツールバーにメニュー機能を追加する
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -233,7 +236,7 @@ class EventListFragment : Fragment() {
                             "name" to "${inputText.text}"
                     )
                     Log.d("EventListFragment", "")
-                    if("${inputText.text}" != "" && "${inputText.text}".substring(0,1) != " " && "${inputText.text}".substring(0,1) != "　") {
+                    if ("${inputText.text}" != "" && "${inputText.text}".substring(0, 1) != " " && "${inputText.text}".substring(0, 1) != "　") {
                         repository.editUser(myuser.token, myuser.id, name) { name ->
                             // コールバックの操作
                             (activity as AppCompatActivity).supportActionBar?.title = name.get("name")
@@ -335,29 +338,6 @@ class EventListFragment : Fragment() {
         val image: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
         parcelFileDescriptor.close();
         return image
-    }
-
-    fun getEvent(url: String) {
-        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-        val retrofit = Retrofit.Builder()
-                .baseUrl("http://bit.ly/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .build()
-        val requestService = retrofit.create(RequestService::class.java)
-        val url = url.replace("http://bit.ly/", "")
-        Log.d("EventListFragment", url)
-        requestService.getEvent(url)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { res ->
-                            repository.joinEvent(myuser.token, myuser!!.id, res.id.toString()) {
-
-                            }
-                        },
-                        { err -> Log.d("EventListFragment", err.toString()) }
-                )
     }
 
     companion object {
