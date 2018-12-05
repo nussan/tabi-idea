@@ -114,7 +114,7 @@ class EventListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //RecyclerViewを設定
-        eventListView.adapter = EventListAdapter(context, eventManager.eventList)
+        eventListView.adapter = EventListAdapter(context, eventManager.eventList,myuser)
         eventListView.layoutManager = GridLayoutManager(context, 1)
 
         val swipHandler = object : SwipeToDeleteCallback(context!!) {

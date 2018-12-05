@@ -39,6 +39,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
+import java.io.ByteArrayOutputStream
 import java.io.FileDescriptor
 
 
@@ -73,7 +74,22 @@ class TravelMindMapFragment :
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
         // TODO イベントアイコンゲット
-        (activity as AppCompatActivity).supportActionBar?.setIcon(R.drawable.ic_launcher_foreground)
+        repository.getEventIcon(event!!.id, user.token) {
+            val btmarr = it.get("icon")
+            val baStrArr = btmarr!!.split(Regex(", |\\[|]"),0)
+            var baBytArr = ByteArray(baStrArr.size-2)
+            for(i in 1 .. baStrArr.size-2) {
+                var tmp = baStrArr[i].toInt()
+                if(tmp >127) tmp -= 256
+                baBytArr[i-1] = tmp.toByte()
+            }
+            val options : BitmapFactory.Options = BitmapFactory.Options()
+            Log.d("maaaaa",baStrArr.size.toString())
+            options.inSampleSize = 10
+            val bitmap = BitmapFactory.decodeByteArray(baBytArr,0,baBytArr.size,options)
+            val drw = BitmapDrawable(bitmap)
+            (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
+        }
         setHasOptionsMenu(true)
         return view
     }
@@ -516,9 +532,15 @@ class TravelMindMapFragment :
 
                 val bmp: Bitmap = getBitmapFromUri(uri)
                 val reBmp = Bitmap.createScaledBitmap(bmp, 240, 240, false)
+                val baos = ByteArrayOutputStream()
+                reBmp.compress(Bitmap.CompressFormat.JPEG,100,baos)
+                val bmparr = baos.toByteArray();
                 // TODO イベントアイコンセット（任意）
-                val drw = BitmapDrawable(reBmp)
-                (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
+                repository.setEventIcon(bmparr, event!!.id, user.token) {
+                    Log.d("masaka" ,it)
+                    val drw = BitmapDrawable(reBmp)
+                    (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
+                }
             }
         }
     }

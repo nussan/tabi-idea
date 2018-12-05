@@ -16,7 +16,6 @@ import checkers.tabi_idea.provider.Repository
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.ByteArrayOutputStream
-import java.nio.ByteBuffer
 
 
 class MainActivity : AppCompatActivity(),
@@ -45,17 +44,16 @@ class MainActivity : AppCompatActivity(),
                     )
                     repository.addUser(newUser) { user: User ->
                         this.user = user
-                        val bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher)
+                        user.token = "Token " + user.token
+                        val bmp = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
                         val baos = ByteArrayOutputStream()
                         bmp.compress(Bitmap.CompressFormat.JPEG,100,baos)
                         val bmparr = baos.toByteArray();
                         //TODO ユーザーアイコン初期セット
                         repository.setUserIcon(bmparr,user.id,user.token){
-                            Log.d("masaka" , "aaa")
                             val drw = BitmapDrawable(it)
                             supportActionBar?.setIcon(drw)
                         }
-                        user.token = "Token " + user.token
                         repository.getEventList(user.token, user.id) {
                             toEventListFragment(user, it)
                         }

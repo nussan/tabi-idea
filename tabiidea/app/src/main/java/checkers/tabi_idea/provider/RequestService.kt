@@ -51,12 +51,12 @@ interface RequestService {
     fun getUserIcon(@Header("Authorization") token: String, @Path("uid") uid: Int): Single<Map<String, String>>
 
     //TODO イベントアイコンをセット
-    @POST("")
-    fun setEventIcon(): Single<Bitmap>
+    @POST("event/update/{eid}")
+    fun setEventIcon(@Header("Authorization") token: String, @Path("eid") eid: Int, @Body btm: Map<String, ByteArray>): Single<String>
 
     //TODO イベントアイコンをゲット
-    @GET("")
-    fun getEventIcon(): Single<Bitmap>
+    @GET("event/download/{eid}")
+    fun getEventIcon(@Header("Authorization") token: String, @Path("eid") eid: Int): Single<Map<String, String>>
 
     @POST("category/create/{eid}")
     fun addCategory(@Header("Authorization") token: String, @Path("eid") eid: Int, @Body category: Map<String, String>): Single<Category>
