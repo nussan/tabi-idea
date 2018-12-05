@@ -106,13 +106,16 @@ class TravelMindMapFragment :
                 Log.d("TravelMindMapFragment", "onChildChanged")
                 val key = dataSnapshot.key!!
                 val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
-                val lastMmo = map[key] ?: return
                 map = map.minus(key)
                 map = map.plus(key to mmo)
                 val target = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(key)
+                val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(mmo.parent)
+                val matrix = parent.matrix
+                val array = FloatArray(9)
+                matrix.getValues(array)
                 target.text = TextUtils.ellipsize(mmo.text, target.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
-                target.translationX += mmo.positionX - lastMmo.positionX
-                target.translationY += mmo.positionY - lastMmo.positionY
+                target.translationX = array[Matrix.MTRANS_X] + mmo.positionX * target.scaleX
+                target.translationY = array[Matrix.MTRANS_Y] + mmo.positionY * target.scaleY
                 mindMapConstraintLayout.invalidate()
             }
 
@@ -130,6 +133,7 @@ class TravelMindMapFragment :
                 // 画面のタッチポイントの差分をビュー毎に分けるためにここで宣言
                 val lastRaw = PointF(0f, 0f)
                 val point = Point(0, 0)
+                dist.set(0f, 0f)
 
                 val colorInt = (view.background as ColorDrawable).color
                 Log.d("colorInt", Integer.toHexString(colorInt).substring(2))
@@ -189,9 +193,16 @@ class TravelMindMapFragment :
                                 val matrix = FloatArray(9)
                                 parent.matrix.getValues(matrix)
                                 map[v.tag] ?: return@setOnTouchListener false
-                                map[v.tag]!!.positionX += dist.x
-                                map[v.tag]!!.positionY += dist.y
+                                map[v.tag]!!.positionX += dist.x / v.scaleX
+                                map[v.tag]!!.positionY += dist.y / v.scaleY
                                 fbApiClient?.updateMmo(v.tag as String to map[v.tag as String]!!)
+                                map.forEach { m ->
+                                    if (m.value.parent == v.tag) {
+                                        m.value.positionX -= dist.x / v.scaleX
+                                        m.value.positionY -= dist.y / v.scaleY
+                                        fbApiClient?.updateMmo(m.key to m.value)
+                                    }
+                                }
                                 dist.set(0f, 0f)
                                 mActivePointerId = -1
                             }
