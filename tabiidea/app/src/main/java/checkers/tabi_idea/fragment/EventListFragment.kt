@@ -31,13 +31,14 @@ import checkers.tabi_idea.manager.EventManager
 import checkers.tabi_idea.provider.FirebaseApiClient
 import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.fragment_event_list.*
+import java.io.ByteArrayOutputStream
 import java.io.FileDescriptor
-
+import java.util.*
 
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
     private var eventId: Int? = null
-    private lateinit var repository: Repository
+    private var repository: Repository = Repository()
     private var fireBaseApiClient: FirebaseApiClient? = null
     private lateinit var myuser: User
     private var sortNewOld = true
@@ -78,10 +79,23 @@ class EventListFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
-//        TODO ユーザーアイコンゲット repository.getUserIcon(myuser.id,myuser.token){
-//            val drw = BitmapDrawable(it)
-//            (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
-//        }
+//        TODO ユーザーアイコンゲット
+        repository.getUserIcon(myuser.id, myuser.token) {
+            val btmarr = it.get("icon")
+            val baStrArr = btmarr!!.split(Regex(", |\\[|]"),0)
+            var baBytArr = ByteArray(baStrArr.size-2)
+            for(i in 1 .. baStrArr.size-2) {
+                    var tmp = baStrArr[i].toInt()
+                if(tmp >127) tmp -= 256
+                baBytArr[i-1] = tmp.toByte()
+            }
+            Log.d("uma",baBytArr[1].toString()+"と"+baBytArr.size + "と"+ baStrArr[1]+"です")
+            val options : BitmapFactory.Options = BitmapFactory.Options()
+            options.inSampleSize = 1
+            val bitmap = BitmapFactory.decodeByteArray(baBytArr,0,baBytArr.size,options)
+            val drw = BitmapDrawable(bitmap)
+            (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
+        }
         setHasOptionsMenu(true)
 
         return inflater.inflate(R.layout.fragment_event_list, container, false)
@@ -100,7 +114,7 @@ class EventListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //RecyclerViewを設定
-        eventListView.adapter = EventListAdapter(context, eventManager.eventList)
+        eventListView.adapter = EventListAdapter(context, eventManager.eventList,myuser)
         eventListView.layoutManager = GridLayoutManager(context, 1)
 
         val swipHandler = object : SwipeToDeleteCallback(context!!) {
@@ -168,7 +182,7 @@ class EventListFragment : Fragment() {
                             fireBaseApiClient = FirebaseApiClient(eventId.toString())
                             fireBaseApiClient!!.addEventToFb()
                             eventManager.add(event)
-                            (eventListView.adapter as EventListAdapter).notifyDataSetChanged()
+                            (eventListView.adapter as EventListAdapter).notifyItemChanged(eventManager.eventList.indexOf(event))
 
                             // イベントにデフォルトのカテゴリを追加
                             val cl = listOf(
@@ -325,9 +339,13 @@ class EventListFragment : Fragment() {
 
                 val bmp: Bitmap = getBitmapFromUri(uri)
                 val reBmp = Bitmap.createScaledBitmap(bmp, 240, 240, false)
+                val baos = ByteArrayOutputStream()
+                reBmp.compress(Bitmap.CompressFormat.JPEG,1,baos)
+                val bmparr = baos.toByteArray();
                 // TODO ユーザーアイコンセット（任意）
-                repository.setUserIcon(reBmp, myuser.id, myuser.token) {
-                    val drw = BitmapDrawable(it)
+                repository.setUserIcon(bmparr, myuser.id, myuser.token) {
+                    Log.d("masaka" ,it)
+                    val drw = BitmapDrawable(reBmp)
                     (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
                 }
             }

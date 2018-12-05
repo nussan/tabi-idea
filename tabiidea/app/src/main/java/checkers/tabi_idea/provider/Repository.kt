@@ -22,6 +22,8 @@ class Repository {
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val retrofit = Retrofit.Builder()
                 .baseUrl("https://fast-peak-71769.herokuapp.com/")
+                //https://fast-peak-71769.herokuapp.com/
+                //mysterious-shore-91717
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .build()
@@ -142,24 +144,46 @@ class Repository {
     }
 
     //ユーザーアイコンの取得
-    fun getUserIcon(user_id: Int, token: String, callback: (Bitmap) -> Unit) {
+    fun getUserIcon(user_id: Int, token: String, callback: (Map<String, String>) -> Unit) {
         requestService.getUserIcon(token, user_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { res -> callback(res) },
-                        { err -> Log.d("errCreateUrl", err.toString()) }
+                        { err -> Log.d("errIconGet", err.toString()) }
                 )
     }
 
     //ユーザーアイコンを設定
-    fun setUserIcon(btm: Bitmap, user_id: Int, token: String, callback: (Bitmap) -> Unit) {
-        requestService.setUserIcon(token, user_id, btm)
+    fun setUserIcon(btm: ByteArray, user_id: Int, token: String, callback: (String) -> Unit) {
+        requestService.setUserIcon(token, user_id, mapOf("icon" to btm))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { res -> callback(res) },
-                        { err -> Log.d("errCreateUrl", err.toString()) }
+                        { err -> Log.d("errIconSet", err.toString()) }
+                )
+    }
+
+    //イベントアイコンの取得
+    fun getEventIcon(event_id: Int, token: String, callback: (Map<String, String>) -> Unit) {
+        requestService.getEventIcon(token, event_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { res -> callback(res) },
+                        { err -> Log.d("errIconGetEvent", err.toString()) }
+                )
+    }
+
+    //イベントアイコンを設定
+    fun setEventIcon(btm: ByteArray, event_id: Int, token: String, callback: (String) -> Unit) {
+        requestService.setEventIcon(token, event_id, mapOf("icon" to btm))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { res -> callback(res) },
+                        { err -> Log.d("errIconSetEvent", err.toString()) }
                 )
     }
 

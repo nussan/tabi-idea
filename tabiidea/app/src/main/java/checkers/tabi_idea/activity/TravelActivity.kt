@@ -1,10 +1,16 @@
 package checkers.tabi_idea.activity
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Menu
@@ -26,6 +32,8 @@ import checkers.tabi_idea.provider.Repository
 import com.google.android.material.tabs.TabLayout
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener
 import kotlinx.android.synthetic.main.activity_travel.*
+import java.io.ByteArrayOutputStream
+import java.io.FileDescriptor
 
 
 class TravelActivity : AppCompatActivity(), ColorPickerDialogListener {
@@ -100,6 +108,35 @@ class TravelActivity : AppCompatActivity(), ColorPickerDialogListener {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun getBitmapFromUri(uri: Uri): Bitmap {
+        val parcelFileDescriptor: ParcelFileDescriptor? = contentResolver?.openFileDescriptor(uri, "r")
+        val fileDescriptor: FileDescriptor? = parcelFileDescriptor?.fileDescriptor
+        val image: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor)
+        parcelFileDescriptor?.close()
+        return image
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1000 && resultCode == Activity.RESULT_OK) {
+            var uri: Uri? = null
+            if (data != null) {
+                uri = data.data
+
+                val bmp: Bitmap = getBitmapFromUri(uri)
+                val reBmp = Bitmap.createScaledBitmap(bmp, 240, 240, false)
+                val baos = ByteArrayOutputStream()
+                reBmp.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                val bmparr = baos.toByteArray();
+                // TODO イベントアイコンセット（任意）
+                mRepository.setEventIcon(bmparr, mEvent!!.id, mUser.token) {
+                    Log.d("masaka", it)
+                    val drw = BitmapDrawable(reBmp)
+                    supportActionBar?.setIcon(drw)
+                }
+            }
+        }
     }
 
     //招待ＵＲＬをクリップボードにコピーするメソッド

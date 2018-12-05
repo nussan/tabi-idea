@@ -42,6 +42,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
+import java.io.ByteArrayOutputStream
 import java.io.FileDescriptor
 
 
@@ -56,7 +57,7 @@ class TravelMindMapFragment :
     private var listener: ChildEventListener? = null
     private var categoryList: List<Category> = listOf()
     private lateinit var user: User
-    private val repository = Repository()
+    private var repository = Repository()
     private var click: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,8 +76,6 @@ class TravelMindMapFragment :
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
-        // TODO イベントアイコンゲット
-        (activity as AppCompatActivity).supportActionBar?.setIcon(R.drawable.ic_launcher_foreground)
         setHasOptionsMenu(true)
         return view
     }
@@ -208,6 +207,10 @@ class TravelMindMapFragment :
         mindMapConstraintLayout.lineDrawer = this
     }
 
+    override fun onStart() {
+        super.onStart()
+        repository = Repository()
+    }
     override fun onStop() {
         Log.d("TravelMindMapFragment", "onStop")
         super.onStop()
@@ -456,32 +459,6 @@ class TravelMindMapFragment :
 
         val customActionsInAnimator = CustomActionsInAnimator(qav)
         qav.setActionsInAnimator(customActionsInAnimator)
-    }
-
-    //TravelMIndMapFragmentでツールバーにメニュー機能を追加する
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == 1000 && resultCode == Activity.RESULT_OK) {
-            var uri: Uri? = null
-            if (data != null) {
-                uri = data.data
-
-                val bmp: Bitmap = getBitmapFromUri(uri)
-                val reBmp = Bitmap.createScaledBitmap(bmp, 240, 240, false)
-                // TODO イベントアイコンセット（任意）
-                val drw = BitmapDrawable(reBmp)
-                (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
-            }
-        }
-    }
-
-    private fun getBitmapFromUri(uri: Uri): Bitmap {
-        val parcelFileDescriptor: ParcelFileDescriptor? = context?.contentResolver?.openFileDescriptor(uri, "r")
-        val fileDescriptor: FileDescriptor? = parcelFileDescriptor?.fileDescriptor
-        val image: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor)
-        parcelFileDescriptor?.close()
-        return image
     }
 
     companion object {
