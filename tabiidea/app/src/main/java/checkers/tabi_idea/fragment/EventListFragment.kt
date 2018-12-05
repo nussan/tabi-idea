@@ -81,8 +81,8 @@ class EventListFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
 //        TODO ユーザーアイコンゲット
         repository.getUserIcon(myuser.id, myuser.token) {
-            val btmarr = it.get("icon")
-            val baStrArr = btmarr!!.split(Regex(", |\\[|]"),0)
+            val btmarr = it["icon"]
+            val baStrArr = btmarr?.split(Regex(", |\\[|]"), 0) ?: return@getUserIcon
             var baBytArr = ByteArray(baStrArr.size-2)
             for(i in 1 .. baStrArr.size-2) {
                     var tmp = baStrArr[i].toInt()

@@ -47,8 +47,8 @@ class ZoomableLayout :
         addView(child)
         (child as? RoundRectTextView)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                child.x = if (mmo.viewIndex == 0) width.toFloat() / 2 + mmo.positionX - child.width / 2 else findViewWithTag<RoundRectTextView>(mmo.parent).x + mmo.positionX
-                child.y = if (mmo.viewIndex == 0) height.toFloat() / 2 + mmo.positionY - child.height / 2 else findViewWithTag<RoundRectTextView>(mmo.parent).y + mmo.positionY
+                child.x = if (mmo.viewIndex == 0) width.toFloat() / 2 + mmo.positionX - child.width / 2 else findViewWithTag<RoundRectTextView>(mmo.parent).x + mmo.positionX * scale
+                child.y = if (mmo.viewIndex == 0) height.toFloat() / 2 + mmo.positionY - child.height / 2 else findViewWithTag<RoundRectTextView>(mmo.parent).y + mmo.positionY * scale
                 child.scaleX = 0f
                 child.scaleY = 0f
                 val set = AnimatorSet()
@@ -113,7 +113,7 @@ class ZoomableLayout :
     }
 
     override fun onSingleTapUp(e: MotionEvent): Boolean {
-        tapListener?.onTap(e, (width / 2).toFloat(), (height / 2).toFloat(), scaleFactor)
+        tapListener?.onTap(e, (width / 2).toFloat(), (height / 2).toFloat(), scale)
         tapListener = null
         return true
     }

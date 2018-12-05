@@ -1,17 +1,12 @@
 package checkers.tabi_idea.fragment
 
 
-import android.app.Activity
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
-import android.content.Intent
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
-import android.os.ParcelFileDescriptor
 import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
@@ -42,8 +37,6 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
-import java.io.ByteArrayOutputStream
-import java.io.FileDescriptor
 
 
 class TravelMindMapFragment :
@@ -256,8 +249,8 @@ class TravelMindMapFragment :
                 val mmo = MindMapObject(
                         newId,
                         "",
-                        (e.x - matrix[Matrix.MTRANS_X]) - parent.width * scale / 2,
-                        (e.y - matrix[Matrix.MTRANS_Y]) - parent.height * scale / 2,
+                        (e.x - matrix[Matrix.MTRANS_X]) / scale - parent.width * scale / 2,
+                        (e.y - matrix[Matrix.MTRANS_Y]) / scale - parent.height * scale / 2,
                         parent.tag as String,
                         0,
                         spinner.selectedItem.toString()
