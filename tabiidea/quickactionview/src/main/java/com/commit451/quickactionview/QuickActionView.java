@@ -42,6 +42,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static java.lang.Integer.max;
+import static java.lang.Integer.min;
+
 /**
  * A QuickActionView, which shows actions when a view is long pressed.
  *
@@ -122,9 +125,23 @@ public class QuickActionView {
     }
 
     private void drawStroke(View anchor,int colorInt, boolean show){
+
         GradientDrawable strokeDrawable = new GradientDrawable();
         strokeDrawable.setColor(colorInt);
-        if(show)strokeDrawable.setStroke(16, Color.parseColor("#303f9f"));
+        Integer r = Integer.parseInt(Integer.toHexString(colorInt).substring(2,4),16);
+        Integer g = Integer.parseInt(Integer.toHexString(colorInt).substring(4,6),16);
+        Integer b = Integer.parseInt(Integer.toHexString(colorInt).substring(6,8),16);
+
+        Integer maxD = Math.max(Math.max(r,g),b);
+        Integer minD = Math.min(Math.min(r,g),b);
+
+        String strR = String.format("%02X", maxD+minD-r);
+        String strG = String.format("%02X", maxD+minD-g);
+        String strB = String.format("%02X", maxD+minD-b);
+
+        String colorStr = strR + strG + strB;
+        Integer strokeColor = Color.parseColor("#"+colorStr);
+        if(show)strokeDrawable.setStroke(16, strokeColor);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             anchor.setBackground(strokeDrawable);
         }

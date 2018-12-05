@@ -469,6 +469,7 @@ class TravelMindMapFragment :
                 .setActionsTitleOutAnimator(actionTitleAnimator)
                 .setOnActionSelectedListener(mQuickActionListener)
                 .setActionsOutAnimator(popAnimator)
+                .setScrimColor(Color.parseColor("#55000000"))
                 .register(view)
 
         val customActionsInAnimator = CustomActionsInAnimator(qav)

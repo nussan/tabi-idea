@@ -1,21 +1,38 @@
 package checkers.tabi_idea.custom.view
 
+import android.app.ActionBar
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Outline
+import android.graphics.*
+import android.graphics.Color.RED
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.support.annotation.Nullable
+import android.support.v4.content.ContextCompat
+import android.support.v4.content.res.ResourcesCompat
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewOutlineProvider
+import android.widget.ImageView
 import checkers.tabi_idea.R
+import kotlinx.android.synthetic.main.fragment_travel_mind_map.view.*
 import kotlin.math.max
 import kotlin.math.min
+import checkers.tabi_idea.R.mipmap.ic_launcher
+import com.bumptech.glide.load.engine.Resource
+import java.io.IOException
+import java.lang.NullPointerException
 
 
 class RoundRectTextView : AppCompatTextView {
+//    val drawable = ResourcesCompat.getDrawable(resources,R.drawable.ic_favorite_black_24dp,null)
+//    val bmp = Bitmap.createBitmap(drawable!!.intrinsicWidth,drawable.intrinsicHeight,Bitmap.Config.ARGB_8888)
+
     constructor(context: Context?) : this(context, null)
 
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -31,6 +48,13 @@ class RoundRectTextView : AppCompatTextView {
         maxLines = 1
         gravity = Gravity.CENTER
         clipToOutline = true
+
+        //        Log.d("favorite" ,drawable.toString())
+//        val bmp = Bitmap.createBitmap(drawable!!.intrinsicWidth/20,drawable.intrinsicHeight/20, Bitmap.Config.ARGB_8888)
+//        Log.d("favorite" , bmp.toString())
+//        val canvas = Canvas()
+//        val paint = Paint()
+//        canvas.drawBitmap(bmp, 0f, 0f, paint)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -49,6 +73,13 @@ class RoundRectTextView : AppCompatTextView {
     companion object {
         const val MAX_SIZE = 400
         const val MIN_SIZE = 200
+    }
+
+    fun drawFavorite(like:Boolean){
+        val lp: ViewGroup.LayoutParams = ViewGroup.LayoutParams(0,Math.max(this.measuredWidth, MIN_SIZE))
+        if(like){
+        }
+        else{}
     }
 
     fun drawStroke(colorInt: Int, push: Boolean) {

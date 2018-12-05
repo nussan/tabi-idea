@@ -9,8 +9,12 @@ import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 import android.util.Log
 import android.view.*
+import android.widget.ImageView
+import checkers.tabi_idea.R
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.fragment.TravelMindMapFragment
+import kotlinx.android.synthetic.main.list_event_row.view.*
+import kotlinx.android.synthetic.main.notification_action_tombstone.view.*
 
 
 class ZoomableLayout :
@@ -60,6 +64,7 @@ class ZoomableLayout :
                 viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
+
 
     }
 
