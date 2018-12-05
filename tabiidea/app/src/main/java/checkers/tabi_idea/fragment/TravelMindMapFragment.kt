@@ -2,7 +2,10 @@ package checkers.tabi_idea.fragment
 
 
 import android.app.Activity
-import android.content.*
+import android.content.ClipData
+import android.content.ClipDescription
+import android.content.Context
+import android.content.Intent
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
@@ -210,24 +213,6 @@ class TravelMindMapFragment :
         super.onStop()
         if (listener != null)
             fbApiClient?.removeListener(listener!!)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            android.R.id.home -> {
-                (activity as AppCompatActivity).supportFragmentManager.popBackStack()
-            }
-
-            R.id.mmomenu_list -> {
-                activity?.supportFragmentManager
-                        ?.beginTransaction()
-                        ?.replace(R.id.container, CategoryListFragment.newInstance(categoryList, user))
-                        ?.addToBackStack(null)
-                        ?.commit()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun onLikeSelected(view: View, colorInt: Int) {
@@ -474,39 +459,7 @@ class TravelMindMapFragment :
     }
 
     //TravelMIndMapFragmentでツールバーにメニュー機能を追加する
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.mmomenu, menu)
 
-        val icon: MenuItem = menu.findItem(R.id.mmomenu_icon)
-        icon.setOnMenuItemClickListener {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.type = "image/*"
-            startActivityForResult(intent, 1000)
-            // OKが押されるとonActivityResutに処理が移行する
-            true
-        }
-
-        val invite: MenuItem = menu.findItem(R.id.mmomenu_invite)
-        invite.setOnMenuItemClickListener {
-            repository.createUrl(user.token, user.id, event!!.id) {
-                Log.d("masak", it.getValue("url"))
-                AlertDialog.Builder(context!!).apply {
-                    setTitle("招待URLを発行しました")
-                    setMessage(it.getValue("url"))
-                    setPositiveButton("コピー") { _, _ ->
-                        // OKをタップしたときの処理
-                        copyToClipboard(context, "", it.getValue("url"))
-                        Toast.makeText(context, "コピーしました", Toast.LENGTH_LONG).show()
-                    }
-                    setNegativeButton("Cancel", null)
-                    show()
-                }
-            }
-            true
-        }
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 1000 && resultCode == Activity.RESULT_OK) {
@@ -524,19 +477,11 @@ class TravelMindMapFragment :
     }
 
     private fun getBitmapFromUri(uri: Uri): Bitmap {
-        val parcelFileDescriptor: ParcelFileDescriptor = getContext()!!.getContentResolver().openFileDescriptor(uri, "r")
-        val fileDescriptor: FileDescriptor = parcelFileDescriptor.getFileDescriptor()
-        val image: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-        parcelFileDescriptor.close()
+        val parcelFileDescriptor: ParcelFileDescriptor? = context?.contentResolver?.openFileDescriptor(uri, "r")
+        val fileDescriptor: FileDescriptor? = parcelFileDescriptor?.fileDescriptor
+        val image: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor)
+        parcelFileDescriptor?.close()
         return image
-    }
-
-
-    //招待ＵＲＬをクリップボードにコピーするメソッド
-    private fun copyToClipboard(context: Context, label: String, text: String) {
-        // copy to clipboard
-        val clipboardManager: ClipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboardManager.primaryClip = ClipData.newPlainText(label, text)
     }
 
     companion object {

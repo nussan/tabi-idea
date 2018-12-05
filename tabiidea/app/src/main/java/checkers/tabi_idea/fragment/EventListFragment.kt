@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import checkers.tabi_idea.R
+import checkers.tabi_idea.activity.TravelActivity
 import checkers.tabi_idea.adapter.EventListAdapter
 import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
@@ -31,7 +32,7 @@ import checkers.tabi_idea.provider.FirebaseApiClient
 import checkers.tabi_idea.provider.Repository
 import kotlinx.android.synthetic.main.fragment_event_list.*
 import java.io.FileDescriptor
-import java.util.*
+
 
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
@@ -122,19 +123,19 @@ class EventListFragment : Fragment() {
             override fun onClick(view: View) {
                 Log.d(javaClass.simpleName, "onTouch!!")
                 fab?.isEnabled = false
-                eventListView?.isEnabled = false
 
                 val position = eventListView.getChildAdapterPosition(view)
-                Log.d("masaka", (eventListView.adapter as EventListAdapter).eventList[position].title)
-                repository.getCategoryList(myuser.token, eventManager.eventList[position].id, fun(list: MutableList<Category>) {
-                    activity?.supportFragmentManager
-                            ?.beginTransaction()
-                            ?.replace(R.id.container,
-                                    TravelMindMapFragment.newInstance(
-                                            eventManager.eventList[position], list, myuser))
-                            ?.addToBackStack(null)
-                            ?.commit()
-                })
+                val event = (eventListView.adapter as EventListAdapter).eventList[position]
+                Log.d("masaka", event.title)
+                repository.getCategoryList(myuser.token, event.id) { list ->
+                    repository.unsub()
+                    val intent = Intent(activity, TravelActivity::class.java)
+                    intent.putExtra("user", myuser)
+                    intent.putExtra("event", event)
+                    intent.putExtra("categoryList", ArrayList(list))
+                    startActivity(intent)
+                }
+
             }
         })
 
@@ -203,6 +204,7 @@ class EventListFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        fab.isEnabled = true
     }
 
     override fun onStop() {
