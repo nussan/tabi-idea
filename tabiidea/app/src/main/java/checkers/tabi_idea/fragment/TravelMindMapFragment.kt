@@ -37,6 +37,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
+import kotlin.math.abs
 
 
 class TravelMindMapFragment :
@@ -51,6 +52,8 @@ class TravelMindMapFragment :
     private var categoryList: List<Category> = listOf()
     private lateinit var user: User
     private var repository = Repository()
+    private var dist = PointF(0f, 0f)
+    private var mActivePointerId: Int = -1
     private var click: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -131,11 +134,16 @@ class TravelMindMapFragment :
                 click = false
 
                 view.setOnTouchListener { v, event ->
-                    activity?.currentFocus
                     Log.d("TravelMindMapFragment", "${event.pointerCount}")
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
+                            if (mActivePointerId == -1) {
+                                mActivePointerId = event.getPointerId(0)
+                            } else {
+                                activity?.dispatchTouchEvent(event)
+                                mActivePointerId = -1
+                            }
                             (v as RoundRectTextView).drawStroke(colorInt!!, true)
 
                             click = true
@@ -153,22 +161,33 @@ class TravelMindMapFragment :
                                 v.cancelLongPress()
                                 click = false
                             }
-                            val matrix = v.matrix
-                            matrix?.postTranslate(trans.x, trans.y)
-                            val f = FloatArray(9)
-                            matrix?.getValues(f)
+
                             v.translationX += trans.x
+                            dist.x += trans.x
                             v.translationY += trans.y
+                            dist.y += trans.y
                             lastRaw.set(event.rawX, event.rawY)
                             mindMapConstraintLayout.invalidate()
                         }
 
                         MotionEvent.ACTION_UP -> {
                             Log.d("TravelMindMapFragment", "ACTION_UP")
-
                             rrvToQAV(context, view, point, colorInt)
                             if (!click) {
                                 (v as RoundRectTextView).drawStroke(colorInt, false)
+                            }
+
+                            if (abs(dist.x) > 0 || abs(dist.y) > 0) {
+                                val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView?>(map[v.tag]?.parent)
+                                        ?: return@setOnTouchListener false
+                                val matrix = FloatArray(9)
+                                parent.matrix.getValues(matrix)
+                                map[v.tag] ?: return@setOnTouchListener false
+                                map[v.tag]!!.positionX += dist.x
+                                map[v.tag]!!.positionY += dist.y
+                                fbApiClient?.updateMmo(v.tag as String to map[v.tag as String]!!)
+                                dist.set(0f, 0f)
+                                mActivePointerId = -1
                             }
                         }
                     }
@@ -204,6 +223,7 @@ class TravelMindMapFragment :
         super.onStart()
         repository = Repository()
     }
+
     override fun onStop() {
         Log.d("TravelMindMapFragment", "onStop")
         super.onStop()
