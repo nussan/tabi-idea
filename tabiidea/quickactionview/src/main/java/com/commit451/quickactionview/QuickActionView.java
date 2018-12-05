@@ -8,19 +8,11 @@ import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.IdRes;
-import android.support.annotation.MenuRes;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.view.menu.MenuBuilder;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,13 +29,17 @@ import com.commit451.quickactionview.animator.SlideFromCenterAnimator;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.FormatFlagsConversionMismatchException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static java.lang.Integer.max;
-import static java.lang.Integer.min;
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.MenuRes;
+import androidx.annotation.Nullable;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.core.content.ContextCompat;
 
 /**
  * A QuickActionView, which shows actions when a view is long pressed.
@@ -142,6 +138,7 @@ public class QuickActionView {
         String colorStr = strR + strG + strB;
         Integer strokeColor = Color.parseColor("#"+colorStr);
         if(show)strokeDrawable.setStroke(16, strokeColor);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             anchor.setBackground(strokeDrawable);
         }
@@ -588,11 +585,17 @@ public class QuickActionView {
         return mClickedView;
     }
 
-    public void setTouchPoint(Point point) { this.mTouchPoint = point; }
+    public void setTouchPoint(Point point) {
+        this.mTouchPoint = point;
+    }
 
-    public void setColorInt(int colorInt) { this.mColorInt = colorInt; }
+    public void setColorInt(int colorInt) {
+        this.mColorInt = colorInt;
+    }
 
-    public void setClick(boolean click){ this.mClick = click; }
+    public void setClick(boolean click) {
+        this.mClick = click;
+    }
 
     /**
      * Listener for when an action is selected (hovered, then released)
@@ -906,7 +909,7 @@ public class QuickActionView {
                             if (entry.getValue().isSelected() && mOnActionSelectedListener != null) {
                                 mOnActionSelectedListener.onActionSelected(entry.getKey(), QuickActionView.this);
                                 break;
-                            }else drawStroke(mClickedView, mColorInt, false);
+                            } else drawStroke(mClickedView, mColorInt, false);
                         }
                     case MotionEvent.ACTION_CANCEL:
                     case MotionEvent.ACTION_OUTSIDE:
@@ -1012,7 +1015,7 @@ public class QuickActionView {
 
         @Override
         public void onClick(View v) {
-            if(mClick) {
+            if (mClick) {
                 drawStroke(v, mColorInt, true);
                 show(v, mTouchPoint);
             }

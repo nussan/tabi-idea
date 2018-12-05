@@ -10,41 +10,35 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
-import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import checkers.tabi_idea.R
+import checkers.tabi_idea.adapter.EventListAdapter
+import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.manager.EventManager
 import checkers.tabi_idea.provider.FirebaseApiClient
 import checkers.tabi_idea.provider.Repository
-import checkers.tabi_idea.provider.RequestService
-import com.squareup.moshi.KotlinJsonAdapterFactory
-import com.squareup.moshi.Moshi
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_event_list.*
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.FileDescriptor
 import java.util.*
 
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
-    private var eventId:Int? = null
-    private val repository = Repository()
-    private var fireBaseApiClient:FirebaseApiClient? = null
-    private lateinit var myuser : User
+    private var eventId: Int? = null
+    private lateinit var repository: Repository
+    private var fireBaseApiClient: FirebaseApiClient? = null
+    private lateinit var myuser: User
     private var sortNewOld = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,15 +51,24 @@ class EventListFragment : Fragment() {
             if (activity?.intent?.data != null) {
                 val url = activity!!.intent.data
                 val eventToken = url.getQueryParameter("event")
-                Log.d("intentdata",eventToken)
-                repository.joinEvent(myuser.token,myuser.id,eventToken){event:Event ->
+                Log.d("intentdata", eventToken)
+                repository.joinEvent(myuser.token, myuser.id, eventToken) { event: Event ->
                     eventId = event.id
                     Log.d("tubasa", event.id.toString())
                     eventManager.add(event)
-                    eventListView.adapter.notifyDataSetChanged()
+                    eventListView.adapter?.notifyDataSetChanged()
+
+                    val toast = Toast.makeText(context, "${event.title}に参加しました。", Toast.LENGTH_SHORT)
+                    toast.setGravity(Gravity.CENTER, 0, 0)
+                    toast.show()
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        repository = Repository()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -74,7 +77,7 @@ class EventListFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
-//        TODO repository.getUserIcon(myuser.id,myuser.token){
+//        TODO ユーザーアイコンゲット repository.getUserIcon(myuser.id,myuser.token){
 //            val drw = BitmapDrawable(it)
 //            (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
 //        }
@@ -100,15 +103,15 @@ class EventListFragment : Fragment() {
         eventListView.layoutManager = GridLayoutManager(context, 1)
 
         val swipHandler = object : SwipeToDeleteCallback(context!!) {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val adapter = eventListView.adapter as EventListAdapter
-                viewHolder?.let {
+                viewHolder.let {
                     eventId = adapter.eventList[it.adapterPosition].id
                     adapter.removeAt(it.adapterPosition)
                     eventManager.eventList = adapter.eventList
                 }
-                repository.deleteEvent(myuser.token,myuser.id,eventId!!){
-                    Toast.makeText(context,it.get("title")+"が削除されました",Toast.LENGTH_SHORT).show()
+                repository.deleteEvent(myuser.token, myuser.id, eventId!!) {
+                    Toast.makeText(context, it["title"] + "が削除されました", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -116,19 +119,27 @@ class EventListFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(eventListView)
 
         (eventListView.adapter as EventListAdapter).setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View?) {
+            override fun onClick(view: View) {
                 Log.d(javaClass.simpleName, "onTouch!!")
+                fab?.isEnabled = false
+                eventListView?.isEnabled = false
+
                 val position = eventListView.getChildAdapterPosition(view)
                 Log.d("masaka", (eventListView.adapter as EventListAdapter).eventList[position].title)
-                activity?.supportFragmentManager
-                        ?.beginTransaction()
-                        ?.replace(R.id.container, TravelMindMapFragment.newInstance(myuser,eventManager.eventList[position]))
-                        ?.addToBackStack(null)
-                        ?.commit()
+                repository.getCategoryList(myuser.token, eventManager.eventList[position].id, fun(list: MutableList<Category>) {
+                    activity?.supportFragmentManager
+                            ?.beginTransaction()
+                            ?.replace(R.id.container,
+                                    TravelMindMapFragment.newInstance(
+                                            eventManager.eventList[position], list, myuser))
+                            ?.addToBackStack(null)
+                            ?.commit()
+                })
             }
         })
 
         fab.setOnClickListener {
+            eventListView?.isClickable = false
 
             val adapter = eventListView.adapter as EventListAdapter
             adapter.eventList = eventManager.eventList //検索機能を実行したときの更新
@@ -149,14 +160,32 @@ class EventListFragment : Fragment() {
                     val title = mapOf(
                             "title" to "${inputText.text}"
                     )
+                    if ("${inputText.text}" != "" && "${inputText.text}".substring(0, 1) != " " && "${inputText.text}".substring(0, 1) != "　") {
+                        repository.addEvent(myuser.token, myuser.id, title) { event ->
+                            eventId = event.id
+                            Log.d("tubasa", event.id.toString())
+                            fireBaseApiClient = FirebaseApiClient(eventId.toString())
+                            fireBaseApiClient!!.addEventToFb()
+                            eventManager.add(event)
+                            (eventListView.adapter as EventListAdapter).notifyDataSetChanged()
 
-                    repository.addEvent(myuser.token,myuser.id, title) {event ->
-                        eventId = event.id
-                        Log.d("tubasa", event.id.toString())
-                        fireBaseApiClient = FirebaseApiClient(eventId.toString())
-                        fireBaseApiClient!!.addEventToFb()
-                        eventManager.add(event)
-                        eventListView.adapter.notifyDataSetChanged()
+                            // イベントにデフォルトのカテゴリを追加
+                            val cl = listOf(
+                                    Category("行先", "#ffb6c1"),
+                                    Category("予算", "#32cd32"),
+                                    Category("食物", "#ff8c00"),
+                                    Category("宿泊", "#ffe4b5")
+                            )
+                            cl.forEach { category ->
+                                repository.addCategory(myuser.token, event.id, category) {
+                                    // 特にやることなし
+                                }
+                            }
+                        }
+                    } else {
+                        val toast = Toast.makeText(context, "文字を入力してください", Toast.LENGTH_SHORT)
+                        toast.setGravity(Gravity.CENTER, 0, 0)
+                        toast.show()
                     }
 
                 }
@@ -164,7 +193,7 @@ class EventListFragment : Fragment() {
             }.create()
 
             //ダイアログ表示と同時にキーボードを表示
-            inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            inputForm.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
             inputForm.show()
 
             it.isEnabled = true
@@ -172,6 +201,15 @@ class EventListFragment : Fragment() {
 
     }
 
+    override fun onStart() {
+        super.onStart()
+    }
+
+    override fun onStop() {
+        Log.d("EventListFragment", "onStop")
+        repository.unsub()
+        super.onStop()
+    }
 
     //EventListFragmentでツールバーにメニュー機能を追加する
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -191,18 +229,24 @@ class EventListFragment : Fragment() {
             val inputForm = AlertDialog.Builder(context!!).apply {
                 setTitle("名前の編集")
                 setView(inflater)
+
                 setPositiveButton("OK") { _, _ ->
                     // OKボタンを押したときの処理
                     val name = mapOf(
                             "name" to "${inputText.text}"
                     )
                     Log.d("EventListFragment", "")
-                    repository.editUser(myuser.token,myuser.id, name){name ->
-                        // コールバックの操作
-                        (activity as AppCompatActivity).supportActionBar?.title = name.get("name")
-                        myuser.name = name.get("name")!!
+                    if ("${inputText.text}" != "" && "${inputText.text}".substring(0, 1) != " " && "${inputText.text}".substring(0, 1) != "　") {
+                        repository.editUser(myuser.token, myuser.id, name) { name ->
+                            // コールバックの操作
+                            (activity as AppCompatActivity).supportActionBar?.title = name.get("name")
+                            myuser.name = name.get("name")!!
+                        }
+                    } else {
+                        val toast = Toast.makeText(context, "文字を入力してください", Toast.LENGTH_SHORT)
+                        toast.setGravity(Gravity.CENTER, 0, 0)
+                        toast.show()
                     }
-
                 }
                 setNegativeButton("Cancel", null)
             }.create()
@@ -224,25 +268,23 @@ class EventListFragment : Fragment() {
             true
         }
 
+
         val sort: MenuItem = menu.findItem(R.id.sort)
         sort.setOnMenuItemClickListener {
+            val ml = mutableListOf("aaaa", "bb", "d")
+            ml.sortBy { it.length }
             //このソート手法は初期のソートを再現できなくする機能でもある
-            //そこはこだわらなくてよいと判断
             if (sortNewOld) {
-                //ソートを新しいイベントが一番上に来るようにする
-                eventManager.eventList.sortedBy {
-                    it.title.length
-                    Log.d("masaka", it.title)
-                }
-
+                eventManager.eventList.sort()
+                sortNewOld = false
                 (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
                 (eventListView.adapter as EventListAdapter).notifyDataSetChanged()
             } else {
                 //ソートを古いイベントが一番上に来るようにする
-                eventManager.eventList.sortedBy {
-                    it.id * -1
-                }
+                eventManager.eventList.sortDescending()
+                sortNewOld = true
                 (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
+                (eventListView.adapter as EventListAdapter).notifyDataSetChanged()
             }
             true
         }
@@ -281,6 +323,7 @@ class EventListFragment : Fragment() {
 
                 val bmp: Bitmap = getBitmapFromUri(uri)
                 val reBmp = Bitmap.createScaledBitmap(bmp, 240, 240, false)
+                // TODO ユーザーアイコンセット（任意）
                 repository.setUserIcon(reBmp, myuser.id, myuser.token) {
                     val drw = BitmapDrawable(it)
                     (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
@@ -309,3 +352,5 @@ class EventListFragment : Fragment() {
     }
 
 }
+
+

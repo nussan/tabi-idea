@@ -22,7 +22,7 @@ android {
 }
 
 dependencies {
-    api 'com.android.support:appcompat-v7:27.0.1'
+    api 'androidx.appcompat:appcompat:1.0.2'
 }
 
 apply from: 'https://raw.githubusercontent.com/Commit451/gradle-android-javadocs/1.0.0/gradle-android-javadocs.gradle'

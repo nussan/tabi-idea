@@ -1,14 +1,15 @@
-package checkers.tabi_idea.fragment
+package checkers.tabi_idea.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 import java.io.ByteArrayOutputStream
@@ -30,7 +31,7 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
     override fun onBindViewHolder(holder: EventListViewHolder, position: Int) {
         val event = eventList[position]
         holder.event.text = event.title
-        holder.creator.text = "作成者：" + event.creator
+        holder.creator.text = "作成者：" + event.creator + " 　作成日時：" + event.created
         val capital = if(event.title.isNotEmpty()) event.title.substring(0,1) else "a"
         val objBitmap = createBitmap(capital,holder)
 
@@ -40,6 +41,9 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
         val options : BitmapFactory.Options = BitmapFactory.Options()
         options.inSampleSize = 10
         val bitmap = BitmapFactory.decodeByteArray(jpgarr,0,jpgarr.size,options)
+        // TODO イベントアイコン初期セット
+        // TODO イベントアイコンゲット
+        // ここは場合分けが必須
         holder.image.setImageBitmap(bitmap)
     }
 
@@ -100,8 +104,12 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>) : R
         return objBitmap
     }
 
+    fun disable() {
+    }
+
     // Viewへの参照を持っておくViewHolder
     class EventListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val frameLayout = view.findViewById<FrameLayout>(R.id.frameLayout)
         val event = view.findViewById<TextView>(R.id.eventView)!!
         val image = view.findViewById<ImageView>(R.id.imageView)!!
         val creator = view.findViewById<TextView>(R.id.creatorView)!!

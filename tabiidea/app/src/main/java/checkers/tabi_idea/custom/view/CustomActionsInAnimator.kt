@@ -3,7 +3,6 @@ package checkers.tabi_idea.custom.view
 import android.graphics.Point
 import android.os.Build
 import android.view.View
-import android.view.ViewAnimationUtils
 import android.view.animation.LinearInterpolator
 import com.commit451.quickactionview.Action
 import com.commit451.quickactionview.ActionView

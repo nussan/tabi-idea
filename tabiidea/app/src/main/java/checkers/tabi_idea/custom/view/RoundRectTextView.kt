@@ -1,32 +1,17 @@
 package checkers.tabi_idea.custom.view
 
-import android.app.ActionBar
 import android.content.Context
-import android.graphics.*
-import android.graphics.Color.RED
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
+import android.graphics.Color
+import android.graphics.Outline
 import android.graphics.drawable.GradientDrawable
-import android.support.annotation.Nullable
-import android.support.v4.content.ContextCompat
-import android.support.v4.content.res.ResourcesCompat
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
-import android.widget.ImageView
-import checkers.tabi_idea.R
-import kotlinx.android.synthetic.main.fragment_travel_mind_map.view.*
+import androidx.appcompat.widget.AppCompatTextView
 import kotlin.math.max
 import kotlin.math.min
-import checkers.tabi_idea.R.mipmap.ic_launcher
-import com.bumptech.glide.load.engine.Resource
-import java.io.IOException
-import java.lang.NullPointerException
 
 
 class RoundRectTextView : AppCompatTextView {

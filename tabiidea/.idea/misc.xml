@@ -1,34 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 4ff390923a875df4f1cdd1056a1173bba004661e
+>>>>>>> 9aa5d76012c5b5097e0baac781365bfce4b1eff1
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="android.support.annotation.Nullable" />
     <option name="myDefaultNotNull" value="android.support.annotation.NonNull" />
     <option name="myNullables">
       <value>
+<<<<<<< HEAD
+        <list size="7">
+=======
         <list size="5">
+>>>>>>> 4ff390923a875df4f1cdd1056a1173bba004661e
           <item index="0" class="java.lang.String" itemvalue="org.jetbrains.annotations.Nullable" />
           <item index="1" class="java.lang.String" itemvalue="javax.annotation.Nullable" />
           <item index="2" class="java.lang.String" itemvalue="javax.annotation.CheckForNull" />
           <item index="3" class="java.lang.String" itemvalue="edu.umd.cs.findbugs.annotations.Nullable" />
           <item index="4" class="java.lang.String" itemvalue="android.support.annotation.Nullable" />
+<<<<<<< HEAD
+          <item index="5" class="java.lang.String" itemvalue="androidx.annotation.Nullable" />
+          <item index="6" class="java.lang.String" itemvalue="androidx.annotation.RecentlyNullable" />
+=======
+>>>>>>> 4ff390923a875df4f1cdd1056a1173bba004661e
         </list>
       </value>
     </option>
     <option name="myNotNulls">
       <value>
+<<<<<<< HEAD
+        <list size="6">
+=======
         <list size="4">
+>>>>>>> 4ff390923a875df4f1cdd1056a1173bba004661e
           <item index="0" class="java.lang.String" itemvalue="org.jetbrains.annotations.NotNull" />
           <item index="1" class="java.lang.String" itemvalue="javax.annotation.Nonnull" />
           <item index="2" class="java.lang.String" itemvalue="edu.umd.cs.findbugs.annotations.NonNull" />
           <item index="3" class="java.lang.String" itemvalue="android.support.annotation.NonNull" />
+<<<<<<< HEAD
+          <item index="4" class="java.lang.String" itemvalue="androidx.annotation.NonNull" />
+          <item index="5" class="java.lang.String" itemvalue="androidx.annotation.RecentlyNonNull" />
+=======
+>>>>>>> 4ff390923a875df4f1cdd1056a1173bba004661e
         </list>
       </value>
     </option>
   </component>
+<<<<<<< HEAD
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8 (2)" project-jdk-type="JavaSDK">
+=======
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+>>>>>>> 4ff390923a875df4f1cdd1056a1173bba004661e
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
   </component>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+    <component name="NullableNotNullManager">
+        <option name="myDefaultNullable" value="android.support.annotation.Nullable" />
+        <option name="myDefaultNotNull" value="android.support.annotation.NonNull" />
+        <option name="myNullables">
+            <value>
+                <list size="7">
+                    <item class="java.lang.String" index="0"
+                        itemvalue="org.jetbrains.annotations.Nullable" />
+                    <item class="java.lang.String" index="1"
+                        itemvalue="javax.annotation.Nullable" />
+                    <item class="java.lang.String" index="2"
+                        itemvalue="javax.annotation.CheckForNull" />
+                    <item class="java.lang.String" index="3"
+                        itemvalue="edu.umd.cs.findbugs.annotations.Nullable" />
+                    <item class="java.lang.String" index="4"
+                        itemvalue="android.support.annotation.Nullable" />
+                    <item class="java.lang.String" index="5"
+                        itemvalue="androidx.annotation.Nullable" />
+                    <item class="java.lang.String" index="6"
+                        itemvalue="androidx.annotation.RecentlyNullable" />
+                </list>
+            </value>
+        </option>
+        <option name="myNotNulls">
+            <value>
+                <list size="6">
+                    <item class="java.lang.String" index="0"
+                        itemvalue="org.jetbrains.annotations.NotNull" />
+                    <item class="java.lang.String" index="1" itemvalue="javax.annotation.Nonnull" />
+                    <item class="java.lang.String" index="2"
+                        itemvalue="edu.umd.cs.findbugs.annotations.NonNull" />
+                    <item class="java.lang.String" index="3"
+                        itemvalue="android.support.annotation.NonNull" />
+                    <item class="java.lang.String" index="4"
+                        itemvalue="androidx.annotation.NonNull" />
+                    <item class="java.lang.String" index="5"
+                        itemvalue="androidx.annotation.RecentlyNonNull" />
+                </list>
+            </value>
+        </option>
+    </component>
+    <component name="ProjectRootManager" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK"
+        version="2">
+        <output url="file://$PROJECT_DIR$/build/classes" />
+    </component>
+    <component name="ProjectType">
+        <option name="id" value="Android" />
+    </component>
+>>>>>>> c2a5289c33e1f3aad031de658fe94f390f71cb6e
+>>>>>>> 4ff390923a875df4f1cdd1056a1173bba004661e
+>>>>>>> 9aa5d76012c5b5097e0baac781365bfce4b1eff1
 </project>

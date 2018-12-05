@@ -2,11 +2,11 @@ package checkers.tabi_idea.custom.view
 
 import android.content.Context
 import android.graphics.*
-import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.view.ViewTreeObserver
+import androidx.appcompat.widget.AppCompatTextView
 
 
 //ホーム画面のイベントを丸に表示するためのView
