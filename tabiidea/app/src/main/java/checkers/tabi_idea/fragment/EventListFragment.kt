@@ -123,18 +123,19 @@ class EventListFragment : Fragment() {
             override fun onClick(view: View) {
                 Log.d(javaClass.simpleName, "onTouch!!")
                 fab?.isEnabled = false
-                eventListView?.isEnabled = false
 
                 val position = eventListView.getChildAdapterPosition(view)
                 val event = (eventListView.adapter as EventListAdapter).eventList[position]
                 Log.d("masaka", event.title)
                 repository.getCategoryList(myuser.token, event.id) { list ->
+                    repository.unsub()
                     val intent = Intent(activity, TravelActivity::class.java)
                     intent.putExtra("user", myuser)
                     intent.putExtra("event", event)
                     intent.putExtra("categoryList", ArrayList(list))
                     startActivity(intent)
                 }
+
             }
         })
 
@@ -203,6 +204,7 @@ class EventListFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        fab.isEnabled = true
     }
 
     override fun onStop() {

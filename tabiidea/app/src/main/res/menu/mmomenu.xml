@@ -11,9 +11,4 @@
         android:icon="@drawable/ic_edit_black_24dp"
         android:title="招待"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/mmomenu_list"
-        android:icon="@drawable/ic_edit_black_24dp"
-        android:title="カテゴリの一覧"
-        app:showAsAction="never" />
 </menu>
