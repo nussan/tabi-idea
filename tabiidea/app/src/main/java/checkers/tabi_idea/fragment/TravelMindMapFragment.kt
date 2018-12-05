@@ -353,9 +353,7 @@ class TravelMindMapFragment :
                 val view = event.localState as View
 
                 when (v) {
-//                    linear_left -> onAddSelected(view.tag as String,)
                     linear_center -> onDeleteSelected(view.tag as String)
-//                    linear_right -> onEditSelected(view.tag as String)
                 }
 
                 behavior?.state = BottomSheetBehavior.STATE_HIDDEN

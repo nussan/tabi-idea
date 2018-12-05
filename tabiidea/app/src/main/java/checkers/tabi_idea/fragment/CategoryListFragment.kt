@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import checkers.tabi_idea.R
+import checkers.tabi_idea.activity.TravelActivity
 import checkers.tabi_idea.adapter.CategoryListAdapter
 import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.User
@@ -82,6 +83,7 @@ class CategoryListFragment : Fragment() {
         repository.updateCategory(user.token, categoryList[targetPosition].id, after) { after ->
             categoryList[targetPosition].color = after.color
             category_recycler_view.adapter?.notifyItemChanged(targetPosition)
+            (activity as? TravelActivity)?.changeCategoryAtPosition(targetPosition, categoryList[targetPosition])
             targetPosition = -1
         }
 

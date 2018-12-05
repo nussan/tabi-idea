@@ -125,6 +125,11 @@ class TravelActivity : AppCompatActivity(), ColorPickerDialogListener {
         }
     }
 
+    fun changeCategoryAtPosition(position: Int, category: Category) {
+        mCategoryList[position].name = category.name
+        mCategoryList[position].color = category.color
+    }
+
 
     /**
      * A [FragmentPagerAdapter] that returns a fragment corresponding to
