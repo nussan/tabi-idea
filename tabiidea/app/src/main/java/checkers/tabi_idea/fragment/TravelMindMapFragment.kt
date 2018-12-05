@@ -106,10 +106,13 @@ class TravelMindMapFragment :
                 Log.d("TravelMindMapFragment", "onChildChanged")
                 val key = dataSnapshot.key!!
                 val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
+                val lastMmo = map[key] ?: return
                 map = map.minus(key)
                 map = map.plus(key to mmo)
                 val target = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(key)
                 target.text = TextUtils.ellipsize(mmo.text, target.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
+                target.translationX += mmo.positionX - lastMmo.positionX
+                target.translationY += mmo.positionY - lastMmo.positionY
                 mindMapConstraintLayout.invalidate()
             }
 
@@ -134,15 +137,17 @@ class TravelMindMapFragment :
                 click = false
 
                 view.setOnTouchListener { v, event ->
-                    Log.d("TravelMindMapFragment", "${event.pointerCount}")
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
+                            Log.d("TravelMindMapFragment", mActivePointerId.toString())
                             if (mActivePointerId == -1) {
                                 mActivePointerId = event.getPointerId(0)
                             } else {
                                 activity?.dispatchTouchEvent(event)
                                 mActivePointerId = -1
+                                (v as RoundRectTextView).drawStroke(colorInt, false)
+                                return@setOnTouchListener false
                             }
                             (v as RoundRectTextView).drawStroke(colorInt!!, true)
 
@@ -156,7 +161,7 @@ class TravelMindMapFragment :
                             Log.d("TravelMindMapFragment", "ACTION_MOVE")
                             (v as RoundRectTextView).drawStroke(colorInt!!, true)
                             val trans = PointF((event.rawX - lastRaw.x), (event.rawY - lastRaw.y))
-                            if (trans.x * trans.x + trans.y * trans.y > 5) {
+                            if (trans.x * trans.x + trans.y * trans.y > 5 || mActivePointerId == -1) {
                                 // 移動量が一定以上のときロングプレスをキャンセル
                                 v.cancelLongPress()
                                 click = false
@@ -177,6 +182,7 @@ class TravelMindMapFragment :
                                 (v as RoundRectTextView).drawStroke(colorInt, false)
                             }
 
+                            Log.d("TravelMindMapFragment", "dist : $dist")
                             if (abs(dist.x) > 0 || abs(dist.y) > 0) {
                                 val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView?>(map[v.tag]?.parent)
                                         ?: return@setOnTouchListener false
