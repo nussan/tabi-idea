@@ -22,7 +22,7 @@
             android:layout_weight="1"
             android:background="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/PopupOverlay"
+            app:popupTheme="@style/AppBarOverlay"
             app:title="@string/app_name">
 
         </androidx.appcompat.widget.Toolbar>

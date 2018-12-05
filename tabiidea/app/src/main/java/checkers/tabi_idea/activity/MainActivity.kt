@@ -8,15 +8,12 @@ import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.Installation
 import checkers.tabi_idea.data.User
-import checkers.tabi_idea.fragment.CategoryListFragment
 import checkers.tabi_idea.fragment.EventListFragment
 import checkers.tabi_idea.provider.Repository
-import com.jaredrummler.android.colorpicker.ColorPickerDialogListener
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity(),
-        ColorPickerDialogListener {
+class MainActivity : AppCompatActivity() {
 
     private val repository = Repository()
     private var user: User? = null
@@ -68,7 +65,7 @@ class MainActivity : AppCompatActivity(),
     private fun toEventListFragment(user: User, eventList: MutableList<Event>) {
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.container, EventListFragment.newInstance(user, eventList))
+                .replace(R.id.container_main, EventListFragment.newInstance(user, eventList))
                 .commit()
     }
 
@@ -78,25 +75,9 @@ class MainActivity : AppCompatActivity(),
         return true
     }*/
 
-    override fun onDialogDismissed(dialogId: Int) {
-        Log.d(TAG, "onDialogDismissed() called with: dialogId = [$dialogId]")
-    }
-
-    override fun onColorSelected(dialogId: Int, color: Int) {
-        Log.d(TAG, "onColorSelected() called with: dialogId = [$dialogId], color = [$color]")
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.container)
-        when (dialogId) {
-            DIALOG_ID -> {
-                val color = Integer.toHexString(color).toUpperCase().substring(2)
-                (currentFragment as? CategoryListFragment)?.changeColor("#$color")
-
-            }
-        }
-    }
 
 
     companion object {
-        private const val DIALOG_ID = 0
         private const val TAG = "MainActivity"
     }
 }

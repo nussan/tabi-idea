@@ -1,6 +1,7 @@
 package checkers.tabi_idea.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -14,9 +15,11 @@ import checkers.tabi_idea.data.User
 import checkers.tabi_idea.fragment.CategoryListFragment
 import checkers.tabi_idea.fragment.TravelMindMapFragment
 import com.google.android.material.tabs.TabLayout
+import com.jaredrummler.android.colorpicker.ColorPickerDialogListener
 import kotlinx.android.synthetic.main.activity_travel.*
 
-class TravelActivity : AppCompatActivity() {
+
+class TravelActivity : AppCompatActivity(), ColorPickerDialogListener {
 
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
     private lateinit var mUser: User
@@ -26,6 +29,10 @@ class TravelActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_travel)
+
+        mUser = intent.getParcelableExtra("user")
+        mEvent = intent.getParcelableExtra("event")
+        mCategoryList = intent.getParcelableArrayListExtra<Category>("categoryList") as MutableList<Category>
 
         setSupportActionBar(toolbar)
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
@@ -55,6 +62,25 @@ class TravelActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onDialogDismissed(dialogId: Int) {
+        Log.d(TravelActivity.TAG, "onDialogDismissed() called with: dialogId = [$dialogId]")
+    }
+
+    override fun onColorSelected(dialogId: Int, color: Int) {
+        Log.d(TravelActivity.TAG, "onColorSelected() called with: dialogId = [$dialogId], color = [$color]")
+//        val currentFragment = supportFragmentManager.findFragmentById(R.id.container)
+
+        val currentFragment = supportFragmentManager.findFragmentByTag("android:switcher:" + R.id.container + ":" + container.currentItem)
+        when (dialogId) {
+            TravelActivity.DIALOG_ID -> {
+                val color = Integer.toHexString(color).toUpperCase().substring(2)
+                (currentFragment as? CategoryListFragment)?.changeColor("#$color")
+
+            }
+        }
+    }
+
+
     /**
      * A [FragmentPagerAdapter] that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -79,5 +105,8 @@ class TravelActivity : AppCompatActivity() {
         private const val TRAVEL_MIND_MAP = 0
         private const val CATEGORY_LIST = 1
         private const val RESULT = 2
+
+        private const val DIALOG_ID = 0
+        private const val TAG = "TravelActivity"
     }
 }

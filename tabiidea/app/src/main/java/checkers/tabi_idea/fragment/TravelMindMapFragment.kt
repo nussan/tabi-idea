@@ -221,7 +221,7 @@ class TravelMindMapFragment :
             R.id.mmomenu_list -> {
                 activity?.supportFragmentManager
                         ?.beginTransaction()
-                        ?.replace(R.id.container, CategoryListFragment.newInstance(categoryList, user))
+                        ?.replace(R.id.container_main, CategoryListFragment.newInstance(categoryList, user))
                         ?.addToBackStack(null)
                         ?.commit()
                 return true
