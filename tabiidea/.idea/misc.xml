@@ -3,7 +3,10 @@
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
 >>>>>>> 4ff390923a875df4f1cdd1056a1173bba004661e
+>>>>>>> 9aa5d76012c5b5097e0baac781365bfce4b1eff1
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="android.support.annotation.Nullable" />
     <option name="myDefaultNotNull" value="android.support.annotation.NonNull" />
@@ -59,6 +62,8 @@
   </component>
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
 =======
     <component name="NullableNotNullManager">
         <option name="myDefaultNullable" value="android.support.annotation.Nullable" />
@@ -110,4 +115,5 @@
     </component>
 >>>>>>> c2a5289c33e1f3aad031de658fe94f390f71cb6e
 >>>>>>> 4ff390923a875df4f1cdd1056a1173bba004661e
+>>>>>>> 9aa5d76012c5b5097e0baac781365bfce4b1eff1
 </project>

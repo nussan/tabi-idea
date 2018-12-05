@@ -120,10 +120,25 @@ public class QuickActionView {
         display(point);
     }
 
-    private void drawStroke(View anchor, int colorInt, boolean show) {
+    private void drawStroke(View anchor,int colorInt, boolean show){
+
         GradientDrawable strokeDrawable = new GradientDrawable();
         strokeDrawable.setColor(colorInt);
-        if (show) strokeDrawable.setStroke(16, Color.parseColor("#303f9f"));
+        Integer r = Integer.parseInt(Integer.toHexString(colorInt).substring(2,4),16);
+        Integer g = Integer.parseInt(Integer.toHexString(colorInt).substring(4,6),16);
+        Integer b = Integer.parseInt(Integer.toHexString(colorInt).substring(6,8),16);
+
+        Integer maxD = Math.max(Math.max(r,g),b);
+        Integer minD = Math.min(Math.min(r,g),b);
+
+        String strR = String.format("%02X", maxD+minD-r);
+        String strG = String.format("%02X", maxD+minD-g);
+        String strB = String.format("%02X", maxD+minD-b);
+
+        String colorStr = strR + strG + strB;
+        Integer strokeColor = Color.parseColor("#"+colorStr);
+        if(show)strokeDrawable.setStroke(16, strokeColor);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             anchor.setBackground(strokeDrawable);
         }

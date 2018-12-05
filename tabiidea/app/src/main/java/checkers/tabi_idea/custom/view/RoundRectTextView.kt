@@ -7,6 +7,7 @@ import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import androidx.appcompat.widget.AppCompatTextView
 import kotlin.math.max
@@ -14,6 +15,9 @@ import kotlin.math.min
 
 
 class RoundRectTextView : AppCompatTextView {
+//    val drawable = ResourcesCompat.getDrawable(resources,R.drawable.ic_favorite_black_24dp,null)
+//    val bmp = Bitmap.createBitmap(drawable!!.intrinsicWidth,drawable.intrinsicHeight,Bitmap.Config.ARGB_8888)
+
     constructor(context: Context?) : this(context, null)
 
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -29,6 +33,13 @@ class RoundRectTextView : AppCompatTextView {
         maxLines = 1
         gravity = Gravity.CENTER
         clipToOutline = true
+
+        //        Log.d("favorite" ,drawable.toString())
+//        val bmp = Bitmap.createBitmap(drawable!!.intrinsicWidth/20,drawable.intrinsicHeight/20, Bitmap.Config.ARGB_8888)
+//        Log.d("favorite" , bmp.toString())
+//        val canvas = Canvas()
+//        val paint = Paint()
+//        canvas.drawBitmap(bmp, 0f, 0f, paint)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -47,6 +58,13 @@ class RoundRectTextView : AppCompatTextView {
     companion object {
         const val MAX_SIZE = 400
         const val MIN_SIZE = 200
+    }
+
+    fun drawFavorite(like:Boolean){
+        val lp: ViewGroup.LayoutParams = ViewGroup.LayoutParams(0,Math.max(this.measuredWidth, MIN_SIZE))
+        if(like){
+        }
+        else{}
     }
 
     fun drawStroke(colorInt: Int, push: Boolean) {

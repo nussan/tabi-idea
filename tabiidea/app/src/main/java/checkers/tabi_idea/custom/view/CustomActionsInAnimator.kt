@@ -30,8 +30,8 @@ class CustomActionsInAnimator(private val mQuickActionView: QuickActionView) : A
 //            ViewAnimationUtils.createCircularReveal(scrim, center.x, center.y, 0f, Math.max(scrim.height, scrim.width).toFloat())
 //                    .start()
         } else {
-            scrim.alpha = 0f
-            scrim.animate().alpha(1f).duration = 500
+//            scrim.alpha = 0f
+//            scrim.animate().alpha(1f).duration = 500
         }
     }
 }
