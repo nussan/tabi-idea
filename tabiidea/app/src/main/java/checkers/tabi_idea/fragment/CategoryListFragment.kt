@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import checkers.tabi_idea.R
-import checkers.tabi_idea.activity.TravelActivity
 import checkers.tabi_idea.adapter.CategoryListAdapter
 import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.User
@@ -26,6 +25,7 @@ class CategoryListFragment : Fragment() {
     private lateinit var user: User
     private val repository = Repository()
     private var targetPosition = -1
+    private var listener: OnFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +65,11 @@ class CategoryListFragment : Fragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
+        if (context is OnFragmentInteractionListener) {
+            listener = context
+        } else {
+            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -83,12 +88,15 @@ class CategoryListFragment : Fragment() {
         repository.updateCategory(user.token, categoryList[targetPosition].id, after) { after ->
             categoryList[targetPosition].color = after.color
             category_recycler_view.adapter?.notifyItemChanged(targetPosition)
-            (activity as? TravelActivity)?.changeCategoryAtPosition(targetPosition, categoryList[targetPosition])
+            listener?.onCategoryChanged(targetPosition, categoryList[targetPosition])
             targetPosition = -1
         }
 
     }
 
+    interface OnFragmentInteractionListener {
+        fun onCategoryChanged(position: Int, category: Category)
+    }
 
     companion object {
         @JvmStatic

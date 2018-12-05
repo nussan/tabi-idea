@@ -37,7 +37,7 @@ import java.io.FileDescriptor
 class EventListFragment : Fragment() {
     private val eventManager = EventManager()
     private var eventId: Int? = null
-    private lateinit var repository: Repository
+    private var repository: Repository = Repository()
     private var fireBaseApiClient: FirebaseApiClient? = null
     private lateinit var myuser: User
     private var sortNewOld = true
