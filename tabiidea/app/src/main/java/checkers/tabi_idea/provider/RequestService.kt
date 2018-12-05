@@ -43,12 +43,12 @@ interface RequestService {
     fun createUrl(@Header("Authorization") token: String, @Path("uid") uid: Int, @Path("eid") eid: Int): Single<Map<String, String>>
 
     //TODO ユーザーアイコンをセット
-    @POST("event/update/{eid}")
-    fun setUserIcon(@Header("Authorization") token: String, @Path("uid") uid: Int, @Body btm: Bitmap): Single<Bitmap>
+    @POST("home/update/{uid}")
+    fun setUserIcon(@Header("Authorization") token: String, @Path("uid") uid: Int, @Body btm: Map<String, ByteArray>): Single<String>
 
     //TODO ユーザーアイコンをゲット
-    @GET("public/user/{uid}/")
-    fun getUserIcon(@Header("Authorization") token: String, @Path("uid") uid: Int): Single<Bitmap>
+    @GET("home/download/{uid}")
+    fun getUserIcon(@Header("Authorization") token: String, @Path("uid") uid: Int): Single<Map<String, String>>
 
     //TODO イベントアイコンをセット
     @POST("")

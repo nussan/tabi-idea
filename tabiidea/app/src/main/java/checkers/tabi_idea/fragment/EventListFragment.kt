@@ -38,7 +38,10 @@ import kotlinx.android.synthetic.main.fragment_event_list.*
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.io.ByteArrayOutputStream
 import java.io.FileDescriptor
+import java.io.OutputStream
+import java.nio.ByteBuffer
 import java.util.*
 
 class EventListFragment : Fragment() {
@@ -76,10 +79,23 @@ class EventListFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setDisplayUseLogoEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
-//        TODO ユーザーアイコンゲット repository.getUserIcon(myuser.id,myuser.token){
-//            val drw = BitmapDrawable(it)
-//            (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
-//        }
+//        TODO ユーザーアイコンゲット
+        repository.getUserIcon(myuser.id, myuser.token) {
+            val btmarr = it.get("icon")
+            val baStrArr = btmarr!!.split(Regex(", |\\[|]"),0)
+            var baBytArr = ByteArray(baStrArr.size-2)
+            for(i in 1 .. baStrArr.size-2) {
+                    var tmp = baStrArr[i].toInt()
+                if(tmp >127) tmp -= 256
+                baBytArr[i-1] = tmp.toByte()
+            }
+            Log.d("uma",baBytArr[1].toString()+"と"+baBytArr.size + "と"+ baStrArr[1]+"です")
+            val options : BitmapFactory.Options = BitmapFactory.Options()
+            options.inSampleSize = 1
+            val bitmap = BitmapFactory.decodeByteArray(baBytArr,0,baBytArr.size,options)
+            val drw = BitmapDrawable(bitmap)
+            (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
+        }
         setHasOptionsMenu(true)
 
         return inflater.inflate(R.layout.fragment_event_list, container, false)
@@ -313,9 +329,13 @@ class EventListFragment : Fragment() {
 
                 val bmp: Bitmap = getBitmapFromUri(uri)
                 val reBmp = Bitmap.createScaledBitmap(bmp, 240, 240, false)
+                val baos = ByteArrayOutputStream()
+                reBmp.compress(Bitmap.CompressFormat.JPEG,1,baos)
+                val bmparr = baos.toByteArray();
                 // TODO ユーザーアイコンセット（任意）
-                repository.setUserIcon(reBmp, myuser.id, myuser.token) {
-                    val drw = BitmapDrawable(it)
+                repository.setUserIcon(bmparr, myuser.id, myuser.token) {
+                    Log.d("masaka" ,it)
+                    val drw = BitmapDrawable(reBmp)
                     (activity as AppCompatActivity).supportActionBar?.setIcon(drw)
                 }
             }

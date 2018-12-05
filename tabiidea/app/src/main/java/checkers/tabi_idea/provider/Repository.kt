@@ -140,7 +140,7 @@ class Repository {
     }
 
     //ユーザーアイコンの取得
-    fun getUserIcon(user_id: Int, token: String, callback: (Bitmap) -> Unit) {
+    fun getUserIcon(user_id: Int, token: String, callback: (Map<String, String>) -> Unit) {
         requestService.getUserIcon(token, user_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -151,8 +151,8 @@ class Repository {
     }
 
     //ユーザーアイコンを設定
-    fun setUserIcon(btm: Bitmap, user_id: Int, token: String, callback: (Bitmap) -> Unit) {
-        requestService.setUserIcon(token, user_id, btm)
+    fun setUserIcon(btm: ByteArray, user_id: Int, token: String, callback: (String) -> Unit) {
+        requestService.setUserIcon(token, user_id, mapOf("icon" to btm))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
