@@ -215,8 +215,8 @@ class TravelActivity : AppCompatActivity(),
     }
 
     override fun onCategoryChanged(position: Int, category: Category) {
-        mCategoryList[position].name = category.name
-        mCategoryList[position].color = category.color
+//        mCategoryList[position].name = category.name
+//        mCategoryList[position].color = category.color
     }
 
 
@@ -237,7 +237,7 @@ class TravelActivity : AppCompatActivity(),
                 }
                 GROUPING_RESULT -> {
                     container?.requestDisallowInterceptTouchEvent(false)
-                    newGroupingResultFragment(mEvent.id,map)
+                    newGroupingResultFragment(mEvent.id,map,mCategoryList)
                 }
                 else -> TravelMindMapFragment.newInstance(mEvent, mCategoryList, mUser)
             }
