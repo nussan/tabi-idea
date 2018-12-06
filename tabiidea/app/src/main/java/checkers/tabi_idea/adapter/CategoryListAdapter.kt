@@ -1,5 +1,6 @@
 package checkers.tabi_idea.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -24,10 +25,11 @@ class CategoryListAdapter(var context: Context?, private var categoryList: List<
     override fun getItemCount(): Int {
         return categoryList.size
     }
-
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         holder.tvName.text = categoryList[position].name
         holder.imageView.setBackgroundColor(Color.parseColor(categoryList[position].color))
+
         holder.imageView.setOnClickListener {
             imageViewListener?.onClick(position)
         }
