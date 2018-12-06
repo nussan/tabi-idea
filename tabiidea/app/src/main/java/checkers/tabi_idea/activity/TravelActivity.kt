@@ -107,7 +107,7 @@ class TravelActivity : AppCompatActivity(),
 
         tabs.addTab(tabs.newTab().setText("マインドマップ"))
         tabs.addTab(tabs.newTab().setText("カテゴリ"))
-        tabs.addTab(tabs.newTab().setText("2"))
+        tabs.addTab(tabs.newTab().setText("まとめ"))
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
 
