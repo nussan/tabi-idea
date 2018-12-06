@@ -18,7 +18,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
 import checkers.tabi_idea.R
-import checkers.tabi_idea.R.id.button4
 import checkers.tabi_idea.custom.view.CustomActionsInAnimator
 import checkers.tabi_idea.custom.view.CustomActionsTitleAnimator
 import checkers.tabi_idea.custom.view.RoundRectTextView
@@ -33,11 +32,9 @@ import com.commit451.quickactionview.Action
 import com.commit451.quickactionview.QuickActionView
 import com.commit451.quickactionview.animator.PopAnimator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import kotlinx.android.synthetic.main.fragment_category_list.*
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 import kotlin.math.abs
 
@@ -57,6 +54,7 @@ class TravelMindMapFragment :
     private var dist = PointF(0f, 0f)
     private var mActivePointerId: Int = -1
     private var click: Boolean = false
+    private var adapter: ArrayAdapter<Category>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -203,13 +201,13 @@ class TravelMindMapFragment :
                                 val matrix = FloatArray(9)
                                 parent.matrix.getValues(matrix)
                                 map[v.tag] ?: return@setOnTouchListener false
-                                map[v.tag]!!.positionX += dist.x / v.scaleX
-                                map[v.tag]!!.positionY += dist.y / v.scaleY
+                                map[v.tag]!!.positionX += dist.x / mindMapConstraintLayout.scale
+                                map[v.tag]!!.positionY += dist.y / mindMapConstraintLayout.scale
                                 fbApiClient?.updateMmo(v.tag as String to map[v.tag as String]!!)
                                 map.forEach { m ->
                                     if (m.value.parent == v.tag) {
-                                        m.value.positionX -= dist.x / v.scaleX
-                                        m.value.positionY -= dist.y / v.scaleY
+                                        m.value.positionX -= dist.x / mindMapConstraintLayout.scale
+                                        m.value.positionY -= dist.y / mindMapConstraintLayout.scale
                                         fbApiClient?.updateMmo(m.key to m.value)
                                     }
                                 }
@@ -251,6 +249,7 @@ class TravelMindMapFragment :
     }
 
     override fun onStart() {
+        Log.d("TravelMindMapFragment", "onStart")
         super.onStart()
         repository = Repository()
     }
@@ -287,8 +286,8 @@ class TravelMindMapFragment :
                 val inputText: EditText = inflater.findViewById(R.id.inputText)
                 val spinner = inflater.findViewById<Spinner>(R.id.spinner)
 
-                val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, categoryList)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, categoryList)
+                adapter?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinner.adapter = adapter
 
                 inputText.requestFocus()
@@ -501,6 +500,11 @@ class TravelMindMapFragment :
 
         val customActionsInAnimator = CustomActionsInAnimator(qav)
         qav.setActionsInAnimator(customActionsInAnimator)
+    }
+
+    fun updateCategoryList(categoryList: MutableList<Category>) {
+        this.categoryList = categoryList
+        this.adapter?.notifyDataSetChanged()
     }
 
     companion object {
