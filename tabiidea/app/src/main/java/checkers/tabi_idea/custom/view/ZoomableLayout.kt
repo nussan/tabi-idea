@@ -4,7 +4,9 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Matrix
+import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.*
@@ -177,6 +179,10 @@ class ZoomableLayout :
 
     override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
         return true
+    }
+
+    fun drawHighRight(){
+        this.background = ColorDrawable(Color.parseColor("#55000000"))
     }
 
     companion object {

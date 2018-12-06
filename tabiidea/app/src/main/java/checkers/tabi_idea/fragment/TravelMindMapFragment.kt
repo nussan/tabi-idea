@@ -246,6 +246,10 @@ class TravelMindMapFragment :
         mindMapConstraintLayout.lineDrawer = this
     }
 
+    fun highRight(highRight: Boolean) {
+        (view as RoundRectTextView).drawHighRight()
+    }
+
     override fun onStart() {
         super.onStart()
         repository = Repository()
@@ -497,17 +501,6 @@ class TravelMindMapFragment :
 
         val customActionsInAnimator = CustomActionsInAnimator(qav)
         qav.setActionsInAnimator(customActionsInAnimator)
-    }
-
-    fun highRight(categoryList: MutableList<Category>) {
-        var point = 0
-        categoryList.forEach{category ->
-            map.forEach{dataSnapShot ->
-                if(category.name==dataSnapShot.value.type && point<=dataSnapShot.value.point){
-                    point = dataSnapShot.value.point
-                }
-            }
-        }
     }
 
     companion object {

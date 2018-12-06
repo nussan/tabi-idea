@@ -23,6 +23,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import checkers.tabi_idea.R
 import checkers.tabi_idea.adapter.EventListAdapter
+import checkers.tabi_idea.custom.view.RoundRectTextView
+import checkers.tabi_idea.custom.view.ZoomableLayout
 import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
@@ -158,7 +160,7 @@ class TravelActivity : AppCompatActivity(),
                 // OKが押されるとonActivityResutに処理が移行する
             }
             R.id.mmomenu_hr ->{
-//                TravelMindMapFragment.highRight(mCategoryList)
+
             }
         }
         return super.onOptionsItemSelected(item)

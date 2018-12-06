@@ -115,8 +115,28 @@ class RoundRectTextView : AppCompatTextView {
         return Color.parseColor("#${colorString}")
     }
 
-    private fun setFilter(){
-        val drawable: Drawable = this.background
-        drawable.setColorFilter(Color.parseColor("#ccffffff"),PorterDuff.Mode.OVERLAY)
+//    private fun setFilter(){
+//        val drawable: Drawable = this.background
+//        drawable.setColorFilter(Color.parseColor("#ccffffff"),PorterDuff.Mode.OVERLAY)
+//    }
+
+    fun drawHighRight(){
+        if(this.text=="旅行"){
+            this.background.setColorFilter(Color.parseColor("#66ffffff"),PorterDuff.Mode.OVERLAY)
+            this.setTextColor(Color.parseColor("#ffffff"))
+            this.scaleX = 1.5f
+            this.scaleY = 1.5f
+            this.invalidate()
+        }else{
+            this.background.setColorFilter(Color.parseColor("#66000000"), PorterDuff.Mode.DARKEN)
+            this.setTextColor(Color.parseColor("#55ffffff"))
+            //ハートを消す
+            mLike = false
+            var canvas = Canvas()
+            drawLikeHart(canvas)
+            this.scaleX = 0.7f
+            this.scaleY = 0.7f
+            this.invalidate()
+        }
     }
 }
