@@ -13,9 +13,8 @@ import android.os.Bundle
 import android.os.ParcelFileDescriptor
 import android.util.AttributeSet
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -23,12 +22,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import checkers.tabi_idea.R
+import checkers.tabi_idea.adapter.EventListAdapter
 import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.fragment.CategoryListFragment
 import checkers.tabi_idea.fragment.TravelMindMapFragment
+import checkers.tabi_idea.provider.FirebaseApiClient
 import checkers.tabi_idea.fragment.newGroupingResultFragment
 import checkers.tabi_idea.provider.Repository
 import com.google.android.material.tabs.TabLayout
@@ -38,6 +39,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener
 import kotlinx.android.synthetic.main.activity_travel.*
+import kotlinx.android.synthetic.main.fragment_event_list.*
 import java.io.ByteArrayOutputStream
 import java.io.FileDescriptor
 
@@ -231,7 +233,7 @@ class TravelActivity : AppCompatActivity(),
                 }
                 CATEGORY_LIST -> {
                     container?.requestDisallowInterceptTouchEvent(false)
-                    CategoryListFragment.newInstance(mCategoryList, mUser)
+                    CategoryListFragment.newInstance(mCategoryList, mUser,mEvent)
                 }
                 GROUPING_RESULT -> {
                     container?.requestDisallowInterceptTouchEvent(false)

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,11 +16,10 @@
         <TextView
             android:id="@+id/eventView"
             android:layout_width="0dp"
-            android:layout_height="33dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="19dp"
             android:layout_marginEnd="3dp"
-            android:layout_marginBottom="17dp"
             android:duplicateParentState="true"
             android:gravity="left"
             android:text="TextView"
@@ -28,12 +29,13 @@
             app:layout_constraintHorizontal_bias="0.571"
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.567" />
+            app:layout_constraintVertical_bias="0.567"
+            app:layout_constraintVertical_chainStyle="spread_inside" />
 
         <checkers.tabi_idea.custom.view.CircleImageView
             android:id="@+id/imageView"
-            android:layout_width="66dp"
-            android:layout_height="66dp"
+            android:layout_width="88dp"
+            android:layout_height="88dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
@@ -48,17 +50,19 @@
         <TextView
             android:id="@+id/creatorView"
             android:layout_width="0dp"
-            android:layout_height="17dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="10dp"
             android:duplicateParentState="true"
             android:gravity="left"
             android:text="TextView"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/eventView" />
+            app:layout_constraintTop_toBottomOf="@+id/eventView"
+            app:layout_constraintVertical_bias="0.296" />
 
         <View
             android:id="@+id/divider2"
@@ -75,5 +79,19 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/eventView" />
+
+        <TextView
+            android:id="@+id/createTimeView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/creatorView"
+            app:layout_constraintTop_toBottomOf="@+id/creatorView" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

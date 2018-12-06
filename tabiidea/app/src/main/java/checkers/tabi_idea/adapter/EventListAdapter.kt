@@ -37,7 +37,8 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>,var 
     override fun onBindViewHolder(holder: EventListViewHolder, position: Int) {
         val event = eventList[position]
         holder.event.text = event.title
-        holder.creator.text = "作成者：" + event.creator + " 　作成日時：" + event.created
+        holder.creator.text = "作成者：" + event.creator
+        holder.createtime.text = "作成日時：" + event.created
 
         val capital = if(event.title.isNotEmpty()) event.title.substring(0,1) else "a"
         val objBitmap = createBitmap(capital,holder)
@@ -141,5 +142,6 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>,var 
         val event = view.findViewById<TextView>(R.id.eventView)!!
         val image = view.findViewById<ImageView>(R.id.imageView)!!
         val creator = view.findViewById<TextView>(R.id.creatorView)!!
+        val createtime = view.findViewById<TextView>(R.id.createTimeView)
     }
 }
