@@ -22,14 +22,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.fragment.CategoryListFragment
+import checkers.tabi_idea.fragment.GroupingResultFragment
 import checkers.tabi_idea.fragment.TravelMindMapFragment
-import checkers.tabi_idea.fragment.newGroupingResultFragment
 import checkers.tabi_idea.provider.Repository
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.database.ChildEventListener
@@ -44,7 +47,8 @@ import java.io.FileDescriptor
 
 class TravelActivity : AppCompatActivity(),
         ColorPickerDialogListener,
-        CategoryListFragment.OnFragmentInteractionListener {
+        CategoryListFragment.OnFragmentInteractionListener,
+        ViewPager.OnPageChangeListener {
 
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
     private lateinit var mUser: User
@@ -53,7 +57,7 @@ class TravelActivity : AppCompatActivity(),
     private lateinit var mRepository: Repository
     private var map: Map<String, MindMapObject> = mutableMapOf()
 
-    private fun contactFirebase(){
+    private fun contactFirebase() {
         val childEventListener = object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 Log.d("TravelActivity", "onChildAdded:" + dataSnapshot.key!!)
@@ -102,6 +106,7 @@ class TravelActivity : AppCompatActivity(),
         setSupportActionBar(toolbar)
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
         container.adapter = mSectionsPagerAdapter
+        container.setOnPageChangeListener(this)
 
         tabs.addTab(tabs.newTab().setText("マインドマップ"))
         tabs.addTab(tabs.newTab().setText("カテゴリ"))
@@ -113,7 +118,6 @@ class TravelActivity : AppCompatActivity(),
     }
 
 
-
     override fun onCreateView(name: String?, context: Context?, attrs: AttributeSet?): View? {
         return super.onCreateView(name, context, attrs)
     }
@@ -122,6 +126,26 @@ class TravelActivity : AppCompatActivity(),
         super.onResume()
         mRepository = Repository()
     }
+
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+    }
+
+    override fun onPageSelected(position: Int) {
+    }
+
+    override fun onPageScrollStateChanged(state: Int) {
+        when (state) {
+            ViewPager.SCROLL_STATE_IDLE -> {
+                val currentFragment = mSectionsPagerAdapter?.instantiateItem(container, container.currentItem) as? Fragment
+                if (currentFragment is TravelMindMapFragment)
+                    mRepository.getCategoryList(mUser.token, mEvent.id) { categoryList ->
+                        this.mCategoryList = categoryList
+                        currentFragment.updateCategoryList(mCategoryList)
+                    }
+            }
+        }
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.mmomenu, menu)
@@ -133,7 +157,7 @@ class TravelActivity : AppCompatActivity(),
         when (id) {
             android.R.id.home -> finish()
             R.id.mmomenu_invite -> {
-                mRepository.createUrl(mUser.token, mUser.id, mEvent!!.id) {
+                mRepository.createUrl(mUser.token, mUser.id, mEvent.id) {
                     Log.d("masak", it.getValue("url"))
                     AlertDialog.Builder(this).apply {
                         setTitle("招待URLを発行しました")
@@ -203,7 +227,9 @@ class TravelActivity : AppCompatActivity(),
     override fun onColorSelected(dialogId: Int, color: Int) {
         Log.d(TravelActivity.TAG, "onColorSelected() called with: dialogId = [$dialogId], color = [$color]")
 
-        val currentFragment = supportFragmentManager.findFragmentByTag("android:switcher:" + R.id.container + ":" + container.currentItem)
+//        val currentFragment = supportFragmentManager.findFragmentByTag("android:switcher:" + R.id.container + ":" + container.currentItem)
+        val currentFragment = mSectionsPagerAdapter?.instantiateItem(container, container.currentItem) as? Fragment
+        Log.d(TAG, "android:switcher:" + R.id.container + ":" + container.currentItem)
         when (dialogId) {
             TravelActivity.DIALOG_ID -> {
                 val color = Integer.toHexString(color).toUpperCase().substring(2)
@@ -213,8 +239,9 @@ class TravelActivity : AppCompatActivity(),
     }
 
     override fun onCategoryChanged(position: Int, category: Category) {
-        mCategoryList[position].name = category.name
-        mCategoryList[position].color = category.color
+//        mCategoryList[position].name = category.name
+//        mCategoryList[position].color = category.color
+//        mSectionsPagerAdapter?.notifyDataSetChanged()
     }
 
 
@@ -222,7 +249,7 @@ class TravelActivity : AppCompatActivity(),
      * A [FragmentPagerAdapter] that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
         override fun getItem(position: Int): Fragment {
             return when (position) {
                 TRAVEL_MIND_MAP -> {
@@ -231,14 +258,18 @@ class TravelActivity : AppCompatActivity(),
                 }
                 CATEGORY_LIST -> {
                     container?.requestDisallowInterceptTouchEvent(false)
-                    CategoryListFragment.newInstance(mCategoryList, mUser,mEvent)
+                    CategoryListFragment.newInstance(mCategoryList, mUser, mEvent)
                 }
                 GROUPING_RESULT -> {
                     container?.requestDisallowInterceptTouchEvent(false)
-                    newGroupingResultFragment(mEvent.id,map)
+                    GroupingResultFragment.newInstance(mEvent.id, map)
                 }
                 else -> TravelMindMapFragment.newInstance(mEvent, mCategoryList, mUser)
             }
+        }
+
+        override fun getItemPosition(`object`: Any): Int {
+            return PagerAdapter.POSITION_NONE
         }
 
         override fun getCount(): Int {
