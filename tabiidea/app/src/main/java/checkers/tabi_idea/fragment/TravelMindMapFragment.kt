@@ -128,6 +128,9 @@ class TravelMindMapFragment :
 
                 val view = mindMapObjectToTextView(context, mmo)
 
+                var like = mmo.likeList.contains(user.id)
+                view.setLike(like)
+
                 view.tag = key
 
                 // 画面のタッチポイントの差分をビュー毎に分けるためにここで宣言
@@ -136,6 +139,7 @@ class TravelMindMapFragment :
                 dist.set(0f, 0f)
 
                 val colorInt = (view.background as ColorDrawable).color
+                view.setColor(colorInt)
                 Log.d("colorInt", Integer.toHexString(colorInt).substring(2))
 
                 click = false
@@ -150,10 +154,10 @@ class TravelMindMapFragment :
                             } else {
                                 activity?.dispatchTouchEvent(event)
                                 mActivePointerId = -1
-                                (v as RoundRectTextView).drawStroke(colorInt, false)
+                                (v as RoundRectTextView).drawStroke(false)
                                 return@setOnTouchListener false
                             }
-                            (v as RoundRectTextView).drawStroke(colorInt!!, true)
+                            (v as RoundRectTextView).drawStroke(true)
 
                             click = true
 
@@ -163,7 +167,7 @@ class TravelMindMapFragment :
 
                         MotionEvent.ACTION_MOVE -> {
                             Log.d("TravelMindMapFragment", "ACTION_MOVE")
-                            (v as RoundRectTextView).drawStroke(colorInt!!, true)
+                            (v as RoundRectTextView).drawStroke(true)
                             val trans = PointF((event.rawX - lastRaw.x), (event.rawY - lastRaw.y))
                             if (trans.x * trans.x + trans.y * trans.y > 5 || mActivePointerId == -1) {
                                 // 移動量が一定以上のときロングプレスをキャンセル
@@ -183,7 +187,7 @@ class TravelMindMapFragment :
                             Log.d("TravelMindMapFragment", "ACTION_UP")
                             rrvToQAV(context, view, point, colorInt)
                             if (!click) {
-                                (v as RoundRectTextView).drawStroke(colorInt, false)
+                                (v as RoundRectTextView).drawStroke(false)
                             }
 
                             Log.d("TravelMindMapFragment", "dist : $dist")
@@ -215,7 +219,7 @@ class TravelMindMapFragment :
                     behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
                     val item = ClipData.Item(v.tag as? CharSequence)
                     val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
-                    (v as RoundRectTextView).drawStroke(colorInt, false)
+                    (v as RoundRectTextView).drawStroke(false)
                     v.startDrag(data, View.DragShadowBuilder(v), v, 0)
                 }
 
@@ -250,15 +254,16 @@ class TravelMindMapFragment :
 
     private fun onLikeSelected(view: View, colorInt: Int) {
         val tag = view.tag as String
-        val mmo = map[tag] ?: return
-        if (!mmo.likeList.contains(user!!.id)) {
-            mmo.likeList.add(user!!.id)
+        val like = map[tag]!!.likeList.contains(user.id)
+        if (!like) {
+            map[tag]!!.likeList.add(user.id)
         } else {
-            mmo.likeList.remove(user!!.id)
+            map[tag]!!.likeList.remove(user.id)
         }
-        mmo.point = mmo.likeList.size
-        fbApiClient?.updateMmo(tag to mmo)
-        (view as RoundRectTextView).drawStroke(colorInt, false)
+        (view as RoundRectTextView).setLike(!like)
+        map[tag]!!.point = map[tag]!!.likeList.size
+        fbApiClient?.updateMmo(tag to map[tag]!!)
+        view.drawStroke(false)
     }
 
     private fun onAddSelected(view: View, colorInt: Int) {
@@ -316,7 +321,7 @@ class TravelMindMapFragment :
                 // ダイアログ表示と同時にキーボードを表示
 //                inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
                 inputForm.show()
-                (view as RoundRectTextView).drawStroke(colorInt, false)
+                (view as RoundRectTextView).drawStroke(false)
             }
         }
     }
@@ -351,7 +356,7 @@ class TravelMindMapFragment :
         // ダイアログ表示と同時にキーボードを表示
         inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         inputForm.show()
-        (view as RoundRectTextView).drawStroke(colorInt, false)
+        (view as RoundRectTextView).drawStroke(false)
     }
 
     override fun onDrag(v: View?, event: DragEvent?): Boolean {
