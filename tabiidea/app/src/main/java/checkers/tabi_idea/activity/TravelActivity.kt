@@ -182,7 +182,7 @@ class TravelActivity : AppCompatActivity(),
                 }
                 CATEGORY_LIST -> {
                     container?.requestDisallowInterceptTouchEvent(false)
-                    CategoryListFragment.newInstance(mCategoryList, mUser)
+                    CategoryListFragment.newInstance(mCategoryList, mUser,mEvent)
                 }
 //                RESULT -> TODO まとめ
                 else -> TravelMindMapFragment.newInstance(mEvent, mCategoryList, mUser)
