@@ -1,7 +1,6 @@
 package checkers.tabi_idea.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +9,6 @@ import android.widget.ExpandableListView
 import androidx.fragment.app.Fragment
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.MindMapObject
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
 
 class GroupingResultFragment : Fragment() {
     private var expandableListView: ExpandableListView? = null
@@ -32,7 +27,6 @@ class GroupingResultFragment : Fragment() {
         firstMindMapObjectList = savedInstanceState?.getParcelableArrayList("mindMapObjectList")
                 ?: arguments?.getParcelableArrayList("mindMapObjectList")
 
-        contactFirebase()
         mindMapObjectMap = firstMindMapObjectList?.filter { it.type != "root" }?.sortedByDescending { it.point }?.groupBy { it.type }
         titleList = firstMindMapObjectList?.filter { it.type != "root" }?.sortedByDescending { it.point }?.distinctBy { it.type }
     }
@@ -53,41 +47,6 @@ class GroupingResultFragment : Fragment() {
         }
         show()
         return view
-    }
-
-    private fun contactFirebase() {
-        val childEventListener = object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                Log.d("TravelActivity", "onChildAdded:" + dataSnapshot.key!!)
-                val key = dataSnapshot.key!!
-                val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
-                map = map.plus(key to mmo)
-            }
-
-            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                Log.d("TravelActivity", "onChildChanged:" + dataSnapshot.key!!)
-                val key = dataSnapshot.key!!
-                val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
-                map = map.minus(key)
-                map = map.plus(key to mmo)
-            }
-
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                Log.d("TravelActivity", "onChildRemoved:" + dataSnapshot.key!!)
-                map.minus(dataSnapshot.key)
-            }
-
-            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                Log.d("TravelActivity", "onChildMoved:" + dataSnapshot.key!!)
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.w("TravelActivity", "postComments:onCancelled", databaseError.toException())
-            }
-        }
-        val database = FirebaseDatabase.getInstance()
-        val ref = database.getReference(mEventId.toString())
-        ref.addChildEventListener(childEventListener)
     }
 
     fun show() {
