@@ -40,11 +40,6 @@ class GroupingResultFragment : Fragment() {
                               savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.fragment_grouping_result, container, false)
         expandableListView = view.findViewById(R.id.sample_list)
-        if (map.isNotEmpty()) {
-            mindMapObjectList = map.flatMap { listOf(it.value) }
-            mindMapObjectMap = mindMapObjectList!!.filter { it.type != "root" }.sortedByDescending { it.point }.groupBy { it.type }
-            titleList = mindMapObjectList!!.filter { it.type != "root" }.sortedByDescending { it.point }.distinctBy { it.type }
-        }
         show()
         return view
     }
@@ -52,8 +47,8 @@ class GroupingResultFragment : Fragment() {
     fun show() {
         if (map.isNotEmpty()) {
             mindMapObjectList = map.flatMap { listOf(it.value) }
-            mindMapObjectMap = mindMapObjectList!!.filter { it.type != "root" }.sortedByDescending { it.point }.groupBy { it.type }
-            titleList = mindMapObjectList!!.filter { it.type != "root" }.sortedByDescending { it.point }.distinctBy { it.type }
+            mindMapObjectMap = mindMapObjectList?.filter { it.type != "root" }?.sortedByDescending { it.point }?.groupBy { it.type }
+            titleList = mindMapObjectList?.filter { it.type != "root" }?.sortedByDescending { it.point }?.distinctBy { it.type }
         }
         val ctx = context ?: return
         val listData = mindMapObjectMap as? HashMap ?: return
