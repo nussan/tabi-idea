@@ -18,7 +18,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
 import checkers.tabi_idea.R
-import checkers.tabi_idea.R.id.button4
 import checkers.tabi_idea.custom.view.CustomActionsInAnimator
 import checkers.tabi_idea.custom.view.CustomActionsTitleAnimator
 import checkers.tabi_idea.custom.view.RoundRectTextView
@@ -33,11 +32,9 @@ import com.commit451.quickactionview.Action
 import com.commit451.quickactionview.QuickActionView
 import com.commit451.quickactionview.animator.PopAnimator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import kotlinx.android.synthetic.main.fragment_category_list.*
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 import kotlin.math.abs
 
