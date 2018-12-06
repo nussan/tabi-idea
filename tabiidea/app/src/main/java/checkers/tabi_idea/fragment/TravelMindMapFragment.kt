@@ -235,7 +235,7 @@ class TravelMindMapFragment :
 
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
                 Log.d("TravelMindMapFragment", "onChildRemoved")
-                map.minus(dataSnapshot.key)
+                map = map.minus(dataSnapshot.key!!)
                 mindMapConstraintLayout.removeView(mindMapConstraintLayout.findViewWithTag(dataSnapshot.key))
             }
         }
