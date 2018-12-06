@@ -160,7 +160,7 @@ class EventListFragment : Fragment() {
             adapter.eventList = eventManager.eventList //検索機能を実行したときの更新
             it.isEnabled = false
             // レイアウトを取得
-            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
+            val inflater = this.layoutInflater.inflate(R.layout.input_form_normal, null, false)
 
             // ダイアログ内のテキストエリア
             val inputText: EditText = inflater.findViewById(R.id.inputText)
@@ -235,7 +235,7 @@ class EventListFragment : Fragment() {
         val item: MenuItem = menu.findItem(R.id.action_name_edit)
         item.setOnMenuItemClickListener {
             // レイアウトを取得
-            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
+            val inflater = this.layoutInflater.inflate(R.layout.input_form_normal, null, false)
 
             // ダイアログ内のテキストエリア
             val inputText: EditText = inflater.findViewById(R.id.inputText)
