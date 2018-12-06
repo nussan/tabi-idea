@@ -107,7 +107,7 @@ class TravelActivity : AppCompatActivity(),
 
         tabs.addTab(tabs.newTab().setText("マインドマップ"))
         tabs.addTab(tabs.newTab().setText("カテゴリ"))
-        tabs.addTab(tabs.newTab().setText("2"))
+        tabs.addTab(tabs.newTab().setText("まとめ"))
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
 
@@ -215,8 +215,8 @@ class TravelActivity : AppCompatActivity(),
     }
 
     override fun onCategoryChanged(position: Int, category: Category) {
-        mCategoryList[position].name = category.name
-        mCategoryList[position].color = category.color
+//        mCategoryList[position].name = category.name
+//        mCategoryList[position].color = category.color
     }
 
 
@@ -237,7 +237,7 @@ class TravelActivity : AppCompatActivity(),
                 }
                 GROUPING_RESULT -> {
                     container?.requestDisallowInterceptTouchEvent(false)
-                    newGroupingResultFragment(mEvent.id,map)
+                    newGroupingResultFragment(mEvent.id,map,mCategoryList)
                 }
                 else -> TravelMindMapFragment.newInstance(mEvent, mCategoryList, mUser)
             }

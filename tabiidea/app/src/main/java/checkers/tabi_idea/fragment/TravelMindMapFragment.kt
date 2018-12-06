@@ -499,6 +499,10 @@ class TravelMindMapFragment :
         qav.setActionsInAnimator(customActionsInAnimator)
     }
 
+    fun getCategoryList() : List<Category>{
+        return categoryList
+    }
+
     companion object {
         @JvmStatic
         fun newInstance(event: Event, categoryList: MutableList<Category>, user: User) = TravelMindMapFragment().apply {

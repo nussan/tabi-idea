@@ -9,6 +9,7 @@ import android.widget.ExpandableListAdapter
 import android.widget.ExpandableListView
 import androidx.fragment.app.Fragment
 import checkers.tabi_idea.R
+import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.MindMapObject
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
@@ -19,17 +20,13 @@ class GroupingResultFragment : Fragment(){
 
     private var expandableListView: ExpandableListView? = null
     private var adapter: ExpandableListAdapter? = null
-
     private var titleList: List<MindMapObject> ? = null
-
     private var mindMapObjectList: List<MindMapObject> ? = null
     private var firstMindMapObjectList: List<MindMapObject> ? = null
-
     private var mindMapObjectMap: Map<String, List<MindMapObject>> ? = null
-
     private var map: Map<String, MindMapObject> = mutableMapOf()
-
     private var mEventId: Int = 0
+    private var categoryList : List<Category> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,20 +34,25 @@ class GroupingResultFragment : Fragment(){
         mEventId = savedInstanceState?.getInt("mEventId")
                 ?: arguments?.getInt("mEventId")
                 ?:0
-
         firstMindMapObjectList = savedInstanceState?.getParcelableArrayList("mindMapObjectList")
                 ?: arguments?.getParcelableArrayList("mindMapObjectList")
                 ?: null
+        arguments?.let {
+            categoryList = it.getParcelableArrayList<Category>("categoryList") as MutableList<Category>
+        }
+
 
         contactFirebase()
 
         mindMapObjectMap = firstMindMapObjectList!!.filter{ it.type != "root"}.sortedByDescending { it.point }.groupBy { it.type }
         titleList = firstMindMapObjectList!!.filter{ it.type != "root"}.sortedByDescending { it.point }.distinctBy { it.type }
 
+
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("mindMapObjectList", ArrayList(mindMapObjectList))
+        //outState.putParcelableArrayList("mindMapObjectList", ArrayList(mindMapObjectList))
         outState.putInt("mEventId", mEventId)
     }
 
@@ -114,13 +116,13 @@ class GroupingResultFragment : Fragment(){
         val ctx = context ?: return
         val listData = mindMapObjectMap as HashMap
 
-        adapter = GroupingExpandableListAdapter(context = ctx, titleList = titleList as ArrayList<MindMapObject>, dataList = listData)
+        adapter = GroupingExpandableListAdapter(context = ctx, titleList = titleList as ArrayList<MindMapObject>, dataList = listData,ct = categoryList)
         expandableListView!!.setAdapter(adapter)
     }
 }
 
 
-fun newGroupingResultFragment(mEventId : Int, map : Map<String, MindMapObject>) : GroupingResultFragment {
+fun newGroupingResultFragment(mEventId : Int, map : Map<String, MindMapObject>,categoryList: MutableList<Category>) : GroupingResultFragment {
     val fragment = GroupingResultFragment()
 
     val args = Bundle()
@@ -128,6 +130,7 @@ fun newGroupingResultFragment(mEventId : Int, map : Map<String, MindMapObject>) 
     val mindMapObjectList : List<MindMapObject> = map.flatMap { listOf(it.value) }
     args.putParcelableArrayList("mindMapObjectList", ArrayList(mindMapObjectList))
     args.putInt("mEventId",mEventId)
+    args.putParcelableArrayList("categoryList",ArrayList(categoryList))
 
     fragment.arguments = args
     return fragment
