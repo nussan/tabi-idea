@@ -116,11 +116,7 @@ class TravelMindMapFragment :
 
                 val key = dataSnapshot.key!!
                 val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
-
                 val view = mindMapObjectToTextView(context, mmo)
-
-                var like = mmo.likeList.contains(user.id)
-                view.setLike(like)
 
                 view.tag = key
 
@@ -129,7 +125,10 @@ class TravelMindMapFragment :
                 val point = Point(0, 0)
 
                 val colorInt = (view.background as ColorDrawable).color
+                var like = mmo.likeList.contains(user.id)
                 view.setColor(colorInt)
+                view.setLike(like)
+
                 Log.d("colorInt", Integer.toHexString(colorInt).substring(2))
 
                 click = false
@@ -140,11 +139,12 @@ class TravelMindMapFragment :
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
-                            (v as RoundRectTextView).drawStroke(true)
                             click = true
 
                             lastRaw.set(event.rawX, event.rawY)
                             point.set((event.x * v.scaleX).toInt(), (event.y * v.scaleY).toInt())
+
+                            (v as RoundRectTextView).drawStroke(true)
                         }
 
                         MotionEvent.ACTION_MOVE -> {
@@ -170,7 +170,7 @@ class TravelMindMapFragment :
                     Log.d("TravelMindMapFragment", "ACTION_UP")
                     rrvToQAV(context, view, point, colorInt)
                     if (!click) {
-                        (v as RoundRectTextView).drawStroke(false)
+                        (v as RoundRectTextView).drawStroke(click)
                     }
                 }
                 }
@@ -277,12 +277,13 @@ class TravelMindMapFragment :
                         fbApiClient?.addMmo(mmo)
                     }
                     setNegativeButton("Cancel", null)
+
+                    (view as RoundRectTextView).drawStroke(false)
                 }.create()
 
                 // ダイアログ表示と同時にキーボードを表示
 //                inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
                 inputForm.show()
-                (view as RoundRectTextView).drawStroke(false)
             }
         }
     }
@@ -312,12 +313,13 @@ class TravelMindMapFragment :
                 fbApiClient?.updateMmo(tag to map[tag]!!)
             }
             setNegativeButton("Cancel", null)
+
+            (view as RoundRectTextView).drawStroke(false)
         }.create()
 
         // ダイアログ表示と同時にキーボードを表示
         inputForm.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         inputForm.show()
-        (view as RoundRectTextView).drawStroke(false)
     }
 
     override fun onDrag(v: View?, event: DragEvent?): Boolean {
@@ -395,7 +397,6 @@ class TravelMindMapFragment :
         }
     }
 
-
     private fun mindMapObjectToTextView(context: Context?, mindMapObject: MindMapObject): RoundRectTextView {
         val textView = RoundRectTextView(context)
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
@@ -411,7 +412,6 @@ class TravelMindMapFragment :
         categoryList.forEach { category ->
             if (mindMapObject.type == category.name)
                 textView.setBackgroundColor(Color.parseColor(category.color))
-
         }
         return textView
     }
@@ -422,10 +422,8 @@ class TravelMindMapFragment :
         qav.setColorInt(colorInt)
         qav.setClick(click)
         val mQuickActionListener = QuickActionView.OnActionSelectedListener { action, quickActionView ->
-            Log.d("aaa", "aaa")
             val view = quickActionView.longPressedView
             if (view != null) {
-                Snackbar.make(view, "Clicked on " + action.id, Snackbar.LENGTH_SHORT).show()
                 when (action.title) {
                     "追加" -> onAddSelected(view, colorInt)
                     "編集" -> onEditSelected(view, colorInt)
