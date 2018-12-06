@@ -107,7 +107,7 @@ class TravelActivity : AppCompatActivity(),
                 // OKが押されるとonActivityResutに処理が移行する
             }
             R.id.mmomenu_hr ->{
-                TravelMindMapFragment.highRight(mCategoryList)
+//                TravelMindMapFragment.highRight(mCategoryList)
             }
         }
         return super.onOptionsItemSelected(item)
