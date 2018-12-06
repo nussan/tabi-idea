@@ -25,11 +25,17 @@ import androidx.fragment.app.FragmentPagerAdapter
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
+import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.fragment.CategoryListFragment
 import checkers.tabi_idea.fragment.TravelMindMapFragment
+import checkers.tabi_idea.fragment.newGroupingResultFragment
 import checkers.tabi_idea.provider.Repository
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener
 import kotlinx.android.synthetic.main.activity_travel.*
 import java.io.ByteArrayOutputStream
@@ -45,6 +51,45 @@ class TravelActivity : AppCompatActivity(),
     private lateinit var mEvent: Event
     private lateinit var mCategoryList: MutableList<Category>
     private lateinit var mRepository: Repository
+    private var map: Map<String, MindMapObject> = mutableMapOf()
+
+    private fun contactFirebase(){
+        val childEventListener = object : ChildEventListener {
+            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                Log.d("TravelActivity", "onChildAdded:" + dataSnapshot.key!!)
+
+                val key = dataSnapshot.key!!
+                val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
+                map = map.minus(key)
+                map = map.plus(key to mmo)
+            }
+
+            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                Log.d("TravelActivity", "onChildChanged:" + dataSnapshot.key!!)
+
+                val key = dataSnapshot.key!!
+                val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
+                map = map.plus(key to mmo)
+            }
+
+            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+                Log.d("TravelActivity", "onChildRemoved:" + dataSnapshot.key!!)
+                map.minus(dataSnapshot.key)
+            }
+
+            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                Log.d("TravelActivity", "onChildMoved:" + dataSnapshot.key!!)
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w("TravelActivity", "postComments:onCancelled", databaseError.toException())
+            }
+        }
+        val database = FirebaseDatabase.getInstance()
+        val ref = database.getReference(mEvent.id.toString())
+        ref.addChildEventListener(childEventListener)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +108,11 @@ class TravelActivity : AppCompatActivity(),
         tabs.addTab(tabs.newTab().setText("2"))
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
+
+        contactFirebase()
     }
+
+
 
     override fun onCreateView(name: String?, context: Context?, attrs: AttributeSet?): View? {
         return super.onCreateView(name, context, attrs)
@@ -184,7 +233,10 @@ class TravelActivity : AppCompatActivity(),
                     container?.requestDisallowInterceptTouchEvent(false)
                     CategoryListFragment.newInstance(mCategoryList, mUser)
                 }
-//                RESULT -> TODO まとめ
+                GROUPING_RESULT -> {
+                    container?.requestDisallowInterceptTouchEvent(false)
+                    newGroupingResultFragment(mEvent.id,map)
+                }
                 else -> TravelMindMapFragment.newInstance(mEvent, mCategoryList, mUser)
             }
         }
@@ -197,7 +249,7 @@ class TravelActivity : AppCompatActivity(),
     companion object {
         private const val TRAVEL_MIND_MAP = 0
         private const val CATEGORY_LIST = 1
-        private const val RESULT = 2
+        private const val GROUPING_RESULT = 2
 
         private const val DIALOG_ID = 0
         private const val TAG = "TravelActivity"
