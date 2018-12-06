@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
 import checkers.tabi_idea.R
+import checkers.tabi_idea.R.id.button4
 import checkers.tabi_idea.custom.view.CustomActionsInAnimator
 import checkers.tabi_idea.custom.view.CustomActionsTitleAnimator
 import checkers.tabi_idea.custom.view.RoundRectTextView
@@ -36,6 +37,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import kotlinx.android.synthetic.main.fragment_category_list.*
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
 import kotlin.math.abs
 
@@ -92,6 +94,8 @@ class TravelMindMapFragment :
         behavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
         fbApiClient = FirebaseApiClient(event!!.id.toString())
+
+
 
         listener = object : ChildEventListener {
             override fun onCancelled(p0: DatabaseError) {
@@ -231,7 +235,7 @@ class TravelMindMapFragment :
 
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
                 Log.d("TravelMindMapFragment", "onChildRemoved")
-                map.minus(dataSnapshot.key)
+                map = map.minus(dataSnapshot.key!!)
                 mindMapConstraintLayout.removeView(mindMapConstraintLayout.findViewWithTag(dataSnapshot.key))
             }
         }
