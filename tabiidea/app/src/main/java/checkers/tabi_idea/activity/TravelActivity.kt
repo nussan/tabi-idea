@@ -22,7 +22,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import checkers.tabi_idea.R
@@ -137,15 +136,21 @@ class TravelActivity : AppCompatActivity(),
         when (state) {
             ViewPager.SCROLL_STATE_IDLE -> {
                 val currentFragment = mSectionsPagerAdapter?.instantiateItem(container, container.currentItem) as? Fragment
-                if (currentFragment is TravelMindMapFragment)
-                    mRepository.getCategoryList(mUser.token, mEvent.id) { categoryList ->
-                        this.mCategoryList = categoryList
-                        currentFragment.updateCategoryList(mCategoryList)
+                when (currentFragment) {
+                    is TravelMindMapFragment -> {
+                        mRepository.getCategoryList(mUser.token, mEvent.id) { categoryList ->
+                            this.mCategoryList = categoryList
+                            currentFragment.updateCategoryList(mCategoryList)
+                        }
                     }
+                    is GroupingResultFragment -> {
+                        currentFragment.update(map)
+                    }
+
+                }
             }
         }
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.mmomenu, menu)
@@ -249,7 +254,7 @@ class TravelActivity : AppCompatActivity(),
      * A [FragmentPagerAdapter] that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         override fun getItem(position: Int): Fragment {
             return when (position) {
                 TRAVEL_MIND_MAP -> {
