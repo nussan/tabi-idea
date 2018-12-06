@@ -37,6 +37,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
+import kotlin.math.abs
 
 
 class TravelMindMapFragment :
@@ -51,6 +52,8 @@ class TravelMindMapFragment :
     private var categoryList: List<Category> = listOf()
     private lateinit var user: User
     private var repository = Repository()
+    private var dist = PointF(0f, 0f)
+    private var mActivePointerId: Int = -1
     private var click: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,7 +109,13 @@ class TravelMindMapFragment :
                 map = map.minus(key)
                 map = map.plus(key to mmo)
                 val target = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(key)
+                val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(mmo.parent)
+                val matrix = parent.matrix
+                val array = FloatArray(9)
+                matrix.getValues(array)
                 target.text = TextUtils.ellipsize(mmo.text, target.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
+                target.translationX = array[Matrix.MTRANS_X] + mmo.positionX * target.scaleX
+                target.translationY = array[Matrix.MTRANS_Y] + mmo.positionY * target.scaleY
                 mindMapConstraintLayout.invalidate()
             }
 
@@ -123,6 +132,7 @@ class TravelMindMapFragment :
                 // 画面のタッチポイントの差分をビュー毎に分けるためにここで宣言
                 val lastRaw = PointF(0f, 0f)
                 val point = Point(0, 0)
+                dist.set(0f, 0f)
 
                 val colorInt = (view.background as ColorDrawable).color
                 var like = mmo.likeList.contains(user.id)
@@ -134,11 +144,20 @@ class TravelMindMapFragment :
                 click = false
 
                 view.setOnTouchListener { v, event ->
-                    activity?.currentFocus
-//                        Log.d("TravelMindMapFragment", "${event.pointerCount}")
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
+                            Log.d("TravelMindMapFragment", mActivePointerId.toString())
+                            if (mActivePointerId == -1) {
+                                mActivePointerId = event.getPointerId(0)
+                            } else {
+                                activity?.dispatchTouchEvent(event)
+                                mActivePointerId = -1
+                                (v as RoundRectTextView).drawStroke(false)
+                                return@setOnTouchListener false
+                            }
+                            (v as RoundRectTextView).drawStroke(true)
+
                             click = true
 
                             lastRaw.set(event.rawX, event.rawY)
@@ -151,29 +170,50 @@ class TravelMindMapFragment :
                             Log.d("TravelMindMapFragment", "ACTION_MOVE")
                             (v as RoundRectTextView).drawStroke(true)
                             val trans = PointF((event.rawX - lastRaw.x), (event.rawY - lastRaw.y))
-                            if (trans.x * trans.x + trans.y * trans.y > 5) {
+                            if (trans.x * trans.x + trans.y * trans.y > 5 || mActivePointerId == -1) {
                                 // 移動量が一定以上のときロングプレスをキャンセル
                                 v.cancelLongPress()
                                 click = false
                             }
-                            val matrix = v.matrix
-                            matrix?.postTranslate(trans.x, trans.y)
-                            val f = FloatArray(9)
-                            matrix?.getValues(f)
+
                             v.translationX += trans.x
+                            dist.x += trans.x
                             v.translationY += trans.y
+                            dist.y += trans.y
                             lastRaw.set(event.rawX, event.rawY)
                             mindMapConstraintLayout.invalidate()
                         }
 
-                    MotionEvent.ACTION_UP -> {
-                    Log.d("TravelMindMapFragment", "ACTION_UP")
-                    rrvToQAV(context, view, point, colorInt)
-                    if (!click) {
-                        (v as RoundRectTextView).drawStroke(click)
+
+                        MotionEvent.ACTION_UP -> {
+                            Log.d("TravelMindMapFragment", "ACTION_UP")
+                            rrvToQAV(context, view, point, colorInt)
+                            if (!click) {
+                                (v as RoundRectTextView).drawStroke(false)
+                            }
+
+                            Log.d("TravelMindMapFragment", "dist : $dist")
+                            if (abs(dist.x) > 0 || abs(dist.y) > 0) {
+                                val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView?>(map[v.tag]?.parent)
+                                        ?: return@setOnTouchListener false
+                                val matrix = FloatArray(9)
+                                parent.matrix.getValues(matrix)
+                                map[v.tag] ?: return@setOnTouchListener false
+                                map[v.tag]!!.positionX += dist.x / v.scaleX
+                                map[v.tag]!!.positionY += dist.y / v.scaleY
+                                fbApiClient?.updateMmo(v.tag as String to map[v.tag as String]!!)
+                                map.forEach { m ->
+                                    if (m.value.parent == v.tag) {
+                                        m.value.positionX -= dist.x / v.scaleX
+                                        m.value.positionY -= dist.y / v.scaleY
+                                        fbApiClient?.updateMmo(m.key to m.value)
+                                    }
+                                }
+                                dist.set(0f, 0f)
+                                mActivePointerId = -1
+                            }
+                        }
                     }
-                }
-                }
                     false
                 }
 
@@ -206,6 +246,7 @@ class TravelMindMapFragment :
         super.onStart()
         repository = Repository()
     }
+
     override fun onStop() {
         Log.d("TravelMindMapFragment", "onStop")
         super.onStop()

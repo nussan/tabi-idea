@@ -4,11 +4,14 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Outline
+import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.graphics.drawable.DrawableCompat
@@ -70,26 +73,7 @@ class RoundRectTextView : AppCompatTextView {
     override fun onDraw(canvas: Canvas?) {
         drawLikeHart(canvas!!)
         super.onDraw(canvas)
-
     }
-//
-//    private fun drawLikeCircle(canvas: Canvas){
-//        mPaint.style = Paint.Style.STROKE
-//        mPaint.color = mStrokeColor!!
-//        mPaint.isAntiAlias = true
-//        mPaint.strokeWidth = 5f
-//
-//        val rad = 20f
-//        val cx = this.width - 32f
-//        val cy = 32f
-//
-//        if(mLike) {
-//            canvas.drawCircle(cx, cy, rad, mPaint)
-//        }else{
-//            mPaint.color = Color.parseColor("#00000000")
-//            canvas.drawCircle(cx,cy,rad,mPaint)
-//        }
-//    }
 
     private fun drawLikeHart(canvas: Canvas){
         mPaint.textSize = 50f
@@ -101,16 +85,16 @@ class RoundRectTextView : AppCompatTextView {
         }
     }
 
-    fun setLike(like:Boolean){
+    fun setLike(like: Boolean) {
         this.mLike = like
     }
 
-    fun setColor(colorInt: Int){
+    fun setColor(colorInt: Int) {
         this.mColorInt = colorInt
         this.mStrokeColor = setStrokeColor(mColorInt)
     }
 
-    private fun setStrokeColor(colorInt: Int): Int{
+    private fun setStrokeColor(colorInt: Int) : Int{
         val r = Integer.parseInt(Integer.toHexString(colorInt).substring(2, 4), 16)
         val g = Integer.parseInt(Integer.toHexString(colorInt).substring(4, 6), 16)
         val b = Integer.parseInt(Integer.toHexString(colorInt).substring(6, 8), 16)
