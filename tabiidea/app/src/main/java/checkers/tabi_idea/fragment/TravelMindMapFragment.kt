@@ -51,7 +51,7 @@ class TravelMindMapFragment :
     private var categoryList: List<Category> = listOf()
     private lateinit var user: User
     private var repository = Repository()
-    private var dist = PointF(0f, 0f)
+    //    private var dist = PointF(0f, 0f)
     private var mActivePointerId: Int = -1
     private var click: Boolean = false
     private var adapter: ArrayAdapter<Category>? = null
@@ -115,9 +115,16 @@ class TravelMindMapFragment :
                 val matrix = parent.matrix
                 val array = FloatArray(9)
                 matrix.getValues(array)
+
+                val targetMatrix = target.matrix
+                matrix.postTranslate(array[Matrix.MTRANS_X] + mmo.positionX, array[Matrix.MTRANS_Y] + mmo.positionY)
+                val targetArray = FloatArray(9)
+                targetMatrix.getValues(targetArray)
                 target.text = TextUtils.ellipsize(mmo.text, target.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
-                target.translationX = array[Matrix.MTRANS_X] + mmo.positionX * target.scaleX
-                target.translationY = array[Matrix.MTRANS_Y] + mmo.positionY * target.scaleY
+                target.translationX = targetArray[Matrix.MTRANS_X]
+                target.translationY = targetArray[Matrix.MTRANS_Y]
+//                target.translationX = array[Matrix.MTRANS_X] + mmo.positionX * mindMapConstraintLayout.scale - target.width / 2 * target.scaleX
+//                target.translationY = array[Matrix.MTRANS_Y] + mmo.positionY * mindMapConstraintLayout.scale - target.height / 2 * target.scaleY
                 mindMapConstraintLayout.invalidate()
             }
 
@@ -134,7 +141,7 @@ class TravelMindMapFragment :
                 // 画面のタッチポイントの差分をビュー毎に分けるためにここで宣言
                 val lastRaw = PointF(0f, 0f)
                 val point = Point(0, 0)
-                dist.set(0f, 0f)
+                val dist = PointF(0f, 0f)
 
                 val colorInt = (view.background as ColorDrawable).color
                 var like = mmo.likeList.contains(user.id)
@@ -203,17 +210,21 @@ class TravelMindMapFragment :
                                 val matrix = FloatArray(9)
                                 parent.matrix.getValues(matrix)
                                 map[v.tag] ?: return@setOnTouchListener false
-                                map[v.tag]!!.positionX += dist.x / mindMapConstraintLayout.scale
-                                map[v.tag]!!.positionY += dist.y / mindMapConstraintLayout.scale
+                                dist.x += v.width / 2
+                                dist.y += v.height / 2
+                                map[v.tag]!!.positionX += dist.x
+                                map[v.tag]!!.positionY += dist.y
                                 fbApiClient?.updateMmo(v.tag as String to map[v.tag as String]!!)
+                                val childDist = PointF(dist.x, dist.y)
+                                dist.set(0f, 0f)
                                 map.forEach { m ->
                                     if (m.value.parent == v.tag) {
-                                        m.value.positionX -= dist.x / mindMapConstraintLayout.scale
-                                        m.value.positionY -= dist.y / mindMapConstraintLayout.scale
+                                        m.value.positionX -= childDist.x
+                                        m.value.positionY -= childDist.y
                                         fbApiClient?.updateMmo(m.key to m.value)
                                     }
                                 }
-                                dist.set(0f, 0f)
+//                                dist.set(0f, 0f)
                                 mActivePointerId = -1
                             }
                         }
