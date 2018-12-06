@@ -146,6 +146,8 @@ class TravelMindMapFragment :
                 click = false
 
                 view.setOnTouchListener { v, event ->
+                    // ルートノードは動かせなくする
+                    if (map[v.tag]?.type == "root") return@setOnTouchListener false
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
                             Log.d("TravelMindMapFragment", "ACTION_DOWN")
@@ -220,6 +222,7 @@ class TravelMindMapFragment :
                 }
 
                 view.setOnLongClickListener { v ->
+                    if (map[v.tag]?.type == "root") return@setOnLongClickListener false
                     behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
                     val item = ClipData.Item(v.tag as? CharSequence)
                     val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
