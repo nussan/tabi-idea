@@ -13,7 +13,8 @@ import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Category
 
 class CategoryListAdapter(var context: Context?, private var categoryList: List<Category>) : RecyclerView.Adapter<CategoryListAdapter.CategoryViewHolder>() {
-    var listener: OnClickListener? = null
+    var imageViewListener: OnClickListener? = null
+    var textViewListener: OnClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_category_row, parent, false)
@@ -28,7 +29,10 @@ class CategoryListAdapter(var context: Context?, private var categoryList: List<
         holder.tvName.text = categoryList[position].name
         holder.imageView.setBackgroundColor(Color.parseColor(categoryList[position].color))
         holder.imageView.setOnClickListener {
-            listener?.onClick(position)
+            imageViewListener?.onClick(position)
+        }
+        holder.tvName.setOnClickListener {
+            textViewListener?.onClick(position)
         }
 
 //        holder.imageView.setOnClickListener {
