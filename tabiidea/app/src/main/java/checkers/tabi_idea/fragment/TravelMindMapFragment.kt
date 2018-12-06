@@ -254,7 +254,7 @@ class TravelMindMapFragment :
             fbApiClient?.removeListener(listener!!)
     }
 
-    private fun onLikeSelected(view: View, colorInt: Int) {
+    private fun onLikeSelected(view: View) {
         val tag = view.tag as String
         val like = map[tag]!!.likeList.contains(user.id)
         if (!like) {
@@ -268,7 +268,7 @@ class TravelMindMapFragment :
         view.drawStroke(false)
     }
 
-    private fun onAddSelected(view: View, colorInt: Int) {
+    private fun onAddSelected(view: View) {
         Log.d(javaClass.simpleName, "onAddSelected")
         Toast.makeText(context, "タップした位置に追加します", Toast.LENGTH_SHORT).show()
         val tag = view.tag as String
@@ -466,9 +466,9 @@ class TravelMindMapFragment :
             val view = quickActionView.longPressedView
             if (view != null) {
                 when (action.title) {
-                    "追加" -> onAddSelected(view, colorInt)
+                    "追加" -> onAddSelected(view)
                     "編集" -> onEditSelected(view, colorInt)
-                    "いいね" -> onLikeSelected(view, colorInt)
+                    "いいね" -> onLikeSelected(view)
                 }
             }
         }
@@ -493,6 +493,17 @@ class TravelMindMapFragment :
 
         val customActionsInAnimator = CustomActionsInAnimator(qav)
         qav.setActionsInAnimator(customActionsInAnimator)
+    }
+
+    fun highRight(categoryList: MutableList<Category>) {
+        var point = 0
+        categoryList.forEach{category ->
+            map.forEach{dataSnapShot ->
+                if(category.name==dataSnapShot.value.type && point<=dataSnapShot.value.point){
+                    point = dataSnapShot.value.point
+                }
+            }
+        }
     }
 
     companion object {

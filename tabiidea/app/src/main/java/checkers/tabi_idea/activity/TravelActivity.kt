@@ -106,8 +106,10 @@ class TravelActivity : AppCompatActivity(),
                 startActivityForResult(intent, 1000)
                 // OKが押されるとonActivityResutに処理が移行する
             }
+            R.id.mmomenu_hr ->{
+                TravelMindMapFragment.highRight(mCategoryList)
+            }
         }
-
         return super.onOptionsItemSelected(item)
     }
 
