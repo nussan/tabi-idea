@@ -2,6 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/mmomenu_nameEdit"
+        android:title="名前の編集" />
+    <item
         android:id="@+id/mmomenu_icon"
         android:icon="@drawable/ic_edit_black_24dp"
         android:title="アイコンの変更"

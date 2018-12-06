@@ -1,0 +1,2228 @@
+[33mcommit 795235cf67042fccd99b0dd9a6a633b8fa600aa2[m[33m ([m[1;36mHEAD -> [m[1;32mdevelop[m[33m)[m
+Merge: 3d45b8f 09209c0
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Thu Dec 6 17:02:29 2018 +0900
+
+    Merge branch 'feature/cateCre' of https://github.com/nussan/tabi-idea into develop
+
+[33mcommit 3d45b8f974c95bf2ce3da096711358e5228ecfbf[m[33m ([m[1;31morigin/develop[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 30b0918 8b20809
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Thu Dec 6 17:02:26 2018 +0900
+
+    Merge pull request #100 from nussan/feature/hright
+    
+    Feature/hright
+
+[33mcommit 8b208090cb10ea68e99c570f67b98d85e983c02e[m
+Merge: d5c3f42 30b0918
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Dec 6 16:58:30 2018 +0900
+
+    fix conflict
+
+[33mcommit d5c3f42dac9d6e1387fe9210e8081fa5181da819[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Dec 6 16:41:11 2018 +0900
+
+    ハートにした
+
+[33mcommit 30b091882729c534414571f30290ad88ad217594[m
+Merge: 993a09f 263f002
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Dec 6 16:36:38 2018 +0900
+
+    Merge branch 'develop' of https://github.com/nussan/tabi-idea into develop
+    
+    # Conflicts:
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/fragment/TravelMindMapFragment.kt
+
+[33mcommit 09209c0445d921f8de8b3d78cd670ca2df1c9d6d[m[33m ([m[1;31morigin/feature/cateCre[m[33m)[m
+Author: rywyr <rywyr@users.noreply.github.com>
+Date:   Thu Dec 6 16:04:09 2018 +0900
+
+    category add edit
+
+[33mcommit 993a09f57061ad5fbb496f0bab8fdc68f9cdcc40[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Dec 6 08:23:42 2018 +0900
+
+    まじむり
+
+[33mcommit 263f002e86895ff33e9bacadad0b3e91521f04ce[m
+Merge: 1cdd7c7 f0cf992
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Thu Dec 6 06:52:58 2018 +0900
+
+    Merge pull request #99 from nussan/touch
+    
+    i like circle
+
+[33mcommit f0cf99257f63afb91024b303dd00136c1f79d2bf[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Dec 6 06:50:30 2018 +0900
+
+    i like circle
+
+[33mcommit 5e9c4225ace4a78c8554ef468b8cfca3adc79764[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Dec 6 06:37:23 2018 +0900
+
+    onChildChanged更新
+
+[33mcommit 3f36f5bf601c96c82405cdd25b0011a57dc6947c[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Dec 6 05:36:03 2018 +0900
+
+    ノード移動後にサーバを更新するようにした
+    
+    タッチ二個目を許さない
+
+[33mcommit 1cdd7c74114809498f70a22bc24a2f1fbe9dc9a6[m
+Merge: b63d9e4 59f2030
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Thu Dec 6 04:09:43 2018 +0900
+
+    Merge pull request #98 from nussan/feature/action
+    
+    Feature/action
+
+[33mcommit b63d9e465a89e5d9e1e1f1c92023b4c9aa5a46ad[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Dec 6 02:49:02 2018 +0900
+
+    スケールした状態でも位置の計算大丈夫
+
+[33mcommit 3d583cedc038a8b5978f461f66ebd7d6a4ea16f6[m
+Merge: c76768e 8f7bad9
+Author: nussan <nussan1996water@gmail.com>
+Date:   Thu Dec 6 02:20:55 2018 +0900
+
+    Merge pull request #97 from nussan/tab
+    
+    Tab
+
+[33mcommit 8f7bad9534e45da949b954bc03a7ceb21d50528c[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Dec 6 02:19:39 2018 +0900
+
+    タブレイアウトでスワイプできないようにした
+
+[33mcommit c76768e5b45c0a486d38740b2ac30df0c51866bc[m
+Merge: 4a86dce 1254921
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Thu Dec 6 01:39:12 2018 +0900
+
+    fix bug
+
+[33mcommit 125492120270fcd70e3ae7a3c33f9b128a899111[m[33m ([m[1;31morigin/feature/iconSetGetetc[m[33m)[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Thu Dec 6 00:15:18 2018 +0900
+
+    icon
+
+[33mcommit 22202cdeaa4581cb5004e6775318ceece4e2011c[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Dec 5 19:10:22 2018 +0900
+
+    ドラッグイベントのいらないメニュー削除
+
+[33mcommit 4a86dce23a302c754a911731188a09e4422dbd67[m
+Merge: 9aa5d76 501c669
+Author: nussan <nussan1996water@gmail.com>
+Date:   Wed Dec 5 18:37:30 2018 +0900
+
+    Merge pull request #95 from nussan/tab
+    
+    Tab
+
+[33mcommit 501c669be99e49a288707dc9a761109ff5d6ceee[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Dec 5 18:36:15 2018 +0900
+
+    mmomenuをTravelActivityで賄うようにした
+
+[33mcommit c37764e8f2e4e404335c104963dcf818428c0c13[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Dec 5 16:34:54 2018 +0900
+
+    TravelActivityでもカテゴリの色を変更できるようにした
+
+[33mcommit c6bdd962557d6b527ecdb2ac4e96b755009d8bb3[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Wed Dec 5 16:02:31 2018 +0900
+
+    user icon set get
+
+[33mcommit c43d3cc8b778a91b75139eaecc435c2a3d424bd3[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Dec 5 15:47:08 2018 +0900
+
+    TravelActivity内で遷移できるようになったかも
+
+[33mcommit 6eb1badfd2c3956cd81b271460da54f9495c3620[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Dec 5 15:01:44 2018 +0900
+
+    Activityつくってタブでフラグメント遷移させるための準備
+
+[33mcommit 59f2030ef4e6b81f71c5ee8689d8c3293cedf25e[m
+Merge: 435aa82 9aa5d76
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Wed Dec 5 14:29:09 2018 +0900
+
+    fix conflict?
+
+[33mcommit 435aa82c6c0c592c18fa5ea9962599ed6b038abb[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Wed Dec 5 14:16:50 2018 +0900
+
+    qavの背景変えました
+
+[33mcommit 9aa5d76012c5b5097e0baac781365bfce4b1eff1[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Dec 5 13:59:06 2018 +0900
+
+    URLからアプリ起動してイベント参加できるよ
+
+[33mcommit 3d960be88a118a4665b3a494765bf81b068fef65[m
+Merge: 28c1ffa c667552
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Dec 5 01:50:10 2018 +0900
+
+    Merge branch 'develop' of https://github.com/nussan/tabi-idea into develop
+
+[33mcommit 28c1ffacf09d4dd6b69ac5d95033daa793cd46d9[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Dec 5 01:49:17 2018 +0900
+
+    RecyclerViewのアイテムクリック直後にfabをタッチできなくした
+
+[33mcommit 0c9fd02fd1bcefd276f15ed3c170dbea53634e53[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Dec 5 01:48:38 2018 +0900
+
+    RecyclerViewの同時押しを封じた
+
+[33mcommit 4ec54d0fd8bbe0204285f8e702e64443a4261b5a[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Dec 5 00:47:02 2018 +0900
+
+    非同期処理をキャンセルするようにした
+    
+    たまにだめ
+
+[33mcommit c667552bbced8e14e60da54b8c79a07d7b523fbe[m
+Merge: 3e44781 48a572c
+Author: rywyr <33518361+rywyr@users.noreply.github.com>
+Date:   Tue Dec 4 23:58:20 2018 +0900
+
+    Merge pull request #94 from nussan/feature/iconDatabase
+    
+    Feature/icon database
+
+[33mcommit 48a572c5c4afa26a80c2fd4a2a5673183108cc9e[m[33m ([m[1;31morigin/feature/iconDatabase[m[33m)[m
+Merge: e55ea89 3e1f658
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Tue Dec 4 23:51:02 2018 +0900
+
+    Merge branch 'feature/iconDatabase' of https://github.com/nussan/tabi-idea into feature/iconDatabase
+
+[33mcommit e55ea898fecaf496b70ad289bd6632bddebdee28[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Tue Dec 4 23:49:14 2018 +0900
+
+    IsNotEmpty
+
+[33mcommit 3e1f6587135732f631a93d3a26c7687a40dc99e8[m[33m ([m[1;31morigin/feature/sortFix[m[33m)[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Tue Dec 4 21:49:09 2018 +0900
+
+    sort bug fix
+
+[33mcommit 3e44781987d3109c3611a9c86720413269751477[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Dec 4 21:33:57 2018 +0900
+
+    Merge branch 'develop' of https://github.com/nussan/tabi-idea into develop
+    
+    # Conflicts:
+    #       tabiidea/.idea/misc.xml
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/custom/view/RoundRectTextView.kt
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/fragment/EventListFragment.kt
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/fragment/TravelMindMapFragment.kt
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/provider/Repository.kt
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/provider/RequestService.kt
+
+[33mcommit 274425c423ccd86000f448d06ef8037aaabe8c23[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Dec 4 21:14:50 2018 +0900
+
+    Merge branch 'develop' of https://github.com/nussan/tabi-idea into develop
+    
+    # Conflicts:
+    #       tabiidea/.idea/misc.xml
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/custom/view/RoundRectTextView.kt
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/fragment/EventListFragment.kt
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/fragment/TravelMindMapFragment.kt
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/provider/Repository.kt
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/provider/RequestService.kt
+
+[33mcommit 0018b89fb0fee593620d1b638432371958fdda66[m
+Merge: 02aaef7 4ff3909
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Dec 4 21:13:02 2018 +0900
+
+    Merge branch 'develop' of https://github.com/nussan/tabi-idea into develop
+    
+    # Conflicts:
+    #       tabiidea/.idea/misc.xml
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/custom/view/RoundRectTextView.kt
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/fragment/EventListFragment.kt
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/fragment/TravelMindMapFragment.kt
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/provider/Repository.kt
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/provider/RequestService.kt
+
+[33mcommit 02aaef757b5d01b4d935354a709a2e2ab6ee633a[m
+Merge: c2a5289 425207b
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Dec 4 20:54:56 2018 +0900
+
+    Merge branch 'androidx/colorpicker' into develop
+
+[33mcommit 4ff390923a875df4f1cdd1056a1173bba004661e[m
+Merge: 28c0045 fde1e7d
+Author: rywyr <33518361+rywyr@users.noreply.github.com>
+Date:   Tue Dec 4 20:37:08 2018 +0900
+
+    Merge pull request #92 from nussan/feature/sort
+    
+    Feature/sort
+
+[33mcommit fde1e7d4e498057f99c4d21c062bf0d0a296b8dc[m
+Merge: a9cb26b 28c0045
+Author: rywyr <33518361+rywyr@users.noreply.github.com>
+Date:   Tue Dec 4 20:36:50 2018 +0900
+
+    Merge branch 'develop' into feature/sort
+
+[33mcommit a9cb26bd3d18c5a7bf14cff3d6c3db89631f360f[m[33m ([m[1;31morigin/feature/sort[m[33m)[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Tue Dec 4 20:22:25 2018 +0900
+
+    sort
+
+[33mcommit 425207beea55b7c013848a69abbcf39b05342289[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Dec 4 15:23:15 2018 +0900
+
+    カテゴリの色を編集できるようにした。
+
+[33mcommit 28c0045e6adb834525c78304bb9656148502933d[m
+Merge: c2a5289 3c14cb4
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Tue Dec 4 15:16:38 2018 +0900
+
+    Merge pull request #91 from nussan/feature/action
+    
+    Feature/action
+
+[33mcommit 3c14cb433080687ec14a6f49d6f55d41e0f474d9[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Tue Dec 4 15:09:18 2018 +0900
+
+    選択枠ここまで
+
+[33mcommit 931a25b84aae8969929b4360d6e8ba8f4097d03b[m
+Author: rywyr <rywyr@users.noreply.github.com>
+Date:   Tue Dec 4 01:40:04 2018 +0900
+
+    url hakko
+
+[33mcommit a83bc0dc0724bbeae2e3579226bd0e2d67b8ba84[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Dec 4 00:18:39 2018 +0900
+
+    CategoryにIDをもたせるように変更
+
+[33mcommit e16afe30b2eadf30c43a73cc951b280e76c74b40[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Dec 3 22:47:01 2018 +0900
+
+    Repositoryにカテゴリ関連を追加
+
+[33mcommit 6811f73d74c9494dba07184390eb0f247c6d38a4[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Dec 3 22:23:48 2018 +0900
+
+    CategoryListFragmentの色の変更が反映されるようにした
+    Repositoryにはまだ
+
+[33mcommit 0d155874156733b5c5be36d6e93f7d1ce6351871[m
+Merge: a96b721 89f6832
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Mon Dec 3 17:20:52 2018 +0900
+
+    fix conflict
+
+[33mcommit c0e63df8cd30ee9be37a8a9de3684a6faafc1661[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Dec 3 16:17:09 2018 +0900
+
+    careated at problem
+
+[33mcommit a96b721033b1a1577f546e5a554bbb1725efba00[m
+Merge: c9f8b9b c2a5289
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Mon Dec 3 14:43:47 2018 +0900
+
+    fix conflict
+
+[33mcommit be7af406a42811b1405b75b2f385971b37736ca8[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Dec 3 14:16:34 2018 +0900
+
+    sort complete
+
+[33mcommit c9f8b9bdb79b3a7db2cf9b57b7b5aab5d58b35c6[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Mon Dec 3 12:56:54 2018 +0900
+
+    drawstroke
+
+[33mcommit b31dd06cd3ffd9fa231f96dce2c496374da52410[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Mon Dec 3 01:35:25 2018 +0900
+
+    pointのon/off
+
+[33mcommit b415cd2ddd2bdc44f0ab95ec371a07c20434cd7b[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Dec 3 01:02:45 2018 +0900
+
+    CategoryListFragmentのリストタップでColorPickerDialogを表示
+
+[33mcommit 75d042af7772429468ab33316ec573b6132dc765[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Mon Dec 3 00:53:05 2018 +0900
+
+    選択時のストローク
+
+[33mcommit 0b9324069fa0ac53a0693dc934f0d61e3559664c[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Mon Dec 3 00:51:31 2018 +0900
+
+    問題ありだけどエラーは出なくなったっぽい
+
+[33mcommit af6cd037e8f8c7925ff5eb381d6161e187aa5b6f[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Dec 3 00:48:36 2018 +0900
+
+    androidxへのマイグレート
+
+[33mcommit c598c262e7b7a3f51e586a35db4a2b341d598195[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Fri Nov 30 14:40:49 2018 +0900
+
+    CategoryListFragmentでRecycleViewでカテゴリのリストを表示
+
+[33mcommit 55c3c8f3d34fad643026ff6bc378a3241a35c2c9[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Fri Nov 30 14:38:33 2018 +0900
+
+    CategoryListFragmentでRecycleViewでカテゴリのリストを表示
+
+[33mcommit 21829822914342684574b60feb0aa20acbc32b6f[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Fri Nov 30 13:39:52 2018 +0900
+
+    get click point in qav
+
+[33mcommit 9893a9a91f97be44d7de4ba92d8194f23fc364a6[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Fri Nov 30 13:30:01 2018 +0900
+
+    カテゴリに色のStringを追加
+
+[33mcommit f202182543a46c66dc2f92b9154293d56da9fd13[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Nov 28 21:26:48 2018 +0900
+
+    カテゴリ選択用のリストを作成
+
+[33mcommit c2a5289c33e1f3aad031de658fe94f390f71cb6e[m
+Merge: 4eb5f79 4ed5cfe
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Nov 28 18:17:05 2018 +0900
+
+    Merge branch 'feature/mindmap' into develop
+
+[33mcommit 4ed5cfe717a19e0bd7d1dc4c5c58497153a171d7[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Nov 28 18:16:45 2018 +0900
+
+    Merge branch 'develop' into feature/mindmap
+    
+    # Conflicts:
+    #       tabiidea/.idea/misc.xml
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/fragment/TravelMindMapFragment.kt
+
+[33mcommit 7377ca5d598e0c74c5e4f55ffcd5c96e367e030c[m
+Merge: 2b2b3c3 4eb5f79
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Nov 28 18:13:12 2018 +0900
+
+    Merge branch 'develop' into feature/mindmap
+    
+    # Conflicts:
+    #       tabiidea/.idea/misc.xml
+    #       tabiidea/app/src/main/java/checkers/tabi_idea/fragment/TravelMindMapFragment.kt
+
+[33mcommit 2b2b3c3b7306605816700f1bb1fa821113db0cf3[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Nov 28 17:37:18 2018 +0900
+
+    inputFormにSpinnerを改良
+
+[33mcommit d30b1b0acc83f1549b0a3034e79235050dfdf771[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Nov 28 16:06:33 2018 +0900
+
+    inputFormにSpinnerを追加
+
+[33mcommit cf5a6c90667a83546b983959d89aa25270fde3fe[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Nov 28 15:36:57 2018 +0900
+
+    inputFormからRecyclerViewを削除
+
+[33mcommit e9d59d1b9295d7349956939f4e1ea3d1329a547a[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Nov 28 15:31:53 2018 +0900
+
+    RecyclerViewで作ってたけど、Spinnerに変えようと思います
+
+[33mcommit 4eb5f790b738b18e38c9315e082cfc3c54cf36ee[m
+Merge: 35c2829 bb15dc6
+Author: rywyr <33518361+rywyr@users.noreply.github.com>
+Date:   Tue Nov 27 16:15:16 2018 +0900
+
+    Merge pull request #89 from nussan/feature/ToolbarEdit
+    
+    Feature/toolbar edit
+
+[33mcommit bb15dc651c6e38fb5b7d7722393069ec25339819[m[33m ([m[1;31morigin/feature/ToolbarEdit[m[33m)[m
+Merge: 203aa6c 35c2829
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Tue Nov 27 16:07:53 2018 +0900
+
+    search etc
+
+[33mcommit 06450069481d750b487d68a3bd3992fd1d4677be[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Nov 27 14:30:01 2018 +0900
+
+    追加フォームのリサイクラービューのデザインを改良
+
+[33mcommit 89f6832c7a93168d3bdb17a8e117ec142ae4857d[m
+Author: izawa <p236006r@gmail.com>
+Date:   Tue Nov 27 13:36:43 2018 +0900
+
+    .から/へ変更
+
+[33mcommit 203aa6c1add383b65685ce5239c938f178d39f08[m
+Author: rywyr <rywyr@users.noreply.github.com>
+Date:   Tue Nov 27 12:53:21 2018 +0900
+
+    search func
+
+[33mcommit 972436c1a5bde740bb2d1978fda29ac45d166f7f[m
+Author: izawa <p236006r@gmail.com>
+Date:   Tue Nov 27 12:44:21 2018 +0900
+
+    joinEventの実装
+
+[33mcommit e5defc0d0db011e2092f8bb82afc80fd1a572883[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Nov 27 12:14:18 2018 +0900
+
+    Node追加時にカテゴリ選択をユニークで出来るようにした
+
+[33mcommit df3b0270694fd4141b5ced51c30a484064fd700e[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Nov 27 02:45:20 2018 +0900
+
+    Node追加時にカテゴリ選択するための雛形を作成
+
+[33mcommit 376df2a5620c33968a5fbf6345aeb9a6806bbac7[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Nov 27 01:10:37 2018 +0900
+
+    CategoryListFragmentのnewInstanceの引数をなくした
+
+[33mcommit 91a18f9b3b36165f1ef9ec8f372536f3ef7683cb[m
+Merge: eb5b951 35c2829
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Nov 27 00:33:20 2018 +0900
+
+    Merge branch 'develop' into feature/mindmap
+
+[33mcommit eb5b95128d4213feef7657f169ae84d0b63aa1f5[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Nov 27 00:27:03 2018 +0900
+
+    CategoryListFragmentにRecyclerViewを追加
+
+[33mcommit 35c2829776fef7cd12dcb4001b3d4d701cc99eac[m
+Merge: 7aa6db5 5bb3e42
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Mon Nov 26 16:55:40 2018 +0900
+
+    Merge pull request #87 from nussan/feature/action
+    
+    トークンの取得
+
+[33mcommit 5bb3e4263e80b825d0c4f5db5cfcfe416434577d[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Mon Nov 26 16:55:03 2018 +0900
+
+    トークンの取得
+
+[33mcommit 7aa6db59fe916c79e78523330f2848adfec04391[m
+Merge: 95db647 0a111c8
+Author: nussan <nussan1996water@gmail.com>
+Date:   Mon Nov 26 16:42:04 2018 +0900
+
+    Merge pull request #86 from nussan/revert-85-feature/action
+    
+    Revert "add tokenService"
+
+[33mcommit 0a111c88a33b51ca018054a48a36aa75fa0f17a0[m
+Author: nussan <nussan1996water@gmail.com>
+Date:   Mon Nov 26 16:41:51 2018 +0900
+
+    Revert "add tokenService"
+
+[33mcommit 333fea87c8128bf8cd04edceca20581d8724adce[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Nov 26 16:15:04 2018 +0900
+
+    database syori
+
+[33mcommit f85c36487db00dd48a9886c20d1ecac512e7bfaa[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Nov 26 14:39:51 2018 +0900
+
+    fb mock create
+
+[33mcommit c3f9c9182e8a952b1f012fde03a918921644e09e[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Nov 26 14:06:40 2018 +0900
+
+    modi
+
+[33mcommit e30255d65ade34a4539c5527425463177724a50f[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Nov 26 13:50:41 2018 +0900
+
+    user icon
+
+[33mcommit 95db647ec8e11f2d541cdb4a0199ebea6862d977[m
+Merge: 16f0f22 0ed1aab
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Mon Nov 26 13:30:41 2018 +0900
+
+    Merge pull request #85 from nussan/feature/action
+    
+    add tokenService
+
+[33mcommit 0ed1aabb2cb8e273510dbb7c672ae4babebf6c44[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Mon Nov 26 13:29:14 2018 +0900
+
+    add tokenService
+
+[33mcommit 31275693637a6288393f3f218b6bf05731188cd6[m
+Merge: 5652534 acaaf6a
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Nov 26 13:06:15 2018 +0900
+
+    Merge branch 'feature/ToolbarEdit' of https://github.com/nussan/tabi-idea into feature/ToolbarEdit
+
+[33mcommit 5652534e842ad1a92661f761c0a2ce63a50d646f[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Nov 26 13:05:58 2018 +0900
+
+    dfsdsd
+
+[33mcommit acaaf6a57df571b36e6b2dd7ea0b7029d99934d6[m
+Author: rywyr <rywyr@users.noreply.github.com>
+Date:   Mon Nov 26 01:14:59 2018 +0900
+
+    change
+
+[33mcommit 1282b2ab39144fd5cf49ce39937591538ff54c81[m
+Merge: b9b5b12 16f0f22
+Author: rywyr <rywyr@users.noreply.github.com>
+Date:   Sun Nov 25 00:44:05 2018 +0900
+
+    ss
+
+[33mcommit e6b1c371386d0366cd56f1d6023a3f58263dd1d3[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Sat Nov 24 01:04:52 2018 +0900
+
+    カテゴリの一覧を表示するためのフラグメント作成
+
+[33mcommit b9b5b126e61cc1111125856638c30dfe85b5dabc[m
+Author: rywyr <rywyr@users.noreply.github.com>
+Date:   Fri Nov 23 14:15:34 2018 +0900
+
+    rrr
+
+[33mcommit 16f0f22be2bc8337bf9f538fe8e97dab9e5ed719[m
+Merge: a19398e b3ac5e6
+Author: rywyr <33518361+rywyr@users.noreply.github.com>
+Date:   Thu Nov 22 13:28:54 2018 +0900
+
+    Merge pull request #84 from nussan/feature/action
+    
+    トークン問題の一部を解決
+
+[33mcommit b3ac5e695241a1cac602054df1e38fe24a72c2d5[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Nov 22 13:24:09 2018 +0900
+
+    トークン問題の一部を解決
+
+[33mcommit a19398e2d5bb8d0eca02713fc7598e74c5deca22[m
+Merge: 4c46039 6198fc3
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Thu Nov 22 12:57:15 2018 +0900
+
+    Merge pull request #83 from nussan/feature/action
+    
+    Feature/action
+
+[33mcommit 6198fc34a49f2750154e25c4af533b219add8dd7[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Nov 22 12:55:36 2018 +0900
+
+    ちょっとエラー直しました
+
+[33mcommit 3533c1678aaea199e7502e1a1d8ec4ff99551ca5[m
+Merge: 5c88414 4c46039
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Nov 22 12:50:08 2018 +0900
+
+    fix conflict
+
+[33mcommit 5c8841494d5fd4ec2996fff07cebb72332c1b5c9[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Nov 22 12:27:48 2018 +0900
+
+    onLikeSelected
+
+[33mcommit 7b91e1a00b2a29de5f26d90ae98d29d8090c5ccd[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Nov 22 12:24:15 2018 +0900
+
+    前に戻れた
+
+[33mcommit 4c46039493eb13b4913abf2b1359432f839dec2f[m
+Merge: 60a2910 1795661
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Thu Nov 22 11:06:16 2018 +0900
+
+    Merge pull request #82 from nussan/feature/action
+    
+    Feature/action
+
+[33mcommit 179566119951dcf29a496c5f86298b5f5c7db7f8[m
+Merge: caad540 60a2910
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Thu Nov 22 11:06:04 2018 +0900
+
+    Merge branch 'develop' into feature/action
+
+[33mcommit caad5404b87966f0833582ebf66d837f455923bb[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Nov 22 11:03:11 2018 +0900
+
+    add request Header
+
+[33mcommit 5fbba8aae1a442954b9970bfb1ba930924d270f9[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Wed Nov 21 16:41:58 2018 +0900
+
+    エディットのみ可能
+
+[33mcommit 60a2910ef8c972416595b1f0ca06432b2e70065b[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Wed Nov 21 16:25:37 2018 +0900
+
+    conflict sumimasen
+
+[33mcommit ef9309ac9b16447c54732618da7db74f83e85a42[m
+Merge: ca5b930 d690644
+Author: rywyr <33518361+rywyr@users.noreply.github.com>
+Date:   Wed Nov 21 16:20:25 2018 +0900
+
+    Merge pull request #80 from nussan/feature/EventDesignMOD
+    
+    Feature/event design mod
+
+[33mcommit d690644bc75862f66efa5eb496e079174f7b2312[m
+Merge: aa8ec90 ca5b930
+Author: rywyr <33518361+rywyr@users.noreply.github.com>
+Date:   Wed Nov 21 16:20:11 2018 +0900
+
+    Merge branch 'develop' into feature/EventDesignMOD
+
+[33mcommit aa8ec90822a01abce487b002ab5e825b41fbaa61[m[33m ([m[1;31morigin/feature/EventDesignMOD[m[33m)[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Wed Nov 21 16:12:05 2018 +0900
+
+    eventListFragment delete some fab
+
+[33mcommit 5faf958323b015cd13ef630ae1bcf629b7802ca7[m
+Merge: e449244 ca5b930
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Wed Nov 21 15:48:51 2018 +0900
+
+    fix conflict
+
+[33mcommit e449244ed6d3d57521cf17f4c9ac6e4c7dc0c84d[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Wed Nov 21 15:46:26 2018 +0900
+
+    add token to  User.class
+
+[33mcommit 25ed22ce612a57e34b872f0eeb96482fbd03d698[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Wed Nov 21 15:44:35 2018 +0900
+
+    toolbar function
+
+[33mcommit ca5b930de0103c7d0dc009de9ad6e86b82f57a1f[m
+Merge: 64ad270 d9cf3e8
+Author: nussan <nussan1996water@gmail.com>
+Date:   Tue Nov 20 19:42:21 2018 +0900
+
+    Merge pull request #79 from nussan/feature/mindmap
+    
+    Feature/mindmap
+
+[33mcommit d9cf3e89df9ca2bbf5ae73687fc57f0f221955ec[m
+Merge: 3f1da92 64ad270
+Author: nussan <nussan1996water@gmail.com>
+Date:   Tue Nov 20 19:42:10 2018 +0900
+
+    Merge branch 'develop' into feature/mindmap
+
+[33mcommit 3f1da92bd0fbdcfe0537ac720f6caa6201491279[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Nov 20 19:33:38 2018 +0900
+
+    joinEventできるようになった(修正)
+
+[33mcommit 87ff2dc245846dd19d5e772fd84329d2fba3dd0c[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Nov 20 19:05:21 2018 +0900
+
+    joinEventできるようになった
+
+[33mcommit 75123844d62fa3863b52902708dc148111a5c685[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Nov 20 17:56:42 2018 +0900
+
+    onCreateでintentの判定をしてURL取得
+
+[33mcommit e92b5aba3a6f054bd2fa8e1bc30b4ad522e627f4[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Nov 20 17:49:50 2018 +0900
+
+    http://bit.ly/*　であぷりがきどうできるようになりました
+
+[33mcommit 0e9309a265d3d6594a5f41471b9f0d14850c3401[m
+Author: 大学ryw <ginntama1996@hotmail.co.jp>
+Date:   Tue Nov 20 17:44:10 2018 +0900
+
+    border
+
+[33mcommit 64ad270c995580f3a730934e836bd99cba568374[m
+Merge: a82c1e7 28bff49
+Author: rywyr <33518361+rywyr@users.noreply.github.com>
+Date:   Mon Nov 19 13:22:08 2018 +0900
+
+    Merge pull request #78 from nussan/feature/eventIcon
+    
+    Feature/event icon
+
+[33mcommit a82c1e75fed81a1cca8a232f236adee5608ddb22[m
+Merge: ff7a001 8415934
+Author: rywyr <33518361+rywyr@users.noreply.github.com>
+Date:   Mon Nov 19 13:21:19 2018 +0900
+
+    Merge pull request #77 from nussan/feature/action
+    
+    deleteEventの実装
+
+[33mcommit 28bff491b92faf902a92a96db5871cdacc26c674[m[33m ([m[1;31morigin/feature/eventIcon[m[33m)[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Nov 19 13:15:12 2018 +0900
+
+    modeif
+
+[33mcommit ec5e40889d70405f97c23d648634864d5a55fbbe[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Nov 19 13:03:54 2018 +0900
+
+    finish
+
+[33mcommit ec7cc60aefff99e3a766753e82ef3dfa8d207105[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Sun Nov 18 17:50:39 2018 +0900
+
+    スケール中心を変更
+
+[33mcommit ba59551b6af4219372be1d93d2173bc02bc1de38[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Sun Nov 18 17:30:47 2018 +0900
+
+    テキストが長いときに、テキストが省略されるように変更。
+    
+    また、RoundRectTextViewを正方形ベースでなくした。
+
+[33mcommit e717fb7644ab03b29669a0a67fe18f715683b5ff[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Fri Nov 16 17:49:03 2018 +0900
+
+    移動量によりロングプレスをキャンセルするように変更
+
+[33mcommit 84159346d840012e386a5a2fa709f4f05d44c229[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Fri Nov 16 15:51:56 2018 +0900
+
+    deleteEventの実装
+
+[33mcommit 79de328292e1afd24cf6514ac7c6006297bc9a49[m
+Author: 大学ryw <ginntama1996@hotmail.co.jp>
+Date:   Fri Nov 16 15:03:00 2018 +0900
+
+    erroe
+
+[33mcommit 1e2136f596f61bdc57e37fc4503f57ba454dd660[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Fri Nov 16 12:51:32 2018 +0900
+
+    icon complete kari
+
+[33mcommit ff7a001633dce96b2658a1e9c65e94022274d433[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Nov 15 14:26:18 2018 +0900
+
+    fix
+
+[33mcommit ecc23b623150c1212603ccc60e7ee59081675890[m
+Merge: 613ee50 9cbb89e
+Author: nussan <nussan1996water@gmail.com>
+Date:   Thu Nov 15 14:21:24 2018 +0900
+
+    Merge pull request #76 from nussan/feature/action
+    
+    QuickActionViewで実装しました
+
+[33mcommit 9cbb89e2b0854c5a17402bddd8bed315b8c59731[m
+Merge: e97c20f 613ee50
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Thu Nov 15 12:31:37 2018 +0900
+
+    Merge branch 'develop' into feature/action
+
+[33mcommit e97c20ffca4c5f5b0c207317fc03853df46e1fda[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Nov 15 12:04:07 2018 +0900
+
+    QuickActionViewで実装しました
+
+[33mcommit 613ee508ded73229141a02c9db5ae0e0ca907b8c[m
+Merge: 7cddf77 6418950
+Author: nussan <nussan1996water@gmail.com>
+Date:   Thu Nov 15 04:54:37 2018 +0900
+
+    Merge pull request #75 from nussan/fix
+    
+    Fix
+
+[33mcommit 641895083083a98697876aadd03c4c530d6d6d4b[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Nov 15 04:47:30 2018 +0900
+
+    QuickActionさらに一部修正
+
+[33mcommit 805256c7e0e0526dadb2885b92bcf14c18190874[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Nov 15 02:10:38 2018 +0900
+
+    QuickAction一部修正
+
+[33mcommit 7cddf778528e7ebf4250a74be7cec48dd0ace19f[m
+Merge: 45f4da6 30d87cd
+Author: nussan <nussan1996water@gmail.com>
+Date:   Thu Nov 15 02:02:47 2018 +0900
+
+    Merge pull request #74 from nussan/fix
+    
+    QuickActionの諸問題を解決
+
+[33mcommit 30d87cd604dfd4e8aa55cdd41d8ed66e6e72bb99[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Nov 15 01:33:18 2018 +0900
+
+    QuickActionの諸問題を解決
+
+[33mcommit c1b76d82bceeaf8cbd410c71f272265858ff4f0b[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Wed Nov 14 18:50:17 2018 +0900
+
+    icon change
+
+[33mcommit 45f4da62e5d4736067194b1a7132099bd279184e[m
+Merge: 1e09a05 9a36c67
+Author: nussan <nussan1996water@gmail.com>
+Date:   Wed Nov 14 17:36:55 2018 +0900
+
+    Merge pull request #73 from nussan/feature/action
+    
+    Feature/action
+
+[33mcommit 9a36c67dd7541c86db8ae896f097108e4bfb672f[m
+Merge: 048b269 1e09a05
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Wed Nov 14 17:27:18 2018 +0900
+
+    Merge branch 'develop' into feature/action
+
+[33mcommit 048b269c45b66c47e40903425c2cadc6a600ba28[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Wed Nov 14 17:25:32 2018 +0900
+
+    implements QuickAction
+
+[33mcommit 94576ad7165c5c28f6b035f57f1c4e23fcc3b1cc[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Wed Nov 14 16:57:57 2018 +0900
+
+    capital image
+
+[33mcommit 1e09a05cf561df4ef739ebff9f8f35f2e08222bd[m
+Merge: 1872c22 31dd6f6
+Author: rywyr <33518361+rywyr@users.noreply.github.com>
+Date:   Wed Nov 14 13:20:05 2018 +0900
+
+    Merge pull request #72 from nussan/feature/eventScreenMOD
+    
+    Feature/event screen mod
+
+[33mcommit 31dd6f6e744f1563af94eee6e19a9f6760c57d37[m
+Merge: cc73c13 1872c22
+Author: rywyr <33518361+rywyr@users.noreply.github.com>
+Date:   Wed Nov 14 13:19:56 2018 +0900
+
+    Merge branch 'develop' into feature/eventScreenMOD
+
+[33mcommit cc73c13df0540b5a97719c63754b77fb690d2dec[m[33m ([m[1;31morigin/feature/eventScreenMOD[m[33m)[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Wed Nov 14 13:13:47 2018 +0900
+
+    add file grouping
+
+[33mcommit 1872c22ffd2c40fb230b7d4fbd1fafc3a0d896f1[m
+Merge: 371ff43 98edc58
+Author: nussan <nussan1996water@gmail.com>
+Date:   Wed Nov 14 13:00:25 2018 +0900
+
+    Merge pull request #71 from nussan/icon
+    
+    Icon
+
+[33mcommit 98edc58363dcd3b3a0b6a5d27f2474cba7df131c[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Nov 14 12:58:38 2018 +0900
+
+    アプリのアイコンを変更
+
+[33mcommit 19c6cb0869093748098d0432b14a5b890efb8289[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Wed Nov 14 12:35:37 2018 +0900
+
+    modifier
+
+[33mcommit 750eea4e72415ddf8f0716234c0747932dd7878d[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Wed Nov 14 11:52:18 2018 +0900
+
+    implements QuickAction
+
+[33mcommit 754d9b3c8c4714313b60aa223247b468f8cc5e5f[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Nov 14 00:02:12 2018 +0900
+
+    大きなビューを含むときにスケーリングを行うとずれていた問題を修正
+
+[33mcommit 371ff43d37b325b29bf46221edb820db77af6d73[m
+Merge: 86bd251 1e4b816
+Author: nussan <nussan1996water@gmail.com>
+Date:   Tue Nov 13 23:46:17 2018 +0900
+
+    Merge pull request #69 from nussan/fix
+    
+    リサイクラービューのheightを修正
+
+[33mcommit 1e4b8169bc443d7fbd287554422baa733914196f[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Nov 13 23:45:08 2018 +0900
+
+    リサイクラービューのheightを修正
+
+[33mcommit ed0522144dc702c680c72ca455bdab02f0454569[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Tue Nov 13 16:15:29 2018 +0900
+
+    modefi
+
+[33mcommit b4fefdfd5d7ece082540b4641a495e27224406dc[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Tue Nov 13 14:29:13 2018 +0900
+
+    QuickActionViewの導入
+
+[33mcommit 86bd2519c962ce5cbd14eb5ea3d8a9de75bfbf2e[m
+Merge: e201cf0 3d7fb25
+Author: rywyr <33518361+rywyr@users.noreply.github.com>
+Date:   Tue Nov 13 13:26:08 2018 +0900
+
+    Merge pull request #68 from nussan/feature/eventScreenDesign
+    
+    Feature/event screen design
+
+[33mcommit 3d7fb25eccf16f9cc0876a84548072d24420c7df[m
+Merge: f1e7075 e201cf0
+Author: rywyr <33518361+rywyr@users.noreply.github.com>
+Date:   Tue Nov 13 13:25:59 2018 +0900
+
+    Merge branch 'develop' into feature/eventScreenDesign
+
+[33mcommit f1e707564d1e7254e40dffdb1ab95c78d6d62894[m[33m ([m[1;31morigin/feature/eventScreenDesign[m[33m)[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Tue Nov 13 13:18:01 2018 +0900
+
+    event delete function complete temp
+
+[33mcommit bd64d41b8ba6a6347d0bfc711d680afea4bd2770[m
+Author: 大学ryw <ginntama1996@hotmail.co.jp>
+Date:   Tue Nov 13 11:36:21 2018 +0900
+
+    SwipeToDeleteCallback1
+
+[33mcommit d3903b5effa68dd7c2f20869a34e3130315179b7[m
+Merge: d792394 e201cf0
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Tue Nov 13 10:54:48 2018 +0900
+
+    fixed conflict
+
+[33mcommit d792394b8d2724e8d537564b9ccdd3cac83a80fa[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Tue Nov 13 10:50:44 2018 +0900
+
+    implements joinEvent
+
+[33mcommit 300eaf9d56f5d90ff3d3ba20725b4fe09490ff72[m
+Merge: 0bcb3ba faf0159
+Author: 大学ryw <ginntama1996@hotmail.co.jp>
+Date:   Tue Nov 13 10:47:17 2018 +0900
+
+    Merge branch 'feature/eventScreenDesign' of https://github.com/nussan/tabi-idea into develop
+
+[33mcommit 0bcb3bae0d83bb4923cd21d51eff7090c294fb6f[m
+Author: 大学ryw <ginntama1996@hotmail.co.jp>
+Date:   Tue Nov 13 10:47:12 2018 +0900
+
+    asdas
+
+[33mcommit faf0159885bfc12ac6df4d0895b441231b508002[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Tue Nov 13 10:22:54 2018 +0900
+
+    modifier
+
+[33mcommit e201cf0c1a8dd29dd080b75d38710a50758684af[m
+Merge: 7597b20 28ee8d5
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Tue Nov 13 10:16:20 2018 +0900
+
+    Merge pull request #66 from nussan/feature/mindmap
+    
+    Feature/mindmap
+
+[33mcommit 28ee8d5b4071bfacba5542c02f2685168e68d277[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Nov 13 02:58:51 2018 +0900
+
+    LongPressが反応するように修正
+
+[33mcommit bff1eaf8f58903fb215ceb48f845287f3aeda333[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Nov 13 02:32:10 2018 +0900
+
+    2つのノードを同時に動かそうとしたときにぶっ飛ぶ問題を解決
+
+[33mcommit 7c86ebb8bb1eeeb892efeaffd3094f2edb3a4eda[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Nov 13 02:00:22 2018 +0900
+
+    編集できるようにした
+
+[33mcommit 7087b46b7b5fdfea45217db0347e739565140804[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Nov 13 01:16:41 2018 +0900
+
+    移動中にロングプレス判定にならないようにした
+
+[33mcommit 40aea4c04b8a36f6f854418a6b18f037b7abb076[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Nov 12 22:39:52 2018 +0900
+
+    ルートノードを削除できないようにした
+
+[33mcommit d9e760288634c7b319645258b052ff3ce6733ca8[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Nov 12 22:28:45 2018 +0900
+
+    ノードを削除したときにdrawLines(TravelMindMapFragment)でエラーが出ないようにした
+
+[33mcommit d713e961ab62cd4f888e7fe0c1d463cd4d586034[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.j>
+Date:   Mon Nov 12 22:23:06 2018 +0900
+
+    parentがnullのときに線を描画しないようにすることで対処した
+
+[33mcommit 2eeb45cf9aa7faff0834d96cef919f5b9d5eafff[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Nov 12 22:20:25 2018 +0900
+
+    親の情報と取れるように、MindMapObjectのparentを変更した
+    
+    イベント作成してすぐにTravelMindMapFragmentに以降するとエラーが発生する
+
+[33mcommit 45fcc65f7352cd0293fbab959e12f01716be2916[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Nov 12 21:05:46 2018 +0900
+
+    削除機能を追加した
+    
+    その代償として親の情報がとれなくなった
+
+[33mcommit d8921d82d8c90aedf53f11410d33cf9226eb601a[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Nov 12 16:05:20 2018 +0900
+
+    design
+
+[33mcommit 8fe47d9a3dcfeab43747321a29d58e616b2dc2b0[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Nov 12 15:13:45 2018 +0900
+
+    TravelMindMapFragmentのドラッグイベントで削除が選択された場合の処理を追加
+
+[33mcommit de39a11867f24df6cfe378afd19bdad6484e93eb[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Nov 12 15:12:37 2018 +0900
+
+    FirebaseApiClientにdeleteMmoを追加
+
+[33mcommit ac1ebed9e56535117f2f4fa80af7fe0df415a098[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Nov 12 14:48:46 2018 +0900
+
+    使わなくなったOwnPageFragmentを削除
+
+[33mcommit 7597b20bc0cc36f647331b3e7d3c32d9fde2c549[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Nov 12 12:27:57 2018 +0900
+
+    bug fixes
+
+[33mcommit 732e9c46a0103a11b2421f1e436d917415c8a10d[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Nov 12 12:18:15 2018 +0900
+
+    EventListFragmentの変数名を修正
+
+[33mcommit 59464cc7a468e0313f54fc53f0b911f82dfe21c2[m
+Merge: 729b959 b7c1acb
+Author: rywyr <33518361+rywyr@users.noreply.github.com>
+Date:   Mon Nov 12 12:12:40 2018 +0900
+
+    Merge pull request #63 from nussan/feature/eventCreate
+    
+    event add function
+
+[33mcommit 729b95986d358e1af2c2bc6e13d3560612182a7f[m
+Merge: b35adfa 42f7ac3
+Author: rywyr <33518361+rywyr@users.noreply.github.com>
+Date:   Mon Nov 12 12:12:16 2018 +0900
+
+    Merge pull request #62 from nussan/feature/nameEdit
+    
+    Feature/name edit
+
+[33mcommit b35adfa2416a2e5a670dfc60572c4be5275b8768[m
+Merge: 6791247 195757c
+Author: nussan <nussan1996water@gmail.com>
+Date:   Mon Nov 12 12:09:05 2018 +0900
+
+    Merge pull request #61 from nussan/feature/mindmap
+    
+    Feature/mindmap
+
+[33mcommit 195757cc99441db7898355e88b67a3337d046ee5[m
+Merge: eca3e36 6791247
+Author: nussan <nussan1996water@gmail.com>
+Date:   Mon Nov 12 12:08:52 2018 +0900
+
+    Merge branch 'develop' into feature/mindmap
+
+[33mcommit b7c1acb38bdc501e62fff4f8da60f1064cddc984[m[33m ([m[1;31morigin/feature/eventCreate[m[33m)[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Nov 12 12:05:44 2018 +0900
+
+    event add function
+
+[33mcommit 42f7ac3a5374b75ae05c5f82fe2ca2ac6dec09cc[m[33m ([m[1;31morigin/feature/nameEdit[m[33m)[m
+Merge: a7469c4 6487f15
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Nov 12 11:24:33 2018 +0900
+
+    name edit function complete
+
+[33mcommit 6487f15f05b5fa6340bf0d172df45746fd8d79ba[m
+Author: 大学ryw <ginntama1996@hotmail.co.jp>
+Date:   Mon Nov 12 11:05:28 2018 +0900
+
+    name edit error reborn
+
+[33mcommit a7469c4103b415965e6433a253f2bc2b90a37d34[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Nov 12 11:05:12 2018 +0900
+
+    modeifir
+
+[33mcommit eca3e36bb0f5faf7820d6aefd56b6fb7dac4bb7c[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Nov 12 01:14:50 2018 +0900
+
+    追加時と編集時にテキストを編集できるように(戻)した
+
+[33mcommit 5c871209173a4e83ea7271a6b2e2cc4db9d62f22[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Nov 12 01:14:15 2018 +0900
+
+    新しいノード(RoundRectTextView)を追加時にアニメーションを行うようにした
+
+[33mcommit 2e64754ad57735072c165c2a77bf1b57a70f0ddc[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Sun Nov 11 16:16:13 2018 +0900
+
+    拡大・縮小時に追加すると位置がずれていた問題を解決
+
+[33mcommit 7413945741d840508cec06d456d56687e32b510c[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Sun Nov 11 15:34:40 2018 +0900
+
+    各ノードの移動において、拡大・縮小時に抱えていた問題を解決しました。
+
+[33mcommit 2c9461143d806bbe1a9df9eeca09100b41aea742[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Sat Nov 10 23:34:15 2018 +0900
+
+    modify the way of zoom
+    
+    There is still some bugs.
+
+[33mcommit 23dbcedf7583e10bb7883cda1f06bf75143e6b2a[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Sat Nov 10 22:22:47 2018 +0900
+
+    fix lateinit bug
+
+[33mcommit 47be4e652ed88fa7d764da54a50589af18dbc4c0[m
+Merge: 91cccc7 6791247
+Author: 大学ryw <ginntama1996@hotmail.co.jp>
+Date:   Sat Nov 10 19:00:46 2018 +0900
+
+    conflict resolve
+
+[33mcommit 91cccc713a573cfb6688278b712a4eba7ee87805[m
+Author: 大学ryw <ginntama1996@hotmail.co.jp>
+Date:   Sat Nov 10 16:12:49 2018 +0900
+
+    miss
+
+[33mcommit 6791247dac48a13da38f00ae7df7a1e13697661c[m
+Merge: b8933c1 6b911d1
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Sat Nov 10 16:02:24 2018 +0900
+
+    Merge pull request #53 from nussan/feature/api
+    
+    implements fab
+
+[33mcommit 6b911d1f8a12bee8783aa1a3c74d95422bb4e611[m
+Merge: b5c9bb1 b8933c1
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Sat Nov 10 16:02:16 2018 +0900
+
+    Merge branch 'develop' into feature/api
+
+[33mcommit b8933c1371e379a7605eb1fd39021d4a74173ca4[m
+Merge: aba0bd9 c02b2f8
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Sat Nov 10 16:01:16 2018 +0900
+
+    Merge pull request #54 from nussan/design
+    
+    Design
+
+[33mcommit b5c9bb19f69df72cd7e6de8cb8767f69752fcd50[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Sat Nov 10 15:58:51 2018 +0900
+
+    implements fab
+
+[33mcommit c02b2f8a131ed2478f4857c1e1749862d193c244[m
+Author: 大学ryw <ginntama1996@hotmail.co.jp>
+Date:   Sat Nov 10 13:09:43 2018 +0900
+
+    change color
+
+[33mcommit 3d99606208052afb8c4045824157553366df5b5e[m
+Merge: ad1323f 5e3dffc
+Author: 大学ryw <ginntama1996@hotmail.co.jp>
+Date:   Sat Nov 10 10:06:43 2018 +0900
+
+    sdasda
+
+[33mcommit ad1323fbe86a1c3fd6c45e62bfc213f800df2f9a[m
+Author: 大学ryw <ginntama1996@hotmail.co.jp>
+Date:   Sat Nov 10 10:03:27 2018 +0900
+
+    toriaezu
+
+[33mcommit 5e3dffc05a03b5f34aefbdb20ec6de4f9f850b6a[m[33m ([m[1;31morigin/feature/HomeCircle[m[33m)[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Fri Nov 9 16:19:34 2018 +0900
+
+    imageView add
+
+[33mcommit 803acb7de9f094f116385486216e9ea85c2a5530[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Fri Nov 9 12:44:04 2018 +0900
+
+    add RoundRectVIew
+
+[33mcommit f84313ba1424f450add9c9b2214751318ee53616[m
+Merge: c4617cb aba0bd9
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Fri Nov 9 12:34:43 2018 +0900
+
+    Merge branch 'develop' of https://github.com/nussan/tabi-idea into feature/HomeCircle
+
+[33mcommit aba0bd99f7f42cf28e30ee500b8ba4a5818967fb[m
+Merge: 98c5a3d dfd0b95
+Author: nussan <nussan1996water@gmail.com>
+Date:   Thu Nov 8 18:40:18 2018 +0900
+
+    Merge pull request #52 from nussan/feature/api2
+    
+    fix some bugs
+
+[33mcommit dfd0b95cdd3eb483d3d033cd332468e42708a7fe[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Nov 8 17:47:27 2018 +0900
+
+    fix some bugs
+
+[33mcommit 98c5a3da5e04e859ba127fb43288eccb8a6f6c50[m
+Merge: 0d03eff 322feee
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Wed Nov 7 16:01:03 2018 +0900
+
+    Merge pull request #51 from nussan/feature/api
+    
+    Feature/api
+
+[33mcommit 322feee149012704423ed7795bfcc461c5422843[m
+Merge: bb895ae 0d03eff
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Wed Nov 7 15:58:27 2018 +0900
+
+    mmoListener
+
+[33mcommit c4617cbab265e74aceb408f526741ffbf81f1696[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Wed Nov 7 15:46:47 2018 +0900
+
+    1107:LAB:modeifi
+
+[33mcommit 0d03effbad07487ad4e701749bb35eebcb13d71f[m
+Merge: ae5031b 488203d
+Author: nussan <nussan1996water@gmail.com>
+Date:   Mon Nov 5 17:36:50 2018 +0900
+
+    Merge pull request #49 from nussan/feature/design
+    
+    Feature/design
+
+[33mcommit 488203d493f6a09a7b9ffefdd9068accac1d6ba6[m
+Merge: 9d693d5 ae5031b
+Author: nussan <nussan1996water@gmail.com>
+Date:   Mon Nov 5 17:36:40 2018 +0900
+
+    Merge branch 'develop' into feature/design
+
+[33mcommit ae5031bed0b06f4ce93681925c626dedcec20dfe[m
+Merge: c6eaeed daf01b9
+Author: nussan <nussan1996water@gmail.com>
+Date:   Mon Nov 5 17:35:07 2018 +0900
+
+    Merge pull request #50 from nussan/feature/mindmap
+    
+    Feature/mindmap
+
+[33mcommit 4967fc7ea6f3ba50cfed079dc780a72e1898b79d[m
+Merge: 7d07572 0d03eff
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Nov 5 17:34:41 2018 +0900
+
+    Merge branch 'develop' of https://github.com/nussan/tabi-idea into develop
+
+[33mcommit daf01b9d1e63a56a9c3c88d1d2a28011b0eae2a3[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Nov 5 17:33:53 2018 +0900
+
+    implement the function of updating mmo only on server
+
+[33mcommit 9d693d504cc6a41907dc75a38bb24762ed419f5f[m[33m ([m[1;31morigin/feature/design[m[33m)[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Mon Nov 5 17:15:55 2018 +0900
+
+    ホーム画面のデザイン変更
+
+[33mcommit cce5d314272e4a446c12801710ce6ae4e45d9f5e[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Fri Nov 2 17:39:17 2018 +0900
+
+    watanabe best selection
+
+[33mcommit 828d11b16e4557f988a4609e2fcd7faa7751951c[m
+Merge: d1e00b7 c6eaeed
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Fri Nov 2 17:33:03 2018 +0900
+
+    Merge branch 'develop' of https://github.com/nussan/tabi-idea into escape
+
+[33mcommit d1e00b73ec363365f0ee2271bc62ef6e2f50ff5e[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Fri Nov 2 17:09:02 2018 +0900
+
+    エラー
+
+[33mcommit 9c87f9afd76d249e6929dbd6229989cdeb77e93f[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Nov 1 17:58:26 2018 +0900
+
+    implement the function of update mmo on Firebase
+
+[33mcommit bb895aeec9316fccdddda63b3086f310b6c71316[m[33m ([m[1;31morigin/feature/api[m[33m)[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Nov 1 14:14:39 2018 +0900
+
+    fixed conflict
+
+[33mcommit c6eaeedb753fb11915eaf49897704a5fa0f75c14[m
+Merge: 565366b b8463d9
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Thu Nov 1 14:12:27 2018 +0900
+
+    Merge pull request #48 from nussan/feature/api
+    
+    Feature/api
+
+[33mcommit b8463d9c8342ccf65773fc95b612d52cf6f1e983[m
+Merge: 021477e 565366b
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Thu Nov 1 14:12:20 2018 +0900
+
+    Merge branch 'develop' into feature/api
+
+[33mcommit 021477e640481a126c9a0c2b2d51a61f696d926a[m
+Merge: 74f8f4a 5f4479b
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Nov 1 13:43:28 2018 +0900
+
+    fix
+
+[33mcommit 565366b226f7c36ec90aa500399f8459323fc70d[m[33m ([m[1;31morigin/feature/mindmap[m[33m)[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Nov 1 13:23:54 2018 +0900
+
+    fix the bug which occurs when zoomed
+
+[33mcommit 74f8f4a3df6309bd1484d486af8af466985449fd[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Nov 1 12:12:35 2018 +0900
+
+    modified getMmo
+
+[33mcommit 1dfa41393732733fd0d243e496b2b6cf260324d6[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Nov 1 02:04:29 2018 +0900
+
+    implement the function of adding view to where users tap
+
+[33mcommit 7d075722f7d88af53137214b63c3d65580638a04[m
+Merge: 4b015ec d32669d
+Author: rywyr <33518361+rywyr@users.noreply.github.com>
+Date:   Wed Oct 31 15:31:02 2018 +0900
+
+    Merge pull request #44 from nussan/design
+    
+    Design
+
+[33mcommit d32669d2c78dcf3a30e8400bfa4d6b2cb6ac5b15[m[33m ([m[1;31morigin/design[m[33m)[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Wed Oct 31 15:14:25 2018 +0900
+
+    ホーム画面の削除
+
+[33mcommit fe234a7a74b1c34fa77a1509c81fdb3038f970e6[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Oct 31 00:01:09 2018 +0900
+
+    implement the function of drag on TravelMindMapFragment
+
+[33mcommit a7073d0152745ffb9acb9f022eefdf1fd9d6cae7[m
+Author: rywyr <ginntama1996@hotmail.co.jp>
+Date:   Tue Oct 30 15:52:46 2018 +0900
+
+    ユーザーページ削除
+
+[33mcommit 5f4479b574d16415d718ec1c3446513e92b58bc8[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Oct 30 15:22:23 2018 +0900
+
+    refactor TravelMindMapFragment
+
+[33mcommit 8a2ff98977693a387ab83d07d8817515da84ce92[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Oct 30 15:22:04 2018 +0900
+
+    implement the function to zoom when double tapped
+
+[33mcommit 1fb7f0144a65ee629938a3851b857f2cf7c799e8[m
+Merge: 5aa473e 4b015ec
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Tue Oct 30 14:40:09 2018 +0900
+
+    fixed conflict
+
+[33mcommit 4b015ec1e858faac4ceb7e23249710264aa8d94f[m
+Merge: 66a35c8 b740ae7
+Author: nussan <nussan1996water@gmail.com>
+Date:   Tue Oct 30 09:22:42 2018 +0900
+
+    Merge pull request #41 from nussan/feature/mindmap
+    
+    Feature/mindmap
+
+[33mcommit b740ae781aa423231c59b32272b5805080914407[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Oct 30 09:12:27 2018 +0900
+
+    fix
+
+[33mcommit eacb0e48414e8400d86a524578999dd1efa54b2b[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Oct 30 00:19:50 2018 +0900
+
+    refactor and delete what is not needed
+
+[33mcommit bed66cffe39557a88d090dbae51b0c1a6133ccee[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Oct 29 21:32:22 2018 +0900
+
+    When layout is double tapped, modify so that no unmanaged action occurs
+
+[33mcommit 11b0aae7bca8f71a2c6f7a6bd7724cfee5d3801c[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Oct 29 21:32:04 2018 +0900
+
+    modify
+
+[33mcommit 5aa473e6cff06534123a3cc1e9a5d568638515e4[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Mon Oct 29 12:30:25 2018 +0900
+
+    fixed conflict
+
+[33mcommit 66a35c83e03a77030eb2d3f47b6495f5b3f8aed0[m
+Merge: 2fac944 4566219
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Mon Oct 29 11:36:59 2018 +0900
+
+    Merge pull request #40 from nussan/feature/api
+    
+    add password to Event Class
+
+[33mcommit 45662194c56bc7d27acf70409408583b8500f9e4[m
+Merge: c389ced 2fac944
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Mon Oct 29 11:36:50 2018 +0900
+
+    Merge branch 'develop' into feature/api
+
+[33mcommit c389cedd62b9a7434557b9cac8e33d30e3280c91[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Mon Oct 29 11:34:13 2018 +0900
+
+    add password to Event Class
+
+[33mcommit 2fac944c1e0c62553ec24ad7f1b0811853764afd[m
+Merge: dc2b4e9 383a9b0
+Author: nussan <nussan1996water@gmail.com>
+Date:   Mon Oct 29 11:14:08 2018 +0900
+
+    Merge pull request #39 from nussan/feature/mind_map
+    
+    Feature/mind map
+
+[33mcommit 383a9b07a4f0f5fda0f0600a5cbce33f1848cf79[m
+Merge: 1b173a9 dc2b4e9
+Author: nussan <nussan1996water@gmail.com>
+Date:   Mon Oct 29 11:13:57 2018 +0900
+
+    Merge branch 'develop' into feature/mind_map
+
+[33mcommit 1b173a9420a3501ff8456f3a466ccf18cd07fe74[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Mon Oct 29 11:06:55 2018 +0900
+
+    modify
+
+[33mcommit 3f2faf1e40347bfa74c0e44a1c3024458e89ec63[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Sun Oct 28 01:42:23 2018 +0900
+
+    Change the position calculation method of text view
+
+[33mcommit 8f002e49743a2325341383c3a68bada383717d35[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Sat Oct 27 23:22:01 2018 +0900
+
+    Change how mmo rotates
+
+[33mcommit d199d8a2944982637ac6a82189a7713995e8ab2a[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Fri Oct 26 15:57:25 2018 +0900
+
+    The expression of mmo position is changed
+
+[33mcommit dc2b4e9b13eb3f7d24e6fa12550aba3470faaaf2[m
+Merge: 3094b50 6637a14
+Author: nussan <nussan1996water@gmail.com>
+Date:   Thu Oct 25 16:42:01 2018 +0900
+
+    Merge pull request #36 from nussan/feature/api
+    
+    Feature/api
+
+[33mcommit 6637a144941343582198eb603d995d83bfa0ebbb[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Oct 25 16:39:15 2018 +0900
+
+    fixed addUser
+
+[33mcommit 8e3bcca488bc584fd173fd1ce9768c87187d9568[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Oct 25 01:19:56 2018 +0900
+
+    create Installation.uuid
+
+[33mcommit 3094b501973a5d35c539d37ebf241827225d1644[m
+Merge: 417b347 84fe457
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Fri Oct 19 13:28:18 2018 +0900
+
+    Merge pull request #25 from nussan/feature/api
+    
+    各イベントのmmoが取れるようになった
+
+[33mcommit 84fe4576a1a54cc149fb3d266865e434242f33cf[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Fri Oct 19 13:25:59 2018 +0900
+
+    各イベントのmmoが取れるようになった
+
+[33mcommit 417b34704f4fed4cfccf9ea8edc4d47eb283d948[m
+Merge: 613d9ac dfc276a
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Thu Oct 18 14:46:31 2018 +0900
+
+    Merge pull request #24 from nussan/feature/api
+    
+    addEventを変更
+
+[33mcommit dfc276a78deb621605df6a17227615963a88d091[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Oct 18 14:45:30 2018 +0900
+
+    addEventを変更
+
+[33mcommit 613d9acd61ca585dcee7b4d2084b6556c1343569[m
+Merge: 01dc252 914a0bb
+Author: tsubasa9647 <40485367+tsubasa9647@users.noreply.github.com>
+Date:   Thu Oct 18 12:17:17 2018 +0900
+
+    Merge pull request #23 from nussan/feature/api
+    
+    とりまfirebaseからデータ取れた
+
+[33mcommit 914a0bbdf549e9d025aecaab7c37567c1fd85945[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Oct 18 10:15:44 2018 +0900
+
+    ちょっと修正
+
+[33mcommit 430452c875b31bad3585923119d040c5409cd4e2[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Oct 18 00:08:11 2018 +0900
+
+    addMmo実装してみた
+
+[33mcommit 5e07c7c76f8832a2232fba53df97350209c2bb35[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Wed Oct 17 12:35:08 2018 +0900
+
+    とりまfirebaseからデータ取れた
+
+[33mcommit 01dc25248e330c499547495ae4783e405f9ec807[m
+Merge: b180f07 b0de475
+Author: nussan <nussan1996water@gmail.com>
+Date:   Mon Oct 15 16:13:50 2018 +0900
+
+    Merge pull request #22 from nussan/feature/api
+    
+    Feature/api
+
+[33mcommit b0de47577d62df1c4b60b32d585fdea87a6442c4[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Mon Oct 15 15:43:36 2018 +0900
+
+    一部RxJava2を使って実装し直しました
+
+[33mcommit 0ef2685c66009dea3247d8ec428c7afe4a270c6e[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Sun Oct 14 00:48:20 2018 +0900
+
+    firebase導入しました
+
+[33mcommit 74dd40262ca5d888cfca0a022c75b5f2cb477351[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Sun Oct 14 00:02:02 2018 +0900
+
+    RxJava導入しました
+
+[33mcommit b180f07d99fa6d01b4e7a5fc3e99b299759c3b6e[m
+Merge: 8f47a59 e49bcd7
+Author: nussan <nussan1996water@gmail.com>
+Date:   Sat Oct 13 14:16:11 2018 +0900
+
+    Merge pull request #21 from nussan/feature/api
+    
+    Feature/api
+
+[33mcommit e49bcd7e25c7fcad4c1645b169b93a454bf448b9[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Sat Oct 13 13:04:54 2018 +0900
+
+    マインドマップのテキストを入力できるようになりました
+
+[33mcommit bc7235b9750729c5c267101b4ee5cea6617af0ef[m
+Merge: 0d7e4d7 8f47a59
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Sat Oct 13 12:23:47 2018 +0900
+
+    fixed conflict
+
+[33mcommit 8f47a5961a07bc841763c5f6b8d11ea0136805cd[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Sat Oct 13 12:02:28 2018 +0900
+
+    change how to draw lines.
+
+[33mcommit 0d7e4d73cc4ef8d3518804520f64015b6be7806d[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Sat Oct 13 12:00:53 2018 +0900
+
+    Change addEventCallback
+
+[33mcommit 2bf44f3fd3f32e9ba8eea47b07cdc71f7e485ef4[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Fri Oct 12 16:08:44 2018 +0900
+
+    addEventCallback
+
+[33mcommit 3e969ae06be6250f637f170a5523a99533e68ea6[m
+Merge: 295bf33 ed875db
+Author: nussan <nussan1996water@gmail.com>
+Date:   Fri Oct 12 11:48:54 2018 +0900
+
+    Merge pull request #20 from nussan/feature/api
+    
+    Feature/api
+
+[33mcommit ed875dbe4420f738e4a7697e802fdfeff03983c4[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Fri Oct 12 11:36:26 2018 +0900
+
+    children -> parent
+
+[33mcommit c6bba86ae7b947034a0243d4076b58d01dfb8cd4[m
+Merge: 9e1a1a5 dd6cf3f
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Fri Oct 12 10:22:22 2018 +0900
+
+    fixed conflict
+
+[33mcommit 9e1a1a580aa129cfee87276431889e7c5e54fe45[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Fri Oct 12 10:07:43 2018 +0900
+
+    modified heroku url
+
+[33mcommit dd6cf3f73a8db9b80bdf55c992905d5686d62ef3[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Fri Oct 12 03:22:44 2018 +0900
+
+    modify
+    
+    But something goes wrong.
+
+[33mcommit fb17653ab2d025dca14b2d81a5f69d61f750e385[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Oct 11 22:44:01 2018 +0900
+
+    add listener to ImageView of BottomSheetDialog
+    
+    addButton wass implemented so far, and accordingly modify
+    ZoomableLayout.
+
+[33mcommit 295bf33920b8d33d3680f5f8b1215bf400af368e[m
+Merge: ffe12ec db6f809
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Thu Oct 11 18:16:44 2018 +0900
+
+    Merge pull request #19 from nussan/feature/api
+    
+    Feature/api
+
+[33mcommit db6f809ed95bc9cbd46dfb419e9220cc84295674[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Oct 11 18:15:25 2018 +0900
+
+    add input form layout
+
+[33mcommit ca4119037f0fdc0524996a637989455b64fe7f0b[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Oct 11 16:37:36 2018 +0900
+
+    delete UserService
+
+[33mcommit 1742dcbf4c53814181c1003861fabf264f0038fb[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Oct 11 16:32:09 2018 +0900
+
+    add requestservice
+
+[33mcommit 38fc6adcc47d84cb6a01faea5685b6e821a62070[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Oct 10 21:51:33 2018 +0900
+
+    add CustomBottomSheetDialogFragment
+    
+    it contains ImageViews to express the menu of add, delete, and edit.
+    The design may be changed.
+
+[33mcommit ffe12ec2bea845623fe4cef95bdcdc9dddd21b13[m
+Merge: 395b52d 417090f
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Tue Oct 9 16:20:18 2018 +0900
+
+    Merge pull request #17 from nussan/feature/textview
+    
+    Feature/textview
+
+[33mcommit 417090f255ddc5e597f98a1af8163dfab5ff5165[m
+Merge: 7365878 395b52d
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Tue Oct 9 16:20:00 2018 +0900
+
+    Merge branch 'develop' into feature/textview
+
+[33mcommit 395b52d923b735f6843dac9686d8ee32319af1e1[m
+Merge: 8ef9b70 e04da43
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Tue Oct 9 16:17:46 2018 +0900
+
+    Merge pull request #18 from nussan/feature/api
+    
+    able to get eventlist only
+
+[33mcommit 7365878af63e988980243d4751c028f6fb0f46fc[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Oct 9 16:14:42 2018 +0900
+
+    テキストビューの形をかえた。画面回転も一部対応した。
+
+[33mcommit e04da4376fe6f3b5740eb008c6f0e48b3ef1a0a1[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Tue Oct 9 15:57:48 2018 +0900
+
+    able to get eventlist only
+
+[33mcommit 1a50e296e0a35d766a5852469bbe5f5342d9f07b[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Oct 2 11:32:52 2018 +0900
+
+    modify EqualWidthHeightTextView to CircularTextView
+
+[33mcommit 8ef9b7073a2af9e42777e0ea39203c1654fdfccd[m
+Merge: 65e8389 3aa9805
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Fri Sep 21 16:57:04 2018 +0900
+
+    Merge pull request #16 from nussan/feature/api
+    
+    Feature/api
+
+[33mcommit 3aa9805903e048e09a538aa64f1ab4ef6271965b[m
+Merge: d2a6105 65e8389
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Fri Sep 21 16:55:41 2018 +0900
+
+    fixed conflict
+
+[33mcommit 65e83890be4545dd83020072ba4ab9e294755dfe[m
+Merge: 6cba1d7 c7c690a
+Author: nussan <nussan1996water@gmail.com>
+Date:   Fri Sep 21 16:27:25 2018 +0900
+
+    Merge pull request #14 from nussan/feature/zoom
+    
+    Feature/zoom
+
+[33mcommit c7c690a1101c18256d626160d4381bad9be91e5f[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Fri Sep 21 15:47:00 2018 +0900
+
+    add the function of zooming.
+    
+    Users can pinch-in, pinch- out, and drag.
+
+[33mcommit d2a6105ad2c5cf98a01f1399fea6775ee0248218[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Fri Sep 21 15:44:15 2018 +0900
+
+    modified json
+
+[33mcommit 4ffbf2bb3f82d97aedb9e6bddacbe8759069ccf3[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Fri Sep 21 13:39:25 2018 +0900
+
+    modified Repository
+
+[33mcommit 40508195c03744cd66cbdd7b9cfa73358643307f[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Fri Sep 21 00:24:06 2018 +0900
+
+    update the version of ConstraintLayout
+
+[33mcommit bfa7e79e1391c1df78baa5e865e55ab6f4f41c1e[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Thu Sep 20 16:53:15 2018 +0900
+
+    add provider package
+    
+    we can get infomation from api. However, syori ga kiniiran.
+
+[33mcommit 6cba1d70eca04806fa5b1d5f87f903c9ac54f666[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Sep 19 15:57:30 2018 +0900
+
+    modify replace MindMapObjectList to Event data class.
+
+[33mcommit 8496747ae5237e1c4a1f0cfadf6f55f4eff192b4[m
+Merge: 5666da7 05e6342
+Author: s24005ir <41180048+s24005ir@users.noreply.github.com>
+Date:   Wed Sep 19 14:28:23 2018 +0900
+
+    Merge pull request #12 from nussan/feature/mindmap
+    
+    Feature/mindmap
+
+[33mcommit 05e6342978cfcc8f67b901439a05cd5ced951125[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Sep 19 14:18:50 2018 +0900
+
+    modify to package files
+
+[33mcommit 9530758ab6654b7d98a3a2db1718f6d2fc02b346[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Sep 19 14:13:39 2018 +0900
+
+    modify to get the layout size from MainActivity
+    
+    This may be not a good way.
+
+[33mcommit 5666da7c47c351a737386db0c21a9b3c9223e50e[m
+Merge: 2ecbf19 4d73c25
+Author: nussan <nussan1996water@gmail.com>
+Date:   Tue Sep 18 16:25:41 2018 +0900
+
+    Merge pull request #11 from nussan/feature/mindmap
+    
+    add new fragment to draw a mindmap
+
+[33mcommit 4d73c25aba95dbf752ab73c3b4adacf186508341[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Tue Sep 18 16:18:23 2018 +0900
+
+    add new fragment to draw a mindmap
+    
+    MindMapObject is a data class which set location of each TextView.
+    DrawingLinesCanvasView is a view which enables to draw lines with
+    children.
+
+[33mcommit 2ecbf19d4be511fd9aeac5ef0b19a2a05b6fec54[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Sun Sep 9 21:44:53 2018 +0900
+
+    add User class
+    
+    Event class and User class implements Parcelable, so each fragment can
+    get arguments from a bundle.
+
+[33mcommit f34499b39428847433ba300198c60ce6373d0727[m
+Merge: 1694077 a1d9c15
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Sat Sep 8 17:01:31 2018 +0900
+
+    Merge branch 'develop' of https://github.com/nussan/tabi-idea into develop
+
+[33mcommit 1694077f2306c3bc6669fac6680b7171528e47ef[m
+Merge: 490a943 204b98a
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Sat Sep 8 17:00:16 2018 +0900
+
+    Merge branch 'feature/top' into develop
+
+[33mcommit a1d9c15d9e76351f9f6594a8f410d258e946dea5[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Sat Sep 8 15:56:05 2018 +0900
+
+    make FriendListFragment
+
+[33mcommit c5e23e72fa2ec225ea9ebd93f5424107427b19dc[m
+Merge: 69b4353 204b98a
+Author: nussan <nussan1996water@gmail.com>
+Date:   Sat Sep 8 10:44:06 2018 +0900
+
+    Merge pull request #3 from nussan/feature/top
+    
+    Feature/top
+
+[33mcommit 204b98aed0f9ed4f4a28b53ad4e74f5b02f4fe80[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Sat Sep 8 10:37:26 2018 +0900
+
+    update EventListFragment
+
+[33mcommit 61004713edc27b7208490e1b6f28a4a30ca0e310[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Sat Sep 8 10:36:09 2018 +0900
+
+    add Event and EventManager class
+
+[33mcommit f800a739d43d353c0eb7899e9e7cfc41f1df9121[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Fri Sep 7 17:53:35 2018 +0900
+
+    update build.gradle
+
+[33mcommit 69b4353c7504ae05b33e40764c758ddbdd3ad90d[m
+Merge: 490a943 6a16e76
+Author: nussan <nussan1996water@gmail.com>
+Date:   Thu Sep 6 15:54:20 2018 +0900
+
+    Merge pull request #2 from nussan/feature/top
+    
+    add EventListFragment tentatively
+
+[33mcommit 6a16e76e880d6ad71037d90bd64910331fbc8233[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Thu Sep 6 15:51:00 2018 +0900
+
+    add EventListFragment tentatively
+
+[33mcommit 490a9430ab3d5893e98655721a8f2f564c525711[m
+Merge: 19b6e88 50e7cf6
+Author: nussan <nussan1996water@gmail.com>
+Date:   Wed Sep 5 18:48:53 2018 +0900
+
+    Merge pull request #1 from nussan/feature/top
+    
+    Feature/top
+
+[33mcommit 50e7cf652ca5825e320260573e5ba42b75cefc9d[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Sep 5 18:32:51 2018 +0900
+
+    modify
+            add user name and logo to toolbar tentatively
+
+[33mcommit 6024a7938dafd74908c301c14cbeaf30a4caa50c[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Sep 5 16:23:01 2018 +0900
+
+    add list menu  to the top page
+
+[33mcommit 57909dbc249c6b01728ad65800fa6191a352f01e[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Wed Sep 5 16:19:47 2018 +0900
+
+    update build.gradle
+
+[33mcommit 19b6e8898924c12be00e0a9ba4743c3ae2711a30[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: Fumiya TAKIKAWA <takikawa@mk.ces.kyutech.ac.jp>
+Date:   Fri Aug 31 13:19:41 2018 +0900
+
+    update .gitignore
+
+[33mcommit 017fa2c348798e5391100da5a719ad590c2fcf57[m
+Author: 井澤諒哉 <izawa@izawaryoyanoMacBook-puro.local>
+Date:   Mon Aug 27 10:40:08 2018 +0900
+
+    draft
