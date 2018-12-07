@@ -41,16 +41,6 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>,var 
         holder.creator.text = "作成者：" + event.creator
         holder.createtime.text = "作成日時：" + event.created
 
-        val capital = if(event.title.isNotEmpty()) event.title.substring(0,1) else "a"
-        val objBitmap = createBitmap(capital,holder)
-        val  baos = ByteArrayOutputStream()
-        objBitmap.compress(Bitmap.CompressFormat.JPEG,1,baos)
-        val jpgarr  = baos.toByteArray()
-        val options : BitmapFactory.Options = BitmapFactory.Options()
-        options.inSampleSize = 10
-        val bitmap = BitmapFactory.decodeByteArray(jpgarr,0,jpgarr.size,options)
-
-
         repository.getEventIcon(event!!.id, user.token) {
             val btmarr = it.get("icon")
             if(btmarr != null) {
@@ -67,6 +57,14 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>,var 
                 val bitmap = BitmapFactory.decodeByteArray(baBytArr, 0, baBytArr.size, options)
                 holder.image.setImageBitmap(bitmap)
             } else {
+                val capital = if(event.title.isNotEmpty()) event.title.substring(0,1) else "無"
+                val objBitmap = createBitmap(capital,holder)
+                val  baos = ByteArrayOutputStream()
+                objBitmap.compress(Bitmap.CompressFormat.JPEG,1,baos)
+                val jpgarr  = baos.toByteArray()
+                val options : BitmapFactory.Options = BitmapFactory.Options()
+                options.inSampleSize = 10
+                val bitmap = BitmapFactory.decodeByteArray(jpgarr,0,jpgarr.size,options)
                 bitmap.compress(Bitmap.CompressFormat.JPEG,1,baos)
                 val bmparr = baos.toByteArray();
                 // イベントアイコン初期セット

@@ -13,9 +13,8 @@ import android.os.Bundle
 import android.os.ParcelFileDescriptor
 import android.util.AttributeSet
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +29,7 @@ import checkers.tabi_idea.data.Event
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.data.User
 import checkers.tabi_idea.fragment.CategoryListFragment
+import checkers.tabi_idea.fragment.EventListFragment
 import checkers.tabi_idea.fragment.GroupingResultFragment
 import checkers.tabi_idea.fragment.TravelMindMapFragment
 import checkers.tabi_idea.provider.Repository
@@ -184,6 +184,42 @@ class TravelActivity : AppCompatActivity(),
                 startActivityForResult(intent, 1000)
                 // OKが押されるとonActivityResutに処理が移行する
             }
+            R.id.mmomenu_nameEdit -> {
+                // レイアウトを取得
+                val inflater = this.layoutInflater.inflate(R.layout.input_form_normal, null, false)
+
+                // ダイアログ内のテキストエリア
+                val inputText: EditText = inflater.findViewById(R.id.inputText)
+                inputText.requestFocus()
+
+                // ダイアログの設定
+                val inputForm = AlertDialog.Builder(this).apply {
+                    setTitle("イベント名の編集")
+                    setView(inflater)
+                    setPositiveButton("OK") { _, _ ->
+                        // OKボタンを押したときの処理
+                        val title = mapOf(
+                                "title" to "${inputText.text}"
+                        )
+                        if ("${inputText.text}" != "" && "${inputText.text}".substring(0, 1) != " " && "${inputText.text}".substring(0, 1) != "　") {
+                            mRepository.updateEventName(mUser.token,mEvent.id,inputText.text.toString()){ eventTitle ->
+                                supportActionBar?.title = eventTitle.getValue("title")
+                                mEvent.title = eventTitle.getValue("title")
+                            }
+                        } else {
+                            val toast = Toast.makeText(context, "文字を入力してください", Toast.LENGTH_SHORT)
+                            toast.setGravity(Gravity.CENTER, 0, 0)
+                            toast.show()
+                        }
+
+                    }
+                    setNegativeButton("Cancel", null)
+                }.create()
+
+                //ダイアログ表示と同時にキーボードを表示
+                inputForm.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+                inputForm.show()
+            }
         }
 
         return super.onOptionsItemSelected(item)
@@ -207,10 +243,8 @@ class TravelActivity : AppCompatActivity(),
                 val reBmp = Bitmap.createScaledBitmap(bmp, 240, 240, false)
                 val baos = ByteArrayOutputStream()
                 reBmp.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-                val bmparr = baos.toByteArray();
-                // TODO イベントアイコンセット（任意）
+                val bmparr = baos.toByteArray()
                 mRepository.setEventIcon(bmparr, mEvent!!.id, mUser.token) {
-                    Log.d("masaka", it)
                     val drw = BitmapDrawable(reBmp)
                     supportActionBar?.setIcon(drw)
                 }
