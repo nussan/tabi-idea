@@ -1,15 +1,21 @@
 package checkers.tabi_idea.custom.view
 
 import android.animation.AnimatorSet
+import android.animation.ArgbEvaluator
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Matrix
+import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.fragment.TravelMindMapFragment
+import android.animation.ValueAnimator
+
+
 
 
 class ZoomableLayout :
@@ -22,6 +28,7 @@ class ZoomableLayout :
     var scaleFactor = 1.0f
         private set
     private var lastScaleFactor = 0f
+    private var highLight = false
 
     constructor(context: Context) : this(context, null)
 
@@ -62,7 +69,6 @@ class ZoomableLayout :
                 child.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
-
 
     }
 
@@ -178,6 +184,21 @@ class ZoomableLayout :
 
     override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
         return true
+    }
+
+    fun drawHighLight(highLight:Boolean){
+        var colorTo = Color.parseColor("#55000000")
+        var colorFrom = Color.WHITE
+        if(!highLight) {
+            var to = colorTo
+            colorTo = colorFrom
+            colorFrom = to
+        }
+        this.highLight = highLight
+        val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+        colorAnimation.duration = 1000
+        colorAnimation.addUpdateListener { animator -> this.setBackgroundColor(animator.animatedValue as Int) }
+        colorAnimation.start()
     }
 
     companion object {
