@@ -28,10 +28,7 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.*
-import checkers.tabi_idea.fragment.CategoryListFragment
-import checkers.tabi_idea.fragment.GroupingResultFragment
-import checkers.tabi_idea.fragment.TravelMindMapFragment
-import checkers.tabi_idea.fragment.newCalendarFragment
+import checkers.tabi_idea.fragment.*
 import checkers.tabi_idea.provider.Repository
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.database.ChildEventListener
@@ -190,10 +187,6 @@ class TravelActivity : AppCompatActivity(),
                             currentFragment.updateCategoryList(mCategoryList)
                         }
                     }
-                    is GroupingResultFragment -> {
-                        currentFragment.update(map, mCategoryList)
-                    }
-
                 }
             }
         }
@@ -369,12 +362,11 @@ class TravelActivity : AppCompatActivity(),
                 }
                 GROUPING_RESULT -> {
                     container?.requestDisallowInterceptTouchEvent(false)
-                    GroupingResultFragment.newInstance(mEvent.id, map, mCategoryList)
+                    newGroupingResultFragment(mEvent.id,map,mCategoryList)
                 }
                 TRAVEL_CALENDAR -> {
                     container?.requestDisallowInterceptTouchEvent(false)
                     newCalendarFragment(mEvent.id, dateMap, mUser)
-                    //CategoryListFragment.newInstance(mCategoryList, mUser)
                 }
                 else -> TravelMindMapFragment.newInstance(mEvent, mCategoryList, mUser)
             }
