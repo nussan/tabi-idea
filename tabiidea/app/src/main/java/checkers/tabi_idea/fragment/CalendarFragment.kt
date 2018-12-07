@@ -29,7 +29,7 @@ import java.util.*
 class CalendarFragment : Fragment(){
 
     private var currentDate = Calendar.getInstance()
-    private var recyclerView: RecyclerView? = null
+//    private var recyclerView: RecyclerView? = null
     private var mEventId: Int = 0
     private var eventDateList: List<EventDateSet>? = null
     private var firstEventDateList: List<EventDateSet>? = null
@@ -68,8 +68,6 @@ class CalendarFragment : Fragment(){
             }
             dialog.show(getFragmentManager(), "calendar")
         }
-
-        recyclerView = view.findViewById(R.id.date_list)
 
         show()
         return view
@@ -134,9 +132,9 @@ class CalendarFragment : Fragment(){
             }
 
         }
-        recyclerView!!.adapter = adapter
+        date_list?.adapter = adapter
 
-        recyclerView!!.layoutManager = LinearLayoutManager(
+        date_list?.layoutManager = LinearLayoutManager(
                 ctx, RecyclerView.VERTICAL, false)
     }
 

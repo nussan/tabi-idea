@@ -67,7 +67,7 @@ DatePickerDialog.OnDateSetListener,
         private var map: Map<String, MindMapObject> = mutableMapOf()
         private var dateMap: Map<String, EventDateSet> = mutableMapOf()
 
-            private fun contactFirebase() {
+            private fun contactFirebaseOfmmoMap() {
                 val childEventListener = object : ChildEventListener {
                     override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
                         Log.d("TravelActivity", "onChildAdded:" + dataSnapshot.key!!)
@@ -158,12 +158,10 @@ DatePickerDialog.OnDateSetListener,
 
                 tabs.addTab(tabs.newTab().setText("マインドマップ"))
                 tabs.addTab(tabs.newTab().setText("カテゴリ"))
-                <<<<<<< calendar
                 tabs.addTab(tabs.newTab().setText("マトメ"))
                 tabs.addTab(tabs.newTab().setText("ヒヅケ"))
                 container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
                 tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
-
                 contactFirebaseOfmmoMap()
                 contactFirebaseOfeventDate()
             }

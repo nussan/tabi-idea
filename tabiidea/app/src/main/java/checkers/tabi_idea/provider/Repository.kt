@@ -20,7 +20,7 @@ class Repository {
     init {
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val retrofit = Retrofit.Builder()
-                .baseUrl("https://mysterious-shore-91717.herokuapp.com/")
+                .baseUrl("https://fast-peak-71769.herokuapp.com/")
                 //fast-peak-71769
                 //mysterious-shore-91717
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
