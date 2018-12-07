@@ -25,6 +25,7 @@ class GroupingExpandableListAdapter internal constructor(private val context: Co
 
     private var counter = 0
     private var childcnt =3
+    private var openOrClose = false
 
     override fun getChild(listPosition: Int, expandedListPosition: Int): MindMapObject {
             return this.dataList[this.titleList[listPosition].type]!![expandedListPosition]
@@ -34,11 +35,11 @@ class GroupingExpandableListAdapter internal constructor(private val context: Co
         return expandedListPosition.toLong()
     }
 
+
     override fun getChildView(listPosition: Int, expandedListPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup): View {
-        if(counter >= 3 || childcnt==0){
+        if(counter >= 3 || childcnt<=0){
             counter =0
         } else {
-            counter++
             childcnt--
         }
         var convertView = convertView
@@ -63,21 +64,27 @@ class GroupingExpandableListAdapter internal constructor(private val context: Co
             }
         }
         val imageView = convertView.findViewById<ImageView>(R.id.ranking_view)
-        when (counter) {
-            1 -> {
+
+        when (expandedListPosition) {
+            0 -> {
                 val drw   = ContextCompat.getDrawable(context, R.drawable.ic_first)
                 imageView.setImageDrawable(drw)
             }
-            2 -> {
+            1 -> {
                 val drw   = ContextCompat.getDrawable(context, R.drawable.ic_second);
                 imageView.setImageDrawable(drw)
             }
-            3 -> {
+            2 -> {
                 val drw   = ContextCompat.getDrawable(context, R.drawable.ic_third);
                 imageView.setImageDrawable(drw)
             }
-        }
+            else -> {
+                val drw   = ContextCompat.getDrawable(context, R.color.springgreen);
+                imageView.setImageDrawable(drw)
+            }
 
+        }
+        counter++
         return convertView
     }
 
