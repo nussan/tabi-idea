@@ -133,14 +133,13 @@ class TravelMindMapFragment :
 
                 val transArray = FloatArray(9)
                 targetMatrix.getValues(transArray)
-//                target.gravity = Gravity.CENTER
                 target.setTextKeepState(mmo.text)
-                target.fontFeatureSettings
                 target.text = TextUtils.ellipsize(mmo.text, target.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
 //                target.ellipsize = TextUtils.TruncateAt.END
-                target.translationX = transArray[Matrix.MTRANS_X]
-                target.translationY = transArray[Matrix.MTRANS_Y]
-
+                if (mmo.type != "root") {
+                    target.translationX = transArray[Matrix.MTRANS_X]
+                    target.translationY = transArray[Matrix.MTRANS_Y]
+                }
                 mindMapConstraintLayout.invalidate()
             }
 
@@ -170,9 +169,8 @@ class TravelMindMapFragment :
 
                 view.setOnTouchListener { v, event ->
                     if (mHighLight) return@setOnTouchListener true
-//                    if (mindMapConstraintLayout.tapListener!=null) mindMapConstraintLayout.tapListener = null
-                    // ルートノードは動かせなくする
-                    if (map[v.tag]?.type == "root") return@setOnTouchListener false
+                    if (mindMapConstraintLayout.tapListener != null) mindMapConstraintLayout.tapListener = null
+
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
 //                            Log.d("TravelMindMapFragment", "ACTION_DOWN")
