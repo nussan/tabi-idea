@@ -570,7 +570,29 @@ class TravelMindMapFragment :
 
     fun setTopList() {
         val mindMapObjectList = map.flatMap { listOf(it.value) }
-        mTopList = mindMapObjectList?.filter { it.type != "root" }?.sortedByDescending { it.point }?.distinctBy { it.type }
+        mTopList = mindMapObjectList.filter {
+            it.type != "root"
+        }.sortedByDescending {
+            it.point
+        }
+        Log.d("mTopList",mTopList.toString())
+        mTopList = filterIf(mTopList)
+        Log.d("mTopList",mTopList.toString())
+    }
+    fun filterIf(mmoList:List<MindMapObject>): List<MindMapObject> {
+        val list = ArrayList<MindMapObject>()
+        val set = HashSet<Pair<String,Int>>()
+        val typeSet = HashSet<String>()
+        mmoList.forEach{
+            val t = it.type
+            val p = it.point
+            val tp = Pair(t,p)
+            if (typeSet.add(t)){
+                set.add(tp)
+                list.add(it)
+            }else if(set.contains(tp))list.add(it)
+        }
+        return list
     }
 
     fun setHighlightEnabled(isEnabled: Boolean) {
