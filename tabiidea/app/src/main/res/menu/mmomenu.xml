@@ -10,7 +10,4 @@
     <item
         android:id="@+id/mmomenu_invite"
         android:title="招待" />
-    <item
-        android:id="@+id/mmomenu_hr"
-        android:title="ハイライト" />
 </menu>

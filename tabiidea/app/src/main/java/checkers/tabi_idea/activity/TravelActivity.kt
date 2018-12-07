@@ -142,6 +142,7 @@ class TravelActivity : AppCompatActivity(),
                 val currentFragment = mSectionsPagerAdapter?.instantiateItem(container, container.currentItem) as? Fragment
                 when (currentFragment) {
                     is TravelMindMapFragment -> {
+                        currentFragment.setHighlightEnabled(false)
                         mRepository.getCategoryList(mUser.token, mEvent.id) { categoryList ->
                             this.mCategoryList = categoryList
                             currentFragment.updateCategoryList(mCategoryList)
@@ -188,14 +189,6 @@ class TravelActivity : AppCompatActivity(),
                 startActivityForResult(intent, 1000)
                 // OKが押されるとonActivityResutに処理が移行する
             }
-            R.id.mmomenu_hr ->{
-                val currentFragment = mSectionsPagerAdapter?.instantiateItem(container, container.currentItem) as? Fragment
-                if(currentFragment is TravelMindMapFragment) {
-                    currentFragment.showHighLight(!highLight)
-                }
-                highLight = !highLight
-                Log.d("highLight", highLight.toString())
-            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -220,7 +213,7 @@ class TravelActivity : AppCompatActivity(),
                 reBmp.compress(Bitmap.CompressFormat.JPEG, 100, baos)
                 val bmparr = baos.toByteArray();
                 // TODO イベントアイコンセット（任意）
-                mRepository.setEventIcon(bmparr, mEvent!!.id, mUser.token) {
+                mRepository.setEventIcon(bmparr, mEvent.id, mUser.token) {
                     Log.d("masaka", it)
                     val drw = BitmapDrawable(reBmp)
                     supportActionBar?.setIcon(drw)
