@@ -1,5 +1,7 @@
 package checkers.tabi_idea.custom.view
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
@@ -8,7 +10,10 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewOutlineProvider
+import android.view.ViewTreeObserver
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.graphics.drawable.DrawableCompat
+import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.R
 import kotlin.math.max
 import kotlin.math.min
@@ -19,6 +24,8 @@ class RoundRectTextView : AppCompatTextView {
     private var mColorInt: Int = Color.parseColor("#00CED1")
     private var mStrokeColor: Int? = null
     private var mLike: Boolean = false
+    private var mHighLight = false
+    private var mFlag = false
 
     constructor(context: Context?) : this(context, null)
 
@@ -66,8 +73,8 @@ class RoundRectTextView : AppCompatTextView {
     }
 
     override fun onDraw(canvas: Canvas?) {
-        drawLikeHart(canvas!!)
-        super.onDraw(canvas)
+            super.onDraw(canvas)
+            drawLikeHart(canvas!!)
     }
 
     private fun drawLikeHart(canvas: Canvas) {
@@ -109,9 +116,28 @@ class RoundRectTextView : AppCompatTextView {
 
         return Color.parseColor("#${colorString}")
     }
+    fun setHighLight(highRight: Boolean){
+        this.mHighLight = highRight
+    }
 
-    private fun setFilter() {
-        val drawable: Drawable = this.background
-        drawable.setColorFilter(Color.parseColor("#ccffffff"), PorterDuff.Mode.OVERLAY)
+    fun setFlag(flag: Boolean){
+        this.mFlag = flag
+    }
+
+    fun drawHighRight(highLight: Boolean, flag: Boolean) {
+        if (highLight) {
+            //ハートを消す
+            drawLikeHart(Canvas())
+            invalidate()
+            if (flag) {
+                this.background.setColorFilter(Color.parseColor("#55ffffff"), PorterDuff.Mode.OVERLAY)
+            } else {
+                this.background.setColorFilter(Color.parseColor("#66000000"), PorterDuff.Mode.DARKEN)
+                this.setTextColor(Color.parseColor("#66000000"))
+            }
+        } else {
+            this.background = ColorDrawable(mColorInt)
+            this.setTextColor(Color.WHITE)
+        }
     }
 }

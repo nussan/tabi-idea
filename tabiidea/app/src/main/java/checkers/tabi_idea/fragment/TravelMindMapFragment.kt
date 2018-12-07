@@ -35,7 +35,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import kotlinx.android.synthetic.main.activity_travel.*
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
+import kotlinx.android.synthetic.main.fui_confirmation_code_layout.view.*
 import kotlin.math.abs
 
 
@@ -53,6 +55,9 @@ class TravelMindMapFragment :
     private var repository = Repository()
     private var mActivePointerId: Int = -1
     private var click: Boolean = false
+    private var adapter: ArrayAdapter<Category>? = null
+    private var mTopList = listOf<MindMapObject>()
+    private var mHighLight = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +66,7 @@ class TravelMindMapFragment :
             categoryList = it.getParcelableArrayList<Category>("categoryList") as MutableList<Category>
             user = it.getParcelable("user")
         }
+        mHighLight = false
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -72,6 +78,18 @@ class TravelMindMapFragment :
         (activity as AppCompatActivity).supportActionBar?.setHomeButtonEnabled(true)
         setHasOptionsMenu(true)
         return view
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.hlmenu, menu)
+        val item = menu.findItem(R.id.mmomenu_hr)
+        item.setOnMenuItemClickListener {
+            mindMapConstraintLayout.tapListener = null
+            showHighLight(!mHighLight)
+            mHighLight = !mHighLight
+            true
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,7 +108,6 @@ class TravelMindMapFragment :
         behavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
         fbApiClient = FirebaseApiClient(event!!.id.toString())
-
 
 
         listener = object : ChildEventListener {
@@ -154,6 +171,10 @@ class TravelMindMapFragment :
                 click = false
 
                 view.setOnTouchListener { v, event ->
+                    if (mHighLight) return@setOnTouchListener true
+                    if (mindMapConstraintLayout.tapListener!=null) mindMapConstraintLayout.tapListener = null
+                    // ルートノードは動かせなくする
+                    if (map[v.tag]?.type == "root") return@setOnTouchListener false
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
 //                            Log.d("TravelMindMapFragment", "ACTION_DOWN")
@@ -173,9 +194,7 @@ class TravelMindMapFragment :
                             lastRaw.set(event.rawX, event.rawY)
                             point.set((event.x * v.scaleX).toInt(), (event.y * v.scaleY).toInt())
 
-                            (v as RoundRectTextView).drawStroke(true)
                         }
-
                         MotionEvent.ACTION_MOVE -> {
 //                            Log.d("TravelMindMapFragment", "ACTION_MOVE")
                             (v as RoundRectTextView).drawStroke(true)
@@ -185,6 +204,13 @@ class TravelMindMapFragment :
                                 v.cancelLongPress()
                                 click = false
                             }
+
+                            v.translationX += trans.x
+                            dist.x += trans.x
+                            v.translationY += trans.y
+                            dist.y += trans.y
+                            lastRaw.set(event.rawX, event.rawY)
+                            mindMapConstraintLayout.invalidate()
                             // ルートノードは動かせなくする
                             if (map[v.tag]?.type != "root") {
                                 v.translationX += trans.x
@@ -195,7 +221,6 @@ class TravelMindMapFragment :
                                 mindMapConstraintLayout.invalidate()
                             }
                         }
-
 
                         MotionEvent.ACTION_UP -> {
                             Log.d("TravelMindMapFragment", "ACTION_UP")
@@ -229,15 +254,15 @@ class TravelMindMapFragment :
                                         fbApiClient?.updateMmo(m.key to m.value)
                                     }
                                 }
-                                dist.set(0f, 0f)
-                                mActivePointerId = -1
                             }
                         }
+
                     }
                     false
                 }
-
                 view.setOnLongClickListener { v ->
+                    if (mHighLight) return@setOnLongClickListener false
+                    behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
                     if (map[v.tag]?.type == "root") {
                         (v as RoundRectTextView).drawStroke(false)
                         return@setOnLongClickListener false
@@ -279,7 +304,7 @@ class TravelMindMapFragment :
             fbApiClient?.removeListener(listener!!)
     }
 
-    private fun onLikeSelected(view: View, colorInt: Int) {
+    private fun onLikeSelected(view: View) {
         val tag = view.tag as String
         if (map[tag]!!.type == "root") return
         val like = map[tag]!!.likeList.contains(user.id)
@@ -294,10 +319,12 @@ class TravelMindMapFragment :
         view.drawStroke(false)
     }
 
-    private fun onAddSelected(view: View, colorInt: Int) {
+    private fun onAddSelected(view: View) {
         Log.d(javaClass.simpleName, "onAddSelected")
         Toast.makeText(context, "タップした位置に追加します", Toast.LENGTH_SHORT).show()
         val tag = view.tag as String
+
+        (view as RoundRectTextView).drawStroke(false)
 
         mindMapConstraintLayout.tapListener = object : ZoomableLayout.TapListener {
             override fun onTap(e: MotionEvent, centerX: Float, centerY: Float, scale: Float) {
@@ -502,9 +529,9 @@ class TravelMindMapFragment :
             val view = quickActionView.longPressedView
             if (view != null) {
                 when (action.title) {
-                    "追加" -> onAddSelected(view, colorInt)
+                    "追加" -> onAddSelected(view)
                     "編集" -> onEditSelected(view, colorInt)
-                    "いいね" -> onLikeSelected(view, colorInt)
+                    "いいね" -> onLikeSelected(view)
                 }
             }
         }
@@ -533,6 +560,31 @@ class TravelMindMapFragment :
 
     fun updateCategoryList(categoryList: MutableList<Category>) {
         this.categoryList = categoryList
+    }
+
+    fun showHighLight(highLight: Boolean) {
+        setTopList()
+        mindMapConstraintLayout.drawHighLight(highLight)
+        for (childIndex in 0..mindMapConstraintLayout.childCount) {
+            var flag = false
+            val view = mindMapConstraintLayout.getChildAt(childIndex) as? RoundRectTextView
+                    ?: return
+            view.setHighLight(highLight)
+            if (mTopList.contains(map[view.tag]!!)) {
+                flag = true
+            }
+            view.setFlag(flag)
+            view.drawHighRight(highLight, flag)
+        }
+    }
+
+    fun setTopList() {
+        val mindMapObjectList = map.flatMap { listOf(it.value) }
+        mTopList = mindMapObjectList?.filter { it.type != "root" }?.sortedByDescending { it.point }?.distinctBy { it.type }
+    }
+
+    fun setHighlightEnabled(isEnabled: Boolean) {
+        this.mHighLight = isEnabled
     }
 
     companion object {

@@ -10,7 +10,7 @@ class FirebaseApiClient(event_id: String) {
 
 
     fun setListener(listener: ChildEventListener) {
-        ref.addChildEventListener(listener!!)
+        ref.addChildEventListener(listener)
     }
 
     //mmoをfbにadd
