@@ -287,10 +287,9 @@ class EventListFragment : Fragment() {
 
         val sort: MenuItem = menu.findItem(R.id.sort)
         sort.setOnMenuItemClickListener {
-            val ml = mutableListOf("aaaa", "bb", "d")
-            ml.sortBy { it.length }
             //このソート手法は初期のソートを再現できなくする機能でもある
             if (sortNewOld) {
+
                 eventManager.eventList.sort()
                 sortNewOld = false
                 (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
@@ -331,6 +330,7 @@ class EventListFragment : Fragment() {
         })
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 1000 && resultCode == RESULT_OK) {
             var uri: Uri? = null
@@ -370,7 +370,6 @@ class EventListFragment : Fragment() {
             }
         }
     }
-
 }
 
 

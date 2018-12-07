@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
+
     }
 
     private fun toEventListFragment(user: User, eventList: MutableList<Event>) {

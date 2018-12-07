@@ -9,7 +9,6 @@ import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import checkers.tabi_idea.data.MindMapObject
@@ -26,7 +25,8 @@ class ZoomableLayout :
         GestureDetector.OnDoubleTapListener {
     var scale = 1.0f
         private set
-    private var scaleFactor = 1.0f
+    var scaleFactor = 1.0f
+        private set
     private var lastScaleFactor = 0f
     private var highLight = false
 
@@ -56,8 +56,8 @@ class ZoomableLayout :
         addView(child)
         (child as? RoundRectTextView)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                child.x = if (mmo.viewIndex == 0) width.toFloat() / 2 + mmo.positionX - child.width / 2 else findViewWithTag<RoundRectTextView>(mmo.parent).x + mmo.positionX * scale
-                child.y = if (mmo.viewIndex == 0) height.toFloat() / 2 + mmo.positionY - child.height / 2 else findViewWithTag<RoundRectTextView>(mmo.parent).y + mmo.positionY * scale
+                child.x = if (mmo.viewIndex == 0) width.toFloat() / 2 + mmo.positionX - child.width * scale / 2 else findViewWithTag<RoundRectTextView>(mmo.parent).x + mmo.positionX * scale - child.width * scale / 2
+                child.y = if (mmo.viewIndex == 0) height.toFloat() / 2 + mmo.positionY - child.height * scale / 2 else findViewWithTag<RoundRectTextView>(mmo.parent).y + mmo.positionY * scale - child.height * scale / 2
                 child.scaleX = 0f
                 child.scaleY = 0f
                 val set = AnimatorSet()
@@ -66,7 +66,7 @@ class ZoomableLayout :
                         ObjectAnimator.ofFloat(child, "scaleX", scale),
                         ObjectAnimator.ofFloat(child, "scaleY", scale))
                 set.start()
-                viewTreeObserver.removeOnGlobalLayoutListener(this)
+                child.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
 
@@ -98,12 +98,13 @@ class ZoomableLayout :
 
     override fun onScale(scaleDetector: ScaleGestureDetector): Boolean {
         scaleFactor = scaleDetector.scaleFactor
-//        Log.i(TAG, "onScale$scaleFactor")
-        if (scale in MIN_ZOOM..MAX_ZOOM) Log.i(TAG, "onScale: true")
-        else if ((scale < MIN_ZOOM && scaleDetector.scaleFactor > 1.0f) || (scale > MAX_ZOOM && scaleDetector.scaleFactor < 1.0f)) Log.i(TAG, "onScale: true")
+//        Log.i(TAG, "onScale$scaleFactor, $lastScaleFactor , $scale")
+        if (scale in MIN_ZOOM..MAX_ZOOM)  // Log.i(TAG, "onScale: true")
+        else if ((scale < MIN_ZOOM && scaleDetector.scaleFactor > 1.0f) || (scale > MAX_ZOOM && scaleDetector.scaleFactor < 1.0f))  // Log.i(TAG, "onScale: true")
         else return false
 
         if (lastScaleFactor == 0f || Math.signum(scaleFactor) == Math.signum(lastScaleFactor)) {
+
             scale *= scaleFactor
             lastScaleFactor = scaleFactor
             applyScale(scaleDetector.focusX, scaleDetector.focusY)
@@ -115,7 +116,7 @@ class ZoomableLayout :
     }
 
     override fun onScaleEnd(scaleDetector: ScaleGestureDetector) {
-//        Log.i(TAG, "onScaleEnd")
+//        Log.i(TAG, "onScaleEnd${scaleDetector.scaleFactor} , $scale")
     }
 
     override fun onShowPress(e: MotionEvent?) {
@@ -137,7 +138,7 @@ class ZoomableLayout :
     }
 
     override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
-        Log.d(TAG, "onScroll")
+//        Log.d(TAG, "onScroll")
         applyTranslation(distanceX, distanceY)
         invalidate()
         return true

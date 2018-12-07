@@ -53,7 +53,6 @@ class TravelMindMapFragment :
     private var categoryList: List<Category> = listOf()
     private lateinit var user: User
     private var repository = Repository()
-    private var dist = PointF(0f, 0f)
     private var mActivePointerId: Int = -1
     private var click: Boolean = false
     private var adapter: ArrayAdapter<Category>? = null
@@ -83,12 +82,12 @@ class TravelMindMapFragment :
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.hlmenu,menu)
+        inflater.inflate(R.menu.hlmenu, menu)
         val item = menu.findItem(R.id.mmomenu_hr)
-        item.setOnMenuItemClickListener{
+        item.setOnMenuItemClickListener {
             showHighLight(!mHighLight)
             mHighLight = !mHighLight
-           true
+            true
         }
     }
 
@@ -120,20 +119,35 @@ class TravelMindMapFragment :
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                    Log.d("TravelMindMapFragment", "onChildChanged")
-                    val key = dataSnapshot.key!!
-                    val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
-                    map = map.minus(key)
-                    map = map.plus(key to mmo)
-                    val target = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(key)
-                    val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(mmo.parent)
-                    val matrix = parent.matrix
-                    val array = FloatArray(9)
-                    matrix.getValues(array)
-                    target.text = TextUtils.ellipsize(mmo.text, target.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
-                    target.translationX = array[Matrix.MTRANS_X] + mmo.positionX * target.scaleX
-                    target.translationY = array[Matrix.MTRANS_Y] + mmo.positionY * target.scaleY
-                    mindMapConstraintLayout.invalidate()
+                Log.d("TravelMindMapFragment", "onChildChanged--------------------------------------------------")
+                val key = dataSnapshot.key!!
+                val mmo = dataSnapshot.getValue(MindMapObject::class.java)!!
+                map = map.minus(key)
+                map = map.plus(key to mmo)
+                val target = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(key)
+                val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(mmo.parent)
+                val matrix = parent.matrix
+
+                val array = FloatArray(9)
+                matrix.getValues(array)
+
+                val targetMatrix = target.matrix
+                Log.d("TravelMindMapFragment", "target,text : ${target.text}, $targetMatrix")
+                Log.d("TravelMindMapFragment", "parent,text : ${parent.text},  $matrix")
+
+                targetMatrix.set(matrix)
+                targetMatrix.postTranslate(mmo.positionX * target.scaleX - target.width / 2, mmo.positionY * target.scaleY - target.height / 2)
+                Log.d("TravelMindMapFragment", "width : ${target.width}, height : ${target.height} , scale : (${target.scaleX} , ${target.scaleY}")
+                val transArray = FloatArray(9)
+                targetMatrix.getValues(transArray)
+                Log.d("TravelMindMapFragment", "target : " + targetMatrix.toShortString())
+                val targetArray = FloatArray(9)
+                targetMatrix.getValues(targetArray)
+                Log.d("TravelMindMapFragment", "mmo.position : (${mmo.positionX} , ${mmo.positionY})  ,  trans : (${transArray[Matrix.MTRANS_X]} , ${transArray[Matrix.MTRANS_Y]})")
+                target.text = TextUtils.ellipsize(mmo.text, target.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
+                target.translationX = transArray[Matrix.MTRANS_X]
+                target.translationY = transArray[Matrix.MTRANS_Y]
+                mindMapConstraintLayout.invalidate()
             }
 
             override fun onChildAdded(dataSnapshot: DataSnapshot, p1: String?) {
@@ -149,7 +163,7 @@ class TravelMindMapFragment :
                 // 画面のタッチポイントの差分をビュー毎に分けるためにここで宣言
                 val lastRaw = PointF(0f, 0f)
                 val point = Point(0, 0)
-                dist.set(0f, 0f)
+                val dist = PointF(0f, 0f)
 
                 val colorInt = (view.background as ColorDrawable).color
                 var like = mmo.likeList.contains(user.id)
@@ -161,90 +175,90 @@ class TravelMindMapFragment :
                 click = false
 
                 view.setOnTouchListener { v, event ->
-                    if(mHighLight) return@setOnTouchListener true
-                        when (event.action and event.actionMasked) {
-                            MotionEvent.ACTION_DOWN -> {
-                                    Log.d("TravelMindMapFragment", "ACTION_DOWN")
-                                    Log.d("TravelMindMapFragment", mActivePointerId.toString())
-                                    if (mActivePointerId == -1) {
-                                        mActivePointerId = event.getPointerId(0)
-                                    } else {
-                                        activity?.dispatchTouchEvent(event)
-                                        mActivePointerId = -1
-                                        (v as RoundRectTextView).drawStroke(false)
-                                        return@setOnTouchListener false
-                                    }
-                                    (v as RoundRectTextView).drawStroke(true)
+                    if (mHighLight) return@setOnTouchListener true
+                    // ルートノードは動かせなくする
+                    if (map[v.tag]?.type == "root") return@setOnTouchListener false
+                    when (event.action and event.actionMasked) {
+                        MotionEvent.ACTION_DOWN -> {
+//                            Log.d("TravelMindMapFragment", "ACTION_DOWN")
+//                            Log.d("TravelMindMapFragment", mActivePointerId.toString())
+                            if (mActivePointerId == -1) {
+                                mActivePointerId = event.getPointerId(0)
+                            } else {
+                                activity?.dispatchTouchEvent(event)
+                                mActivePointerId = -1
+                                (v as RoundRectTextView).drawStroke(false)
+                                return@setOnTouchListener false
+                            }
+                            (v as RoundRectTextView).drawStroke(true)
 
-                                    click = true
+                            click = true
 
-                                    lastRaw.set(event.rawX, event.rawY)
-                                    point.set((event.x * v.scaleX).toInt(), (event.y * v.scaleY).toInt())
+                            lastRaw.set(event.rawX, event.rawY)
+                            point.set((event.x * v.scaleX).toInt(), (event.y * v.scaleY).toInt())
 
-                                    v.drawStroke(true)
-                                }
-
-                            MotionEvent.ACTION_MOVE -> {
-                                    Log.d("TravelMindMapFragment", "ACTION_MOVE")
-                                    (v as RoundRectTextView).drawStroke(true)
-                                    val trans = PointF((event.rawX - lastRaw.x), (event.rawY - lastRaw.y))
-                                    if (trans.x * trans.x + trans.y * trans.y > 5 || mActivePointerId == -1) {
-                                        // 移動量が一定以上のときロングプレスをキャンセル
-                                        v.cancelLongPress()
-                                        click = false
-                                    }
-
-                                    v.translationX += trans.x
-                                    dist.x += trans.x
-                                    v.translationY += trans.y
-                                    dist.y += trans.y
-                                    lastRaw.set(event.rawX, event.rawY)
-                                    mindMapConstraintLayout.invalidate()
-
+                        }
+                        MotionEvent.ACTION_MOVE -> {
+//                            Log.d("TravelMindMapFragment", "ACTION_MOVE")
+                            (v as RoundRectTextView).drawStroke(true)
+                            val trans = PointF((event.rawX - lastRaw.x), (event.rawY - lastRaw.y))
+                            if (trans.x * trans.x + trans.y * trans.y > 5 || mActivePointerId == -1) {
+                                // 移動量が一定以上のときロングプレスをキャンセル
+                                v.cancelLongPress()
+                                click = false
                             }
 
+                            v.translationX += trans.x
+                            dist.x += trans.x
+                            v.translationY += trans.y
+                            dist.y += trans.y
+                            lastRaw.set(event.rawX, event.rawY)
+                            mindMapConstraintLayout.invalidate()
 
-                            MotionEvent.ACTION_UP -> {
-                                    Log.d("TravelMindMapFragment", "ACTION_UP")
-                                    rrvToQAV(context, view, point, colorInt)
-                                    if (!click) {
-                                        (v as RoundRectTextView).drawStroke(false)
-                                    }
+                        }
 
-                                    Log.d("TravelMindMapFragment", "dist : $dist")
-                                    if (abs(dist.x) > 0 || abs(dist.y) > 0) {
-                                        val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView?>(map[v.tag]?.parent)
-                                                ?: return@setOnTouchListener false
-                                        val matrix = FloatArray(9)
-                                        parent.matrix.getValues(matrix)
-                                        map[v.tag] ?: return@setOnTouchListener false
-                                        map[v.tag]!!.positionX += dist.x / mindMapConstraintLayout.scale
-                                        map[v.tag]!!.positionY += dist.y / mindMapConstraintLayout.scale
-                                        fbApiClient?.updateMmo(v.tag as String to map[v.tag as String]!!)
-                                        map.forEach { m ->
-                                            if (m.value.parent == v.tag) {
-                                                m.value.positionX -= dist.x / mindMapConstraintLayout.scale
-                                                m.value.positionY -= dist.y / mindMapConstraintLayout.scale
-                                                fbApiClient?.updateMmo(m.key to m.value)
-                                            }
-                                        }
-                                        dist.set(0f, 0f)
-                                        mActivePointerId = -1
+                        MotionEvent.ACTION_UP -> {
+                            Log.d("TravelMindMapFragment", "ACTION_UP")
+                            rrvToQAV(context, view, point, colorInt)
+                            if (!click) {
+                                (v as RoundRectTextView).drawStroke(false)
+                            }
+
+//                            Log.d("TravelMindMapFragment", "dist : $dist")
+                            if (abs(dist.x) > 0 || abs(dist.y) > 0) {
+                                val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView?>(map[v.tag]?.parent)
+                                        ?: return@setOnTouchListener false
+                                val matrix = FloatArray(9)
+                                parent.matrix.getValues(matrix)
+                                map[v.tag] ?: return@setOnTouchListener false
+                                map[v.tag]!!.positionX += dist.x / mindMapConstraintLayout.scale
+                                map[v.tag]!!.positionY += dist.y / mindMapConstraintLayout.scale
+                                fbApiClient?.updateMmo(v.tag as String to map[v.tag as String]!!)
+                                val childDist = PointF(dist.x, dist.y)
+                                Log.d("TravelMindMapFragment", dist.toString() + " , " + childDist.toString() + "-------------------------------------")
+                                dist.set(0f, 0f)
+                                map.forEach { m ->
+                                    if (m.value.parent == v.tag) {
+                                        m.value.positionX -= childDist.x / mindMapConstraintLayout.scale
+                                        m.value.positionY -= childDist.y / mindMapConstraintLayout.scale
+                                        fbApiClient?.updateMmo(m.key to m.value)
                                     }
                                 }
                             }
+                        }
 
+                    }
                     false
                 }
-
-
                 view.setOnLongClickListener { v ->
-                    if(mHighLight) return@setOnLongClickListener false
-                        behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-                        val item = ClipData.Item(v.tag as? CharSequence)
-                        val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
-                        (v as RoundRectTextView).drawStroke(false)
-                        v.startDrag(data, View.DragShadowBuilder(v), v, 0)
+                    if (mHighLight) return@setOnLongClickListener false
+                    behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+                    if (map[v.tag]?.type == "root") return@setOnLongClickListener false
+                    behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+                    val item = ClipData.Item(v.tag as? CharSequence)
+                    val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
+                    (v as RoundRectTextView).drawStroke(false)
+                    v.startDrag(data, View.DragShadowBuilder(v), v, 0)
                 }
 
                 map = map.plus(key to mmo)
@@ -304,8 +318,8 @@ class TravelMindMapFragment :
                 val inputText: EditText = inflater.findViewById(R.id.inputText)
                 val spinner = inflater.findViewById<Spinner>(R.id.spinner)
 
-                adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, categoryList)
-                adapter?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, categoryList)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinner.adapter = adapter
 
                 inputText.requestFocus()
@@ -522,28 +536,30 @@ class TravelMindMapFragment :
 
     fun updateCategoryList(categoryList: MutableList<Category>) {
         this.categoryList = categoryList
-        this.adapter?.notifyDataSetChanged()
     }
 
-    fun showHighLight(highLight:Boolean){
+    fun showHighLight(highLight: Boolean) {
         setTopList()
         mindMapConstraintLayout.drawHighLight(highLight)
-        for(childIndex in 0..mindMapConstraintLayout.childCount){
+        for (childIndex in 0..mindMapConstraintLayout.childCount) {
             var flag = false
-            val view = mindMapConstraintLayout.getChildAt(childIndex) as? RoundRectTextView ?: return
+            val view = mindMapConstraintLayout.getChildAt(childIndex) as? RoundRectTextView
+                    ?: return
             view.setHighLight(highLight)
-            if(mTopList.contains(map[view.tag]!!)){flag = true}
+            if (mTopList.contains(map[view.tag]!!)) {
+                flag = true
+            }
             view.setFlag(flag)
             view.drawHighRight(highLight, flag)
         }
     }
 
-    fun setTopList(){
+    fun setTopList() {
         val mindMapObjectList = map.flatMap { listOf(it.value) }
         mTopList = mindMapObjectList?.filter { it.type != "root" }?.sortedByDescending { it.point }?.distinctBy { it.type }
     }
 
-    fun setHighlightEnabled(isEnabled : Boolean) {
+    fun setHighlightEnabled(isEnabled: Boolean) {
         this.mHighLight = isEnabled
     }
 

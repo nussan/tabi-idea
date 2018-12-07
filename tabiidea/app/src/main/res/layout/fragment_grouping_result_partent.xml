@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     android:background="@android:color/holo_blue_light"
     android:minHeight="70dp"
+    android:layout_marginBottom="8dp"
     android:orientation="vertical">
 
     <TextView
