@@ -5,7 +5,9 @@ import checkers.tabi_idea.data.MindMapObject
 import com.google.firebase.database.*
 
 class FirebaseApiClient(event_id: String) {
-    private val ref = FirebaseDatabase.getInstance().getReference(event_id)
+    private val oldRef = FirebaseDatabase.getInstance().getReference(event_id)
+    private val ref = oldRef.child("mmoMaps")
+
 
     fun setListener(listener: ChildEventListener) {
         ref.addChildEventListener(listener)

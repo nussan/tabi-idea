@@ -85,6 +85,7 @@ class TravelMindMapFragment :
         inflater.inflate(R.menu.hlmenu, menu)
         val item = menu.findItem(R.id.mmomenu_hr)
         item.setOnMenuItemClickListener {
+            mindMapConstraintLayout.tapListener = null
             showHighLight(!mHighLight)
             mHighLight = !mHighLight
             true
@@ -176,6 +177,7 @@ class TravelMindMapFragment :
 
                 view.setOnTouchListener { v, event ->
                     if (mHighLight) return@setOnTouchListener true
+                    if (mindMapConstraintLayout.tapListener!=null) mindMapConstraintLayout.tapListener = null
                     // ルートノードは動かせなくする
                     if (map[v.tag]?.type == "root") return@setOnTouchListener false
                     when (event.action and event.actionMasked) {
