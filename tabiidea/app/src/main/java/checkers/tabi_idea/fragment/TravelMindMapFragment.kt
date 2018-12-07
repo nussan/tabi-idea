@@ -135,6 +135,10 @@ class TravelMindMapFragment :
                 targetMatrix.getValues(transArray)
                 target.setTextKeepState(mmo.text)
                 target.text = TextUtils.ellipsize(mmo.text, target.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
+                categoryList.forEach { category ->
+                    if (mmo.type == category.name)
+                        target.setBackgroundColor(Color.parseColor(category.color))
+                }
 //                target.ellipsize = TextUtils.TruncateAt.END
                 if (mmo.type != "root") {
                     target.translationX = transArray[Matrix.MTRANS_X]
@@ -393,16 +397,33 @@ class TravelMindMapFragment :
     private fun onEditSelected(view: View, colorInt: Int) {
         val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
         val tag = view.tag as String
+        val spinner = inflater.findViewById<Spinner>(R.id.spinner)
+        val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, categoryList)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+
         // ダイアログ内のテキストエリア
         val inputText: EditText = inflater.findViewById(R.id.inputText)
         inputText.requestFocus()
 
+        var newType: String = map[tag]!!.type
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                newType = parent?.selectedItem.toString()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
         // ダイアログの設定
         val inputForm = AlertDialog.Builder(context!!).apply {
             setTitle("アイデアを編集")
             setView(inflater)
+
             setPositiveButton("OK") { _, _ ->
                 map[tag]!!.text = inputText.text.toString()
+                map[tag]!!.type = newType
                 fbApiClient?.updateMmo(tag to map[tag]!!)
             }
             setNegativeButton("Cancel", null)

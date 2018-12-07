@@ -200,7 +200,7 @@ class ZoomableLayout :
 
     companion object {
         private const val TAG = "ZoomableLayout"
-        private const val MIN_ZOOM = 0.3f
+        private const val MIN_ZOOM = 0.1f
         private const val MAX_ZOOM = 2.0f
     }
 
