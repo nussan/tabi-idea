@@ -70,7 +70,6 @@ class ZoomableLayout :
             }
         })
 
-
     }
 
     private fun updateListener(context: Context) {

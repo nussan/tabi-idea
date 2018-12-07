@@ -8,7 +8,7 @@ class FirebaseApiClient(event_id: String) {
     private val ref = FirebaseDatabase.getInstance().getReference(event_id)
 
     fun setListener(listener: ChildEventListener) {
-        ref.addChildEventListener(listener!!)
+        ref.addChildEventListener(listener)
     }
 
     //mmoをfbにadd

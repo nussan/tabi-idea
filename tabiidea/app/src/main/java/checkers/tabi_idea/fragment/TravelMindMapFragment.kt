@@ -296,6 +296,8 @@ class TravelMindMapFragment :
         Toast.makeText(context, "タップした位置に追加します", Toast.LENGTH_SHORT).show()
         val tag = view.tag as String
 
+        (view as RoundRectTextView).drawStroke(false)
+
         mindMapConstraintLayout.tapListener = object : ZoomableLayout.TapListener {
             override fun onTap(e: MotionEvent, centerX: Float, centerY: Float, scale: Float) {
                 val inflater = layoutInflater.inflate(R.layout.input_form, null, false)
