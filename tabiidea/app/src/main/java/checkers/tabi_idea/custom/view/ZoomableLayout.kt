@@ -3,19 +3,16 @@ package checkers.tabi_idea.custom.view
 import android.animation.AnimatorSet
 import android.animation.ArgbEvaluator
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
-import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import checkers.tabi_idea.data.MindMapObject
 import checkers.tabi_idea.fragment.TravelMindMapFragment
-import android.animation.ValueAnimator
-
-
 
 
 class ZoomableLayout :
@@ -186,10 +183,10 @@ class ZoomableLayout :
         return true
     }
 
-    fun drawHighLight(highLight:Boolean){
+    fun drawHighLight(highLight: Boolean) {
         var colorTo = Color.parseColor("#55000000")
         var colorFrom = Color.WHITE
-        if(!highLight) {
+        if (!highLight) {
             var to = colorTo
             colorTo = colorFrom
             colorFrom = to

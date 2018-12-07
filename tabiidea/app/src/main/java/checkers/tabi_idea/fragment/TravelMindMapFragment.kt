@@ -35,9 +35,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import kotlinx.android.synthetic.main.activity_travel.*
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
-import kotlinx.android.synthetic.main.fui_confirmation_code_layout.view.*
 import kotlin.math.abs
 
 
@@ -172,7 +170,7 @@ class TravelMindMapFragment :
 
                 view.setOnTouchListener { v, event ->
                     if (mHighLight) return@setOnTouchListener true
-                    if (mindMapConstraintLayout.tapListener!=null) mindMapConstraintLayout.tapListener = null
+//                    if (mindMapConstraintLayout.tapListener!=null) mindMapConstraintLayout.tapListener = null
                     // ルートノードは動かせなくする
                     if (map[v.tag]?.type == "root") return@setOnTouchListener false
                     when (event.action and event.actionMasked) {
@@ -205,12 +203,6 @@ class TravelMindMapFragment :
                                 click = false
                             }
 
-                            v.translationX += trans.x
-                            dist.x += trans.x
-                            v.translationY += trans.y
-                            dist.y += trans.y
-                            lastRaw.set(event.rawX, event.rawY)
-                            mindMapConstraintLayout.invalidate()
                             // ルートノードは動かせなくする
                             if (map[v.tag]?.type != "root") {
                                 v.translationX += trans.x
