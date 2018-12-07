@@ -4,21 +4,17 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Outline
-import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
+import android.text.TextUtils
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.view.ViewTreeObserver
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.graphics.drawable.DrawableCompat
 import checkers.tabi_idea.data.MindMapObject
+import checkers.tabi_idea.R
 import kotlin.math.max
 import kotlin.math.min
 
@@ -47,7 +43,7 @@ class RoundRectTextView : AppCompatTextView {
             }
         }
         maxLines = 1
-        gravity = Gravity.CENTER
+        ellipsize = TextUtils.TruncateAt.END
         clipToOutline = true
     }
 
@@ -56,8 +52,8 @@ class RoundRectTextView : AppCompatTextView {
 
         val h = Math.max(this.measuredHeight, MIN_SIZE)
         val w = Math.max(this.measuredWidth, MIN_SIZE)
-//        val r = Math.min(Math.max(w, h), MAX_SIZE)
-        setMeasuredDimension(w, h)
+        val r = Math.min(Math.max(w, h), MAX_SIZE)
+        setMeasuredDimension(r, r)
     }
 
     override fun performClick(): Boolean {
@@ -65,8 +61,8 @@ class RoundRectTextView : AppCompatTextView {
     }
 
     companion object {
-        const val MAX_SIZE = 400
-        const val MIN_SIZE = 200
+        const val MAX_SIZE = 300
+        const val MIN_SIZE = 300
     }
 
     fun drawStroke(push: Boolean) {
@@ -81,13 +77,13 @@ class RoundRectTextView : AppCompatTextView {
             drawLikeHart(canvas!!)
     }
 
-    fun drawLikeHart(canvas: Canvas) {
+    private fun drawLikeHart(canvas: Canvas) {
         mPaint.textSize = 50f
 
         val x = this.width - 60f
         val y = 50f
-        if (mLike && !mHighLight) {
-            canvas.drawText("❤️", x, y, mPaint)
+        if (mLike) {
+            canvas.drawText(context.getString(R.string.heart), x, y, mPaint)
         }
     }
 
@@ -120,7 +116,6 @@ class RoundRectTextView : AppCompatTextView {
 
         return Color.parseColor("#${colorString}")
     }
-
     fun setHighLight(highRight: Boolean){
         this.mHighLight = highRight
     }

@@ -126,28 +126,23 @@ class TravelMindMapFragment :
                 map = map.minus(key)
                 map = map.plus(key to mmo)
                 val target = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(key)
-                val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(mmo.parent)
-                val matrix = parent.matrix
-
-                val array = FloatArray(9)
-                matrix.getValues(array)
-
                 val targetMatrix = target.matrix
-                Log.d("TravelMindMapFragment", "target,text : ${target.text}, $targetMatrix")
-                Log.d("TravelMindMapFragment", "parent,text : ${parent.text},  $matrix")
 
-                targetMatrix.set(matrix)
+                // 親の位置から移動分だけずらす
+                val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(mmo.parent)
+                targetMatrix.set(parent.matrix)
                 targetMatrix.postTranslate(mmo.positionX * target.scaleX - target.width / 2, mmo.positionY * target.scaleY - target.height / 2)
-                Log.d("TravelMindMapFragment", "width : ${target.width}, height : ${target.height} , scale : (${target.scaleX} , ${target.scaleY}")
+
                 val transArray = FloatArray(9)
                 targetMatrix.getValues(transArray)
-                Log.d("TravelMindMapFragment", "target : " + targetMatrix.toShortString())
-                val targetArray = FloatArray(9)
-                targetMatrix.getValues(targetArray)
-                Log.d("TravelMindMapFragment", "mmo.position : (${mmo.positionX} , ${mmo.positionY})  ,  trans : (${transArray[Matrix.MTRANS_X]} , ${transArray[Matrix.MTRANS_Y]})")
+//                target.gravity = Gravity.CENTER
+                target.setTextKeepState(mmo.text)
+                target.fontFeatureSettings
                 target.text = TextUtils.ellipsize(mmo.text, target.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
+//                target.ellipsize = TextUtils.TruncateAt.END
                 target.translationX = transArray[Matrix.MTRANS_X]
                 target.translationY = transArray[Matrix.MTRANS_Y]
+
                 mindMapConstraintLayout.invalidate()
             }
 
@@ -216,12 +211,25 @@ class TravelMindMapFragment :
                             dist.y += trans.y
                             lastRaw.set(event.rawX, event.rawY)
                             mindMapConstraintLayout.invalidate()
-
+                            // ルートノードは動かせなくする
+                            if (map[v.tag]?.type != "root") {
+                                v.translationX += trans.x
+                                dist.x += trans.x
+                                v.translationY += trans.y
+                                dist.y += trans.y
+                                lastRaw.set(event.rawX, event.rawY)
+                                mindMapConstraintLayout.invalidate()
+                            }
                         }
 
                         MotionEvent.ACTION_UP -> {
                             Log.d("TravelMindMapFragment", "ACTION_UP")
                             rrvToQAV(context, view, point, colorInt)
+                            if (map[v.tag]?.type == "root") {
+                                (v as RoundRectTextView).drawStroke(false)
+                                return@setOnTouchListener false
+                            }
+
                             if (!click) {
                                 (v as RoundRectTextView).drawStroke(false)
                             }
@@ -255,7 +263,10 @@ class TravelMindMapFragment :
                 view.setOnLongClickListener { v ->
                     if (mHighLight) return@setOnLongClickListener false
                     behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-                    if (map[v.tag]?.type == "root") return@setOnLongClickListener false
+                    if (map[v.tag]?.type == "root") {
+                        (v as RoundRectTextView).drawStroke(false)
+                        return@setOnLongClickListener false
+                    }
                     behavior?.state = BottomSheetBehavior.STATE_COLLAPSED
                     val item = ClipData.Item(v.tag as? CharSequence)
                     val data = ClipData(v.tag.toString(), arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN), item)
@@ -295,6 +306,7 @@ class TravelMindMapFragment :
 
     private fun onLikeSelected(view: View) {
         val tag = view.tag as String
+        if (map[tag]!!.type == "root") return
         val like = map[tag]!!.likeList.contains(user.id)
         if (!like) {
             map[tag]!!.likeList.add(user.id)
@@ -342,8 +354,7 @@ class TravelMindMapFragment :
                 )
                 spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                        Toast.makeText(context, (parent as Spinner).selectedItem.toString(), Toast.LENGTH_SHORT).show()
-                        mmo.type = parent.selectedItem.toString()
+                        mmo.type = parent?.selectedItem.toString()
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -372,11 +383,21 @@ class TravelMindMapFragment :
 
     private fun onDeleteSelected(tag: String) {
         val mmo = map[tag] ?: return
+
         if (mmo.type == "root") {
             Toast.makeText(context, "ルートノードは削除できません", Toast.LENGTH_SHORT).show()
             return
         }
-        fbApiClient?.deleteMmo(Pair(tag, mmo))
+        removeChildren(Pair(tag, mmo))
+    }
+
+    private fun removeChildren(target: Pair<String, MindMapObject>) {
+        // childを再帰的に削除
+        map.forEach { m ->
+            if (target.first == m.value.parent)
+                removeChildren(m.key to m.value)
+            fbApiClient?.deleteMmo(target)
+        }
     }
 
     private fun onEditSelected(view: View, colorInt: Int) {
@@ -484,12 +505,13 @@ class TravelMindMapFragment :
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
                 textView,
                 10,
-                30,
+                40,
                 2,
                 TypedValue.COMPLEX_UNIT_SP)
         textView.id = mindMapObject.viewIndex
-        textView.gravity = Gravity.CENTER
-        textView.text = TextUtils.ellipsize(mindMapObject.text, textView.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
+        textView.gravity = Gravity.CENTER_VERTICAL
+//        textView.text = TextUtils.ellipsize(mindMapObject.text, textView.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
+        textView.text = mindMapObject.text
         textView.setTextColor(Color.WHITE)
         categoryList.forEach { category ->
             if (mindMapObject.type == category.name)
