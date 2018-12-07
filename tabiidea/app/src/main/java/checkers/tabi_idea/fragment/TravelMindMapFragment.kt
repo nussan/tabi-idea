@@ -159,8 +159,6 @@ class TravelMindMapFragment :
                 click = false
 
                 view.setOnTouchListener { v, event ->
-                    // ルートノードは動かせなくする
-                    if (map[v.tag]?.type == "root") return@setOnTouchListener false
                     when (event.action and event.actionMasked) {
                         MotionEvent.ACTION_DOWN -> {
 //                            Log.d("TravelMindMapFragment", "ACTION_DOWN")
@@ -192,19 +190,23 @@ class TravelMindMapFragment :
                                 v.cancelLongPress()
                                 click = false
                             }
-
-                            v.translationX += trans.x
-                            dist.x += trans.x
-                            v.translationY += trans.y
-                            dist.y += trans.y
-                            lastRaw.set(event.rawX, event.rawY)
-                            mindMapConstraintLayout.invalidate()
+                            // ルートノードは動かせなくする
+                            if (map[v.tag]?.type != "root") {
+                                v.translationX += trans.x
+                                dist.x += trans.x
+                                v.translationY += trans.y
+                                dist.y += trans.y
+                                lastRaw.set(event.rawX, event.rawY)
+                                mindMapConstraintLayout.invalidate()
+                            }
                         }
 
 
                         MotionEvent.ACTION_UP -> {
                             Log.d("TravelMindMapFragment", "ACTION_UP")
                             rrvToQAV(context, view, point, colorInt)
+                            if (map[v.tag]?.type == "root") return@setOnTouchListener false
+
                             if (!click) {
                                 (v as RoundRectTextView).drawStroke(false)
                             }
@@ -353,11 +355,21 @@ class TravelMindMapFragment :
 
     private fun onDeleteSelected(tag: String) {
         val mmo = map[tag] ?: return
+
         if (mmo.type == "root") {
             Toast.makeText(context, "ルートノードは削除できません", Toast.LENGTH_SHORT).show()
             return
         }
-        fbApiClient?.deleteMmo(Pair(tag, mmo))
+        removeChildren(Pair(tag, mmo))
+    }
+
+    private fun removeChildren(target: Pair<String, MindMapObject>) {
+        // childを再帰的に削除
+        map.forEach { m ->
+            if (target.first == m.value.parent)
+                removeChildren(m.key to m.value)
+            fbApiClient?.deleteMmo(target)
+        }
     }
 
     private fun onEditSelected(view: View, colorInt: Int) {
