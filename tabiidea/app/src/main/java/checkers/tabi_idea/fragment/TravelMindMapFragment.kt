@@ -402,6 +402,12 @@ class TravelMindMapFragment :
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
 
+        if (map[tag]!!.type == "root") {
+            val toast = Toast.makeText(context, "ルートノードは変更できません", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+            return
+        }
         // ダイアログ内のテキストエリア
         val inputText: EditText = inflater.findViewById(R.id.inputText)
         inputText.requestFocus()
@@ -424,6 +430,7 @@ class TravelMindMapFragment :
             setPositiveButton("OK") { _, _ ->
                 map[tag]!!.text = inputText.text.toString()
                 map[tag]!!.type = newType
+
                 fbApiClient?.updateMmo(tag to map[tag]!!)
             }
             setNegativeButton("Cancel", null)

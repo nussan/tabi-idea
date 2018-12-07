@@ -153,6 +153,8 @@ class TravelActivity : AppCompatActivity(),
         tabs.addTab(tabs.newTab().setText("カテゴリ"))
         tabs.addTab(tabs.newTab().setText("マトメ"))
         tabs.addTab(tabs.newTab().setText("ヒヅケ"))
+        tabs.tabGravity = TabLayout.GRAVITY_CENTER;
+        tabs.tabMode = TabLayout.MODE_SCROLLABLE;
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
 
