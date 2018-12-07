@@ -51,7 +51,6 @@ class TravelMindMapFragment :
     private var categoryList: List<Category> = listOf()
     private lateinit var user: User
     private var repository = Repository()
-    //    private var dist = PointF(0f, 0f)
     private var mActivePointerId: Int = -1
     private var click: Boolean = false
     private var adapter: ArrayAdapter<Category>? = null
@@ -118,25 +117,21 @@ class TravelMindMapFragment :
                 matrix.getValues(array)
 
                 val targetMatrix = target.matrix
-//                matrix.setScale(mindMapConstraintLayout.scaleFactor, mindMapConstraintLayout.scaleFactor, mindMapConstraintLayout.focusX, mindMapConstraintLayout.focusY)
                 targetMatrix.set(matrix)
-
-                targetMatrix.postTranslate(mmo.positionX * target.scaleX, mmo.positionY * target.scaleY)
+                targetMatrix.postTranslate(mmo.positionX * target.scaleX - target.width * target.scaleX / 2, mmo.positionY * target.scaleY - target.height * target.scaleX / 2)
+                Log.d("TravelMindMapFragment", "width : ${target.width}, height : ${target.height}")
                 val transArray = FloatArray(9)
                 targetMatrix.getValues(transArray)
                 Log.d("TravelMindMapFragment", "target : " + targetMatrix.toShortString())
                 targetMatrix.setScale(target.scaleX, target.scaleY, mindMapConstraintLayout.focusX, mindMapConstraintLayout.focusY)
 
                 Log.d("TravelMindMapFragment", "target : " + targetMatrix.toShortString())
-//                targetMatrix.setTranslate(array[Matrix.MTRANS_X] + mmo.positionX, array[Matrix.MTRANS_Y] + mmo.positionY)
                 val targetArray = FloatArray(9)
                 targetMatrix.getValues(targetArray)
                 Log.d("TravelMindMapFragment", "mmo.position : (${mmo.positionX} , ${mmo.positionY})  ,  trans : (${transArray[Matrix.MTRANS_X]} , ${transArray[Matrix.MTRANS_Y]})")
                 target.text = TextUtils.ellipsize(mmo.text, target.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
                 target.translationX = transArray[Matrix.MTRANS_X]
                 target.translationY = transArray[Matrix.MTRANS_Y]
-//                target.translationX = array[Matrix.MTRANS_X] + mmo.positionX * mindMapConstraintLayout.scale - target.width / 2 * target.scaleX
-//                target.translationY = array[Matrix.MTRANS_Y] + mmo.positionY * mindMapConstraintLayout.scale - target.height / 2 * target.scaleY
                 mindMapConstraintLayout.invalidate()
             }
 
