@@ -121,8 +121,8 @@ class GroupingExpandableListAdapter internal constructor(private val context: Co
             }
         }
 
-        val expandedListReviewValueView = convertView!!.findViewById<TextView>(R.id.reviewValue)
-        expandedListReviewValueView.text = listReviewValue
+//        val expandedListReviewValueView = convertView!!.findViewById<TextView>(R.id.reviewValue)
+//        expandedListReviewValueView.text = listReviewValue
 
 
 
