@@ -5,10 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/quickactionview/quickactionview.iml" filepath="$PROJECT_DIR$/quickactionview/quickactionview.iml" />
       <module fileurl="file://$PROJECT_DIR$/tabiidea.iml" filepath="$PROJECT_DIR$/tabiidea.iml" />
-<<<<<<< HEAD
-=======
-      <module fileurl="file://$PROJECT_DIR$/.idea/tabiidea.iml" filepath="$PROJECT_DIR$/.idea/tabiidea.iml" />
->>>>>>> 4e96a4cdd20fb58589caf2c31cf8ee17c8013d7b
     </modules>
   </component>
 </project>

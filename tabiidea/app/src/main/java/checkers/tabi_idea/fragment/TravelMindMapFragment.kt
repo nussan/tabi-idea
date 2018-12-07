@@ -36,6 +36,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_travel_mind_map.*
+import kotlinx.android.synthetic.main.fui_confirmation_code_layout.view.*
 import kotlin.math.abs
 
 
@@ -55,6 +56,8 @@ class TravelMindMapFragment :
     private var mActivePointerId: Int = -1
     private var click: Boolean = false
     private var adapter: ArrayAdapter<Category>? = null
+    private var mTopList = listOf<MindMapObject>()
+    private var mHighLight = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,7 +95,6 @@ class TravelMindMapFragment :
         behavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
         fbApiClient = FirebaseApiClient(event!!.id.toString())
-
 
 
         listener = object : ChildEventListener {
@@ -242,10 +244,6 @@ class TravelMindMapFragment :
             fbApiClient?.setListener(listener!!)
 
         mindMapConstraintLayout.lineDrawer = this
-    }
-
-    fun highRight(highRight: Boolean) {
-        (view as RoundRectTextView).drawHighRight()
     }
 
     override fun onStart() {
@@ -506,6 +504,26 @@ class TravelMindMapFragment :
         this.categoryList = categoryList
         this.adapter?.notifyDataSetChanged()
     }
+
+    fun showHighLight(highLight:Boolean){
+        mHighLight != highLight
+        setTopList()
+        mindMapConstraintLayout.drawHighLight(highLight)
+        for(childIndex in 0..mindMapConstraintLayout.childCount){
+            var flag = false
+            val view = mindMapConstraintLayout.getChildAt(childIndex) as? RoundRectTextView ?: return
+            view.setHighLight(highLight)
+            if(mTopList.contains(map[view.tag]!!)){flag = true}
+            view.setFlag(flag)
+            view.drawHighRight(highLight, flag)
+        }
+    }
+
+    fun setTopList(){
+        val mindMapObjectList = map.flatMap { listOf(it.value) }
+        mTopList = mindMapObjectList?.filter { it.type != "root" }?.sortedByDescending { it.point }?.distinctBy { it.type }
+    }
+
 
     companion object {
         @JvmStatic

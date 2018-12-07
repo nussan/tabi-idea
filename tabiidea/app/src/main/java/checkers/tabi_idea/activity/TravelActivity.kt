@@ -58,6 +58,7 @@ class TravelActivity : AppCompatActivity(),
     private lateinit var mCategoryList: MutableList<Category>
     private lateinit var mRepository: Repository
     private var map: Map<String, MindMapObject> = mutableMapOf()
+    private var highLight = false
 
     private fun contactFirebase() {
         val childEventListener = object : ChildEventListener {
@@ -188,7 +189,12 @@ class TravelActivity : AppCompatActivity(),
                 // OKが押されるとonActivityResutに処理が移行する
             }
             R.id.mmomenu_hr ->{
-
+                val currentFragment = mSectionsPagerAdapter?.instantiateItem(container, container.currentItem) as? Fragment
+                if(currentFragment is TravelMindMapFragment) {
+                    currentFragment.showHighLight(!highLight)
+                }
+                highLight = !highLight
+                Log.d("highLight", highLight.toString())
             }
         }
         return super.onOptionsItemSelected(item)

@@ -1,5 +1,7 @@
 package checkers.tabi_idea.custom.view
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
@@ -13,8 +15,10 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.view.ViewOutlineProvider
+import android.view.ViewTreeObserver
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.graphics.drawable.DrawableCompat
+import checkers.tabi_idea.data.MindMapObject
 import kotlin.math.max
 import kotlin.math.min
 
@@ -24,6 +28,8 @@ class RoundRectTextView : AppCompatTextView {
     private var mColorInt: Int = Color.parseColor("#00CED1")
     private var mStrokeColor: Int? = null
     private var mLike: Boolean = false
+    private var mHighLight = false
+    private var mFlag = false
 
     constructor(context: Context?) : this(context, null)
 
@@ -71,17 +77,17 @@ class RoundRectTextView : AppCompatTextView {
     }
 
     override fun onDraw(canvas: Canvas?) {
-        drawLikeHart(canvas!!)
-        super.onDraw(canvas)
+            super.onDraw(canvas)
+            drawLikeHart(canvas!!)
     }
 
-    private fun drawLikeHart(canvas: Canvas){
+    fun drawLikeHart(canvas: Canvas) {
         mPaint.textSize = 50f
 
-        val x = this.width-60f
+        val x = this.width - 60f
         val y = 50f
-        if(mLike){
-            canvas.drawText("❤️",x,y,mPaint)
+        if (mLike && !mHighLight) {
+            canvas.drawText("❤️", x, y, mPaint)
         }
     }
 
@@ -94,7 +100,7 @@ class RoundRectTextView : AppCompatTextView {
         this.mStrokeColor = setStrokeColor(mColorInt)
     }
 
-    private fun setStrokeColor(colorInt: Int) : Int{
+    private fun setStrokeColor(colorInt: Int): Int {
         val r = Integer.parseInt(Integer.toHexString(colorInt).substring(2, 4), 16)
         val g = Integer.parseInt(Integer.toHexString(colorInt).substring(4, 6), 16)
         val b = Integer.parseInt(Integer.toHexString(colorInt).substring(6, 8), 16)
@@ -115,28 +121,28 @@ class RoundRectTextView : AppCompatTextView {
         return Color.parseColor("#${colorString}")
     }
 
-//    private fun setFilter(){
-//        val drawable: Drawable = this.background
-//        drawable.setColorFilter(Color.parseColor("#ccffffff"),PorterDuff.Mode.OVERLAY)
-//    }
+    fun setHighLight(highRight: Boolean){
+        this.mHighLight = highRight
+    }
 
-    fun drawHighRight(){
-        if(this.text=="旅行"){
-            this.background.setColorFilter(Color.parseColor("#66ffffff"),PorterDuff.Mode.OVERLAY)
-            this.setTextColor(Color.parseColor("#ffffff"))
-            this.scaleX = 1.5f
-            this.scaleY = 1.5f
-            this.invalidate()
-        }else{
-            this.background.setColorFilter(Color.parseColor("#66000000"), PorterDuff.Mode.DARKEN)
-            this.setTextColor(Color.parseColor("#55ffffff"))
+    fun setFlag(flag: Boolean){
+        this.mFlag = flag
+    }
+
+    fun drawHighRight(highLight: Boolean, flag: Boolean) {
+        if (highLight) {
             //ハートを消す
-            mLike = false
-            var canvas = Canvas()
-            drawLikeHart(canvas)
-            this.scaleX = 0.7f
-            this.scaleY = 0.7f
-            this.invalidate()
+            drawLikeHart(Canvas())
+            invalidate()
+            if (flag) {
+                this.background.setColorFilter(Color.parseColor("#55ffffff"), PorterDuff.Mode.OVERLAY)
+            } else {
+                this.background.setColorFilter(Color.parseColor("#66000000"), PorterDuff.Mode.DARKEN)
+                this.setTextColor(Color.parseColor("#66000000"))
+            }
+        } else {
+            this.background = ColorDrawable(mColorInt)
+            this.setTextColor(Color.WHITE)
         }
     }
 }
