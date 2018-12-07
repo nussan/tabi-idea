@@ -34,12 +34,10 @@ class GroupingResultFragment : Fragment(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mEventId = savedInstanceState?.getInt("mEventId")
-                ?: arguments?.getInt("mEventId")
+        mEventId = arguments?.getInt("mEventId")
                 ?:0
 
-        firstMindMapObjectList = savedInstanceState?.getParcelableArrayList("mindMapObjectList")
-                ?: arguments?.getParcelableArrayList("mindMapObjectList")
+        firstMindMapObjectList = arguments?.getParcelableArrayList("mindMapObjectList")
                 ?: null
 
         contactFirebase()
@@ -49,10 +47,6 @@ class GroupingResultFragment : Fragment(){
 
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("mindMapObjectList", ArrayList(mindMapObjectList))
-        outState.putInt("mEventId", mEventId)
-    }
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -106,7 +100,7 @@ class GroupingResultFragment : Fragment(){
         }
         val database = FirebaseDatabase.getInstance()
         val ref = database.getReference(mEventId.toString())
-        ref.addChildEventListener(childEventListener)
+        ref.child("mmoMaps").addChildEventListener(childEventListener)
     }
 
     private fun show() {
