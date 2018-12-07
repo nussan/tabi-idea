@@ -43,19 +43,15 @@ interface RequestService {
     @GET("event/invitation/{uid}/{eid}")
     fun createUrl(@Header("Authorization") token: String, @Path("uid") uid: Int, @Path("eid") eid: Int): Single<Map<String, String>>
 
-    //TODO ユーザーアイコンをセット
     @POST("home/update/{uid}")
     fun setUserIcon(@Header("Authorization") token: String, @Path("uid") uid: Int, @Body btm: Map<String, ByteArray>): Single<String>
 
-    //TODO ユーザーアイコンをゲット
     @GET("home/download/{uid}")
     fun getUserIcon(@Header("Authorization") token: String, @Path("uid") uid: Int): Single<Map<String, String>>
 
-    //TODO イベントアイコンをセット
     @POST("event/update/{eid}")
     fun setEventIcon(@Header("Authorization") token: String, @Path("eid") eid: Int, @Body btm: Map<String, ByteArray>): Single<String>
 
-    //TODO イベントアイコンをゲット
     @GET("event/download/{eid}")
     fun getEventIcon(@Header("Authorization") token: String, @Path("eid") eid: Int): Single<Map<String, String>>
 
@@ -67,4 +63,7 @@ interface RequestService {
 
     @PATCH("category/edit/{cid}")
     fun updateMmo(@Header("Authorization") token: String, @Path("cid") cid: Int, @Body category: Map<String, String>): Single<Category>
+
+    @POST("event/edit/{eid}")
+    fun updateEventName(@Header("Authorization") token: String, @Path("eid") eid : Int, @Body event: Map<String,String>): Single<Map<String,String>>
 }

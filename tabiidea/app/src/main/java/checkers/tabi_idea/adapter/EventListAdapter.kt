@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import checkers.tabi_idea.R
 import checkers.tabi_idea.data.Event
@@ -37,17 +38,8 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>,var 
     override fun onBindViewHolder(holder: EventListViewHolder, position: Int) {
         val event = eventList[position]
         holder.event.text = event.title
-        holder.creator.text = "作成者：" + event.creator + " 　作成日時：" + event.created
-
-        val capital = if(event.title.isNotEmpty()) event.title.substring(0,1) else "a"
-        val objBitmap = createBitmap(capital,holder)
-        val  baos = ByteArrayOutputStream()
-        objBitmap.compress(Bitmap.CompressFormat.JPEG,1,baos)
-        val jpgarr  = baos.toByteArray()
-        val options : BitmapFactory.Options = BitmapFactory.Options()
-        options.inSampleSize = 10
-        val bitmap = BitmapFactory.decodeByteArray(jpgarr,0,jpgarr.size,options)
-
+        holder.creator.text = "作成者：" + event.creator
+        holder.createtime.text = "作成日時：" + event.created
 
         repository.getEventIcon(event!!.id, user.token) {
             val btmarr = it.get("icon")
@@ -65,6 +57,14 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>,var 
                 val bitmap = BitmapFactory.decodeByteArray(baBytArr, 0, baBytArr.size, options)
                 holder.image.setImageBitmap(bitmap)
             } else {
+                val capital = if(event.title.isNotEmpty()) event.title.substring(0,1) else "無"
+                val objBitmap = createBitmap(capital,holder)
+                val  baos = ByteArrayOutputStream()
+                objBitmap.compress(Bitmap.CompressFormat.JPEG,1,baos)
+                val jpgarr  = baos.toByteArray()
+                val options : BitmapFactory.Options = BitmapFactory.Options()
+                options.inSampleSize = 10
+                val bitmap = BitmapFactory.decodeByteArray(jpgarr,0,jpgarr.size,options)
                 bitmap.compress(Bitmap.CompressFormat.JPEG,1,baos)
                 val bmparr = baos.toByteArray();
                 // イベントアイコン初期セット
@@ -141,5 +141,6 @@ class EventListAdapter(context: Context?, var eventList: MutableList<Event>,var 
         val event = view.findViewById<TextView>(R.id.eventView)!!
         val image = view.findViewById<ImageView>(R.id.imageView)!!
         val creator = view.findViewById<TextView>(R.id.creatorView)!!
+        val createtime = view.findViewById<TextView>(R.id.createTimeView)
     }
 }

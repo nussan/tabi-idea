@@ -1,6 +1,5 @@
 package checkers.tabi_idea.provider
 
-import android.graphics.Bitmap
 import android.util.Log
 import checkers.tabi_idea.data.Category
 import checkers.tabi_idea.data.Event
@@ -21,8 +20,8 @@ class Repository {
     init {
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val retrofit = Retrofit.Builder()
-                .baseUrl("https://fast-peak-71769.herokuapp.com/")
-                //https://fast-peak-71769.herokuapp.com/
+                .baseUrl("https://mysterious-shore-91717.herokuapp.com/")
+                //fast-peak-71769
                 //mysterious-shore-91717
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
@@ -223,6 +222,16 @@ class Repository {
                 .subscribe(
                         { res -> callback(res) },
                         { err -> Log.d("errUpdateCategory", err.toString()) }
+                )
+    }
+
+    fun updateEventName(token: String, eventId: Int, eventName: String, callback:(Map<String,String>)-> Unit) {
+        requestService.updateEventName(token,eventId, mapOf("title" to eventName))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {res -> callback(res) },
+                        {err ->Log.d("errUpdateEventName",err.toString())}
                 )
     }
 }

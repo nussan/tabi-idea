@@ -160,7 +160,7 @@ class EventListFragment : Fragment() {
             adapter.eventList = eventManager.eventList //検索機能を実行したときの更新
             it.isEnabled = false
             // レイアウトを取得
-            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
+            val inflater = this.layoutInflater.inflate(R.layout.input_form_normal, null, false)
 
             // ダイアログ内のテキストエリア
             val inputText: EditText = inflater.findViewById(R.id.inputText)
@@ -235,7 +235,7 @@ class EventListFragment : Fragment() {
         val item: MenuItem = menu.findItem(R.id.action_name_edit)
         item.setOnMenuItemClickListener {
             // レイアウトを取得
-            val inflater = this.layoutInflater.inflate(R.layout.input_form, null, false)
+            val inflater = this.layoutInflater.inflate(R.layout.input_form_normal, null, false)
 
             // ダイアログ内のテキストエリア
             val inputText: EditText = inflater.findViewById(R.id.inputText)
@@ -287,10 +287,9 @@ class EventListFragment : Fragment() {
 
         val sort: MenuItem = menu.findItem(R.id.sort)
         sort.setOnMenuItemClickListener {
-            val ml = mutableListOf("aaaa", "bb", "d")
-            ml.sortBy { it.length }
             //このソート手法は初期のソートを再現できなくする機能でもある
             if (sortNewOld) {
+
                 eventManager.eventList.sort()
                 sortNewOld = false
                 (eventListView.adapter as EventListAdapter).eventList = eventManager.eventList
@@ -331,6 +330,7 @@ class EventListFragment : Fragment() {
         })
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 1000 && resultCode == RESULT_OK) {
             var uri: Uri? = null
@@ -370,7 +370,6 @@ class EventListFragment : Fragment() {
             }
         }
     }
-
 }
 
 
