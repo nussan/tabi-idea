@@ -113,16 +113,28 @@ class TravelMindMapFragment :
                 val target = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(key)
                 val parent = mindMapConstraintLayout.findViewWithTag<RoundRectTextView>(mmo.parent)
                 val matrix = parent.matrix
+                Log.d("TravelMindMapFragment", "parent : " + matrix.toShortString())
                 val array = FloatArray(9)
                 matrix.getValues(array)
 
                 val targetMatrix = target.matrix
-                matrix.postTranslate(array[Matrix.MTRANS_X] + mmo.positionX, array[Matrix.MTRANS_Y] + mmo.positionY)
+//                matrix.setScale(mindMapConstraintLayout.scaleFactor, mindMapConstraintLayout.scaleFactor, mindMapConstraintLayout.focusX, mindMapConstraintLayout.focusY)
+                targetMatrix.set(matrix)
+
+                targetMatrix.postTranslate(mmo.positionX * target.scaleX, mmo.positionY * target.scaleY)
+                val transArray = FloatArray(9)
+                targetMatrix.getValues(transArray)
+                Log.d("TravelMindMapFragment", "target : " + targetMatrix.toShortString())
+                targetMatrix.setScale(target.scaleX, target.scaleY, mindMapConstraintLayout.focusX, mindMapConstraintLayout.focusY)
+
+                Log.d("TravelMindMapFragment", "target : " + targetMatrix.toShortString())
+//                targetMatrix.setTranslate(array[Matrix.MTRANS_X] + mmo.positionX, array[Matrix.MTRANS_Y] + mmo.positionY)
                 val targetArray = FloatArray(9)
                 targetMatrix.getValues(targetArray)
+                Log.d("TravelMindMapFragment", "mmo.position : (${mmo.positionX} , ${mmo.positionY})  ,  trans : (${transArray[Matrix.MTRANS_X]} , ${transArray[Matrix.MTRANS_Y]})")
                 target.text = TextUtils.ellipsize(mmo.text, target.paint, RoundRectTextView.MAX_SIZE.toFloat(), TextUtils.TruncateAt.END)
-                target.translationX = targetArray[Matrix.MTRANS_X]
-                target.translationY = targetArray[Matrix.MTRANS_Y]
+                target.translationX = transArray[Matrix.MTRANS_X]
+                target.translationY = transArray[Matrix.MTRANS_Y]
 //                target.translationX = array[Matrix.MTRANS_X] + mmo.positionX * mindMapConstraintLayout.scale - target.width / 2 * target.scaleX
 //                target.translationY = array[Matrix.MTRANS_Y] + mmo.positionY * mindMapConstraintLayout.scale - target.height / 2 * target.scaleY
                 mindMapConstraintLayout.invalidate()
@@ -210,17 +222,15 @@ class TravelMindMapFragment :
                                 val matrix = FloatArray(9)
                                 parent.matrix.getValues(matrix)
                                 map[v.tag] ?: return@setOnTouchListener false
-                                dist.x += v.width / 2
-                                dist.y += v.height / 2
-                                map[v.tag]!!.positionX += dist.x
-                                map[v.tag]!!.positionY += dist.y
+                                map[v.tag]!!.positionX += dist.x / parent.scaleX
+                                map[v.tag]!!.positionY += dist.y / parent.scaleY
                                 fbApiClient?.updateMmo(v.tag as String to map[v.tag as String]!!)
                                 val childDist = PointF(dist.x, dist.y)
                                 dist.set(0f, 0f)
                                 map.forEach { m ->
                                     if (m.value.parent == v.tag) {
-                                        m.value.positionX -= childDist.x
-                                        m.value.positionY -= childDist.y
+                                        m.value.positionX -= childDist.x / parent.scaleX
+                                        m.value.positionY -= childDist.y / parent.scaleY
                                         fbApiClient?.updateMmo(m.key to m.value)
                                     }
                                 }

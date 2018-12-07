@@ -20,7 +20,10 @@ class ZoomableLayout :
         GestureDetector.OnDoubleTapListener {
     var scale = 1.0f
         private set
-    private var scaleFactor = 1.0f
+    var scaleFactor = 1.0f
+        private set
+    var focusX = 0f
+    var focusY = 0f
     private var lastScaleFactor = 0f
 
     constructor(context: Context) : this(context, null)
@@ -100,6 +103,8 @@ class ZoomableLayout :
         if (lastScaleFactor == 0f || Math.signum(scaleFactor) == Math.signum(lastScaleFactor)) {
             scale *= scaleFactor
             lastScaleFactor = scaleFactor
+            focusX = scaleDetector.focusX
+            focusY = scaleDetector.focusY
             applyScale(scaleDetector.focusX, scaleDetector.focusY)
             invalidate()
         } else {
